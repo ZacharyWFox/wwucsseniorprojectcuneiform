@@ -17,14 +17,39 @@ class TabletGroup implements JsonSerializable {
     }
 
     private function fetchTabletData(PDO $pdo) {
-        $sql = "SELECT * FROM `tablet_group` WHERE `tablet_group_id` = :tablet_group_id";
+        /*$sql = "SELECT * FROM `tablet_group` WHERE `tablet_group_id` = :tablet_group_id";
         $statement = $pdo->prepare($sql);
         $statement->execute([':tablet_group_id' => $this->id]);
         $row = $statement->fetch(PDO::FETCH_ASSOC);
         $this->name = $row['tablet_group_name'];
-        $this->lang = $row['tablet_group_lang'];
+        $this->lang = $row['tablet_group_lang'];*/
+	
+	
+
+	return "";
     }
 
+    private function fetchComments($user_id, $tablet_group_id){
+    	
+	$host = "localhost";
+	$db = "cuneiform";
+	$user = "dingo";
+	$pass = "hungry!";
+	$pdo = new PDO("mysql:host=$host;dbname=$db", $user, $pass);
+	$pdo->exec("SET profiling = 1");
+	$pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+    	$sql = "SELECT * FROM `comments_table` WHERE tablet_group_id = :tablet_group_id AND user_id = :user_id";
+	$statement = $pdo->prepare($sql);
+	$statement->execute(array(':tablet_group_id' => $tablet_group_id, ':user_id'=> $user_id));
+	$row = $statement->fetch();
+	if($row == null){
+		return "There is Nothing";
+	} else {
+		return $row[3];
+	}
+    }
+    
     private function fetchNames(PDO $pdo) {
         $sql = "SELECT `name_text` FROM `text_section` NATURAL JOIN `name_reference` NATURAL JOIN `name` WHERE `tablet_group_id` = :tablet_group_id";
         $statement = $pdo->prepare($sql);
@@ -53,7 +78,7 @@ class TabletGroup implements JsonSerializable {
         return $output;
     }
 
-    public function display($termlist) {
+    public function display($termlist, $user_id, $pdo) {
         $cdliUrl = "http://www.cdli.ucla.edu/search/search_results.php?SearchMode=Text&ObjectID=" . substr($this->name, 1, 7) . "&requestFrom=Submit+Query";
         ?>
         <div class="panel panel-default">
@@ -91,7 +116,20 @@ class TabletGroup implements JsonSerializable {
             </div>
             <div class="row">
                 <div class="panel-body col-md-8">
-                    <?php
+		    <?php
+			$_SESSION['user_id'];
+			$tablet_group_id = $this->id;
+		    ?>
+		    		    
+                    <button onclick='(function (){
+			
+
+				var newWindow= window.open("inputComment.php?group_id="+"<?php echo $tablet_group_id ?>"+"&user_id="+"<?php echo $user_id ?>", null, "height=800, width=1600, status=yes,toolbar=no,menubar=no, location=no");
+			})()'> Comment on Tablet </button>
+		    
+ 		    
+		
+		    <?php
                     foreach ($this->objects as $object) {
                         $object->display($termlist, $this->names);
                     }
@@ -278,6 +316,4 @@ class TextSection implements JsonSerializable {
             'lines' => $this->lines
         ];
     }
-
 }
-?>
