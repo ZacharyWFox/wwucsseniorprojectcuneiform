@@ -94,14 +94,15 @@ class TabletGroup implements JsonSerializable {
                             <li><a href="<?php echo $cdliUrl; ?>">CDLI</a></li>
                         </ul>
                     </div>
+                    <?php if (User::isLoggedIn()) { ?>
+                        <div class="btn-group">
+                            <button type="button" class="btn btn-default" onclick="addComment(<?php echo $this->id; ?>);">Comment on Tablet</button>
+                        </div>
+                    <?php } ?>
                 </div>
             </div>
             <div class="row">
                 <div class="panel-body col-md-8">
-                    <?php if (User::isLoggedIn()) { ?>
-                        <button onclick="addComment(<?php echo $this->id; ?>);">Comment on Tablet</button>
-                    <?php } ?>
-
                     <?php
                     foreach ($this->objects as $object) {
                         $object->display($termlist, $this->names);
