@@ -11,6 +11,7 @@ import cuneiform.stringComparator.Confidence;
 import cuneiform.stringComparator.StringComparator;
 import cuneiform.stringComparator.SumerianComparator;
 import cuneiform.stringComparator.SumerianLevenstheinSubstringComparator;
+import cuneiform.stringComparator.SumerianNWSubstringComparator;
 import cuneiform.tablet.Container;
 import cuneiform.tablet.TabletGroup;
 import cuneiform.tablet.TextSection;
@@ -70,12 +71,14 @@ public class DateExtractor {
         return years;
     }
 	
+    // processes all the tablets(conatiners) in a group
     public void process(Connection conn, TabletGroup t) throws SQLException {
        for (Container container : t.containers) {
             process(conn, container);
         }
     }
 
+    // processes all the test sections in a tablet (conatiner)
     private void process(Connection conn, Container input) throws SQLException {
         if (input.section != null) {
             process(conn, input.section);
@@ -85,7 +88,8 @@ public class DateExtractor {
             }
         }
     }
-
+    
+    // Processes all the graphemes in a text section 
     private void process(Connection conn, TextSection s) throws SQLException {
         String[] graphemeArray = s.getGraphemes();
         for (int i = 0; i < graphemeArray.length - 1; ++i) {
@@ -100,7 +104,7 @@ public class DateExtractor {
         }
     }
 
-    private FoundDate getConfidence(String[] graphemes, int i, List<KnownDate> dates) {
+    private FoundDate getConfidence(String[] graphemes, int offset, List<KnownDate> dates) {
         KnownDate guess = null;
         Confidence confd = new Confidence(Integer.MAX_VALUE, -1);
         int bestIndex = 0;
@@ -108,20 +112,25 @@ public class DateExtractor {
         int[]    indx = new int[1];
         int[]    dist = new int[1];
 
+        //for every single date that we know of, compare the date string
         for (KnownDate d : dates) {
-            SumerianLevenstheinSubstringComparator.compare(d.text, graphemes, i, conf, indx, dist);
+            SumerianNWSubstringComparator.compare(d.text, graphemes, offset, conf, indx, dist);
             if (conf[0] > confd.confidence) {
                 bestIndex = indx[0];
                 confd = new Confidence(dist[0], conf[0]);
                 guess = d;
             }
+            if (conf[0] > 100) {
+            	//System.out.printf("negative score for unknown date %s compared to known date %s", d.text, graphemes.toString());
+            }
         }
 
+        // Recreate the date string
         String output = "";
         for (int j = 0; j < bestIndex; ++j) {
             if (output.isEmpty() == false)
                 output += " ";
-            output += graphemes[j + i];
+            output += graphemes[j + offset];
         }
 
         return new FoundDate(guess, output, confd);

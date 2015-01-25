@@ -8,7 +8,7 @@ import java.io.PrintStream;
 public class Parser {
     public static final String sourcePath  = "data/ur3_20140114_public.atf";
     public static final int    threadCount = Runtime.getRuntime().availableProcessors();
-    public static final String dbHost = "jdbc:mysql://localhost/cuneiform";
+    public static final String dbHost = "jdbc:mysql://140.160.141.165/test";
     public static final String dbUser = "dingo";
     public static final String dbPass = "hungry!";
 

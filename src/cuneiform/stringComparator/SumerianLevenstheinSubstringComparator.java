@@ -7,16 +7,18 @@ public class SumerianLevenstheinSubstringComparator {
         return (c < t1) ? (c) : (t1);
     }
 
+    // Each string represents a grapheme
     static int getCost(String c1, String c2) {
         c1 = c1.replace("<>[]", "");
         c2 = c2.replace("<>[]", "");
+        // If both are empty, 
         if (c1.isEmpty() ^ c2.isEmpty()) {
             return 1;
         }
         if (c1.equalsIgnoreCase(c2)) {
-            return 0;
+            return 0; // Match
         } else if (c1.equalsIgnoreCase("{d}" + c2) || c2.equalsIgnoreCase("{d}" + c1)) {
-            return 0;
+            return 0; //Divine name
         } else if (c1.equalsIgnoreCase(c2 + "{ki}") || c2.equalsIgnoreCase(c1 + "{ki}")) {
             return 0;
         } else if (c1.equalsIgnoreCase(c2 + "(disz)") || c2.equalsIgnoreCase(c1 + "(disz)")) {
@@ -24,9 +26,9 @@ public class SumerianLevenstheinSubstringComparator {
         } else if (c1.equalsIgnoreCase(c2 + "#") || c2.equalsIgnoreCase(c1 + "#")) {
             return 0;
         } else if (c1.equalsIgnoreCase("{d}en.zu") && c2.equalsIgnoreCase("{d}suen")) {
-            return 0;
+            return 0; // {d}en.zu and {d}suen are equivalent
         } else if (c1.equalsIgnoreCase("{d}suen") && c2.equalsIgnoreCase("{d}en.zu")) {
-            return 0;
+            return 0; // {d}en.zu and {d}suen are equivalent
         } else {
             return 1;
         }
@@ -51,21 +53,22 @@ public class SumerianLevenstheinSubstringComparator {
      *            be placed
      */
     public static void compare(String known, String[] foundGraphemes, final int foundStart, double[] conf, int[] indx, int[] dist) {
-        String[] knownGraphemes = known.split("-| ");
-        int[][] distance = new int[knownGraphemes.length + 1][foundGraphemes.length - foundStart + 1];
-
+        String[] knownGraphemes = known.split("-| "); // split up graphemes
+        int[][] distance = new int[knownGraphemes.length + 1][foundGraphemes.length - foundStart + 1]; //Distance matrix
+        // Create the edges of the distance matrix
         for (int i = 0; i <= knownGraphemes.length; i++)
             distance[i][0] = i;
         for (int j = 1; j <= foundGraphemes.length - foundStart; j++)
             distance[0][j] = j;
 
+        // Fill the distance Matrix
         for (int i = 1; i <= knownGraphemes.length; i++) {
             for (int j = 1; j <= foundGraphemes.length - foundStart; j++) {
                 int cost = getCost(knownGraphemes[i - 1], foundGraphemes[foundStart + j - 1]);
                 distance[i][j] = minimum(distance[i - 1][j] + 1, distance[i][j - 1] + 1, distance[i - 1][j - 1] + cost);
             }
         }
-
+        
         int bestIndex = 0;
         int bestValue = Integer.MAX_VALUE;
         for (int i = 0; i <= foundGraphemes.length - foundStart; ++i) {
