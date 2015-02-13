@@ -5,13 +5,14 @@ import java.util.Arrays;
 public class SumerianNWSubstringComparator {
     
     static int [][] scoringMatrix;
+    static boolean debug = true; // If true, print debug messages in this class
     // foundStart is an offset of the tablet text. fix this if we can.
     // 
     public static void compare(String known, String[] allFoundGraphemes, 
         final int foundStart, double[] conf, int[] indx, int[] dist) {
             // Split string into graphemes
             String[] knownGraphemes = known.split("-| ");
-            String[] foundGraphemes = Arrays.copyOfRange(allFoundGraphemes, foundStart, allFoundGraphemes.length - 1);
+            String[] foundGraphemes = Arrays.copyOfRange(allFoundGraphemes, foundStart, allFoundGraphemes.length);
             
             int[][] alignment = new int[knownGraphemes.length][foundGraphemes.length];
             
@@ -38,9 +39,52 @@ public class SumerianNWSubstringComparator {
             conf[0] = 100.0 * Math.abs(knownGraphemes.length - bestValue) / knownGraphemes.length;
             indx[0] = foundGraphemes.length;
             dist[0] = bestValue;
-    }		
-
- // Each string represents a grapheme
+            if (debug) {
+	            String[] optAligns = constructAlignment(alignment, knownGraphemes, foundGraphemes);
+	            
+	            System.out.printf("aligned\n%s and %s as\n%s\n%s\n", 
+	            		joinAlignment(knownGraphemes), joinAlignment(foundGraphemes), 
+	            		optAligns[0], optAligns[1]);
+            }
+    }
+    
+    private static String joinAlignment(String[] graphemes) {
+    	StringBuilder alignment = new StringBuilder();
+    	for (String g : graphemes) {
+    		alignment.append(g + " ");
+    	}
+    	return alignment.toString();
+    }
+    
+    public static String[] constructAlignment(int[][] alignMatrix, String[] known, String[] unknown) {
+    	//TODO: error checking
+    	int i = known.length - 1;
+    	int j = unknown.length - 1;
+    	StringBuilder knownAlign = new StringBuilder(); 
+    	StringBuilder foundAlign = new StringBuilder();
+    	
+    	while (i > 0 || j > 0) {
+    		if ( i > 0 && j > 0 && (alignMatrix[i][j] == (alignMatrix[i - 1][j - 1] + similarity(known[i], unknown[j]))))
+    		{
+    			knownAlign.insert(0, known[i] + " ");
+    			foundAlign.insert(0, unknown[j] + " ");
+    			i--;
+    			j--;
+    		} else if (i > 0 && alignMatrix[i][j] == (alignMatrix[i - 1][j] + linGap())) {
+    			knownAlign.insert(0, known[i] + " ");
+    			foundAlign.insert(0, "- ");
+    			i--;
+    		} else if (j > 0 && alignMatrix[i][j] == (alignMatrix[i][j - 1] + linGap())) {
+    			knownAlign.insert(0, "- ");
+    			foundAlign.insert(0, unknown[j] + " ");
+    			j--;
+    		}
+    	}
+    	
+    	return new String[]{knownAlign.toString(), foundAlign.toString()};
+    }
+    
+    // Each string represents a grapheme
     static int getCost(String c1, String c2) {
         c1 = c1.replace("<>[]", "");
         c2 = c2.replace("<>[]", "");
