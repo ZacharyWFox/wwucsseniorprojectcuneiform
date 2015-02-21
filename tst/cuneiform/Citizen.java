@@ -1,5 +1,7 @@
 package cuneiform;
 
+import cuneiform.stringComparator.SimilarityMatrix;
+
 public class Citizen implements Comparable<Citizen>{
 
 	public SimilarityMatrix personalMatrix;

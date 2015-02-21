@@ -1,8 +1,13 @@
 package cuneiform.stringComparator;
 
 public class SimilarityMatrix {
-	public SimilarityMatrix()
-	{
-		
+
+	public int[][] matrix ;
+	
+	
+	public SimilarityMatrix() {
+		// TODO Auto-generated constructor stub
+		matrix = new int[5][6];
 	}
+
 }
