@@ -6,7 +6,7 @@ import java.util.Map;
 
 import cuneiform.Parser;
 
-public class SimilarityMatrix {
+public class SimilarityMatrix implements Cloneable{
 
 	private ArrayList<byte[]> dynamicMatrix;
 	private int numLetters = 10; //TODO: Remove when implemented
@@ -83,6 +83,70 @@ public class SimilarityMatrix {
 		}
 	}
 	
-	//Getters and setters
+	
+	//TODO implmement real version
+	public void randomizeMatrix(){
+		for (int i = 0; i < 5; i++){
+			for (int j=0; j < 5; j++){
+				testMatrix[i][j] = (int) Math.floor(Math.random() * 127);
+			}
+		}
+	}
+	
+	
+	
+	//Getters and setters TODO: implement below getters and setters
+	
+	private int[][] testMatrix = new int[5][5]; //for testing purposes XXX
+	//get a cell in the matrix based off row and col (x and y)
+	//return -1 if can't find cell
+	public int getCell(int x, int y){
+		return testMatrix[x][y];
+	}
+	
+	//set cell in matrix based off row and col
+	//return true if succeed in setting
+	public boolean setCell(int x, int y, int val){
+		testMatrix[x][y] = val;
+		
+		return true;
+	}
+	
+	//return row length
+	public int rowLength(){
+		return testMatrix.length;
+	}
+	
+	//return col length
+	public int colLength(){
+		return testMatrix[0].length;
+	}
+	
+	
+	//overrides TODO: implement
+	
+	@Override
+	public String toString(){
+		String retString = "\n";
+		for (int i = 0; i < 5; i++){
+			retString += "[";
+			for (int j = 0; j < 5; j++){
+				retString += testMatrix[i][j] + ", ";	
+			}
+			retString += "]\n";
+		}
+		
+		return retString;
+	}
+	
+	
+	//use this in mutate
+	public SimilarityMatrix clone(){
+		
+		return (SimilarityMatrix) this.clone();
+		
+	}
+	
+	
 	
 }
