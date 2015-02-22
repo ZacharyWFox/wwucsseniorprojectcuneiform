@@ -1,10 +1,11 @@
 package cuneiform.stringComparator;
 
 import java.util.Arrays;
+import cuneiform.stringComparator.SimilarityMatrix;
 
 public class SumerianNWSubstringComparator {
     
-    static int [][] scoringMatrix;
+	static SimilarityMatrix simMat;
     static boolean debug = true; // If true, print debug messages in this class
     // foundStart is an offset of the tablet text. fix this if we can.
     // 
@@ -48,6 +49,11 @@ public class SumerianNWSubstringComparator {
             }
     }
     
+    public static void setSimilarityMatrix()
+    {
+    	simMat = new SimilarityMatrix();
+    	
+    }
     private static String joinAlignment(String[] graphemes) {
     	StringBuilder alignment = new StringBuilder();
     	for (String g : graphemes) {
