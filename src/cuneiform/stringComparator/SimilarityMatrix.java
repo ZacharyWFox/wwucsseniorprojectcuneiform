@@ -8,8 +8,8 @@ import cuneiform.Parser;
 
 public class SimilarityMatrix implements Cloneable{
 
+	// Lower triangular adjacency matrix
 	private ArrayList<byte[]> dynamicMatrix;
-	private int numLetters = 10; //TODO: Remove when implemented
 	
 	private Map<String, Integer> alphabet = new HashMap<String, Integer>();
 	public SimilarityMatrix() {
@@ -26,6 +26,11 @@ public class SimilarityMatrix implements Cloneable{
 			System.out.printf("Something went wrong:/n/s/n", e.getMessage());
 		}
 		AllocateMatrix();
+	}
+	
+	public SimilarityMatrix(SimilarityMatrix existing){
+		this.alphabet = existing.alphabet;
+		this.dynamicMatrix = existing.dynamicMatrix;
 	}
 	
 	private void AllocateMatrix()
@@ -64,31 +69,15 @@ public class SimilarityMatrix implements Cloneable{
 			throw new Exception("Grapheme not in alphabet.");
 		}
 		
-		// Get the row so we can get the byte array and get the column 
-		byte[] row = dynamicMatrix.get(indexA);
-		// How much we need to shrink everything in order to ge
-		//int difference = Math.abs(indexA - indexB);
-		if (row.length < indexB){
-			// Caller reversed the rows and the columns
-			// So we reverse them
-			row = dynamicMatrix.get(indexB);
-			if (row.length < indexA){
-				// Entry doesn't exist
-				throw new Exception("Grapheme not found in similarity matrix.");
-			} else {
-				return row[indexA];
-			}
-		} else {
-			return row[indexB];
-		}
+		return getCell(indexA, indexB);		
 	}
 	
 	
 	//TODO implmement real version
 	public void randomizeMatrix(){
-		for (int i = 0; i < 5; i++){
-			for (int j=0; j < 5; j++){
-				testMatrix[i][j] = (int) Math.floor(Math.random() * 127);
+		for (byte[] row :dynamicMatrix) {
+			for (byte b : row) {
+				b = (byte) Math.floor(Math.random() * 127);
 			}
 		}
 	}
@@ -97,54 +86,101 @@ public class SimilarityMatrix implements Cloneable{
 	
 	//Getters and setters TODO: implement below getters and setters
 	
-	private int[][] testMatrix = new int[5][5]; //for testing purposes XXX
+//	private int[][] testMatrix = new int[5][5]; //for testing purposes XXX
+	
+	//XXX - Incorrect
 	//get a cell in the matrix based off row and col (x and y)
 	//return -1 if can't find cell
-	public int getCell(int x, int y){
-		return testMatrix[x][y];
-	}
+//	public int getCellTest(int x, int y){
+//		return testMatrix[x][y];
+//	}
+//	
+//	//set cell in matrix based off row and col
+//	//return true if succeed in setting
+//	public boolean setCellTest(int x, int y, int val){
+//		testMatrix[x][y] = val;
+//		
+//		return true;
+//	}
 	
-	//set cell in matrix based off row and col
-	//return true if succeed in setting
-	public boolean setCell(int x, int y, int val){
-		testMatrix[x][y] = val;
-		
+	public boolean setCell(int x, int y, byte val) {
+		// Get the row so we can get the byte array and get the column 
+		byte[] row = dynamicMatrix.get(x);
+		// How much we need to shrink everything in order to ge
+		//int difference = Math.abs(indexA - indexB);
+		if (row.length < y){
+			// Caller reversed the rows and the columns
+			// So we reverse them
+			row = dynamicMatrix.get(y);
+			if (row.length < x){
+				// Entry doesn't exist
+				return false;
+			} else {
+				// TODO: make sure this works
+				row[x] = val;
+				dynamicMatrix.set(y, row);
+			}
+		} else {
+			row[y] = val;
+			dynamicMatrix.set(x, row);
+		}
 		return true;
+	}
+
+	public byte getCell(int x, int y) throws Exception {
+		// Get the row so we can get the byte array and get the column 
+		byte[] row = dynamicMatrix.get(x);
+		// How much we need to shrink everything in order to ge
+		//int difference = Math.abs(indexA - indexB);
+		if (row.length < y){
+			// Caller reversed the rows and the columns
+			// So we reverse them
+			row = dynamicMatrix.get(y);
+			if (row.length < x){
+				// Entry doesn't exist
+				throw new Exception("Grapheme not found in similarity matrix.");
+			} else {
+				return row[x];
+			}
+		} else {
+			return row[y];
+		}
 	}
 	
 	//return row length
 	public int rowLength(){
-		return testMatrix.length;
+		return alphabet.size();
 	}
 	
 	//return col length
 	public int colLength(){
-		return testMatrix[0].length;
+		return alphabet.size();
 	}
 	
 	
-	//overrides TODO: implement
+	//overrides TODO: test
 	
 	@Override
 	public String toString(){
-		String retString = "\n";
-		for (int i = 0; i < 5; i++){
-			retString += "[";
-			for (int j = 0; j < 5; j++){
-				retString += testMatrix[i][j] + ", ";	
+		StringBuilder retString = new StringBuilder();
+		retString.append("\n{");
+		for (byte[] row : dynamicMatrix){
+			retString.append("{");
+			for (byte b : row){
+				retString.append(b + ", ");	
 			}
-			retString += "]\n";
+			retString.delete(retString.length() - 2, retString.length());
+			retString.append("},\n");
 		}
-		
-		return retString;
+		retString.deleteCharAt(retString.length() - 1);
+		retString.append("}");
+		return retString.toString();
 	}
 	
 	
 	//use this in mutate
 	public SimilarityMatrix clone(){
-		
-		return (SimilarityMatrix) this.clone();
-		
+		return new SimilarityMatrix(this);
 	}
 	
 	

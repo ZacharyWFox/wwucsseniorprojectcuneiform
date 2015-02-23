@@ -5,7 +5,7 @@ import java.util.ArrayList;
 
 
 //object pool, so we dont constantly create new citizens
-//(potentiall 100 new each gen)
+//(potentially 100 new each gen)
 public class CitizenPool {
 
 	int maxNum;
@@ -65,7 +65,7 @@ public class CitizenPool {
 			foundCit = usedCitizens.get(index);
 			usedCitizens.remove(index);
 			
-			foundCit.Fitness = 0;
+			foundCit.fitness = 0;
 			foundCit.IDNo = 0;
 			foundCit.personalMatrix = null;
 			

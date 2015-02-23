@@ -60,7 +60,7 @@ public class Experiment {
 			//crossovers of current gen (randomized over entire pop, lean towards top 10 for crossover, lean away from bottom) 
 			//with small num having mutations			
 			
-			if( bestCit == null ||  Population.get(0).Fitness > bestCit.Fitness){
+			if( bestCit == null ||  Population.get(0).fitness > bestCit.fitness){
 				bestCit = Population.get(0);
 			}
 			

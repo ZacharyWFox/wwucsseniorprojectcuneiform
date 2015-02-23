@@ -5,7 +5,7 @@ import cuneiform.stringComparator.SimilarityMatrix;
 public class Citizen implements Comparable<Citizen>, Runnable{
 
 	public SimilarityMatrix personalMatrix;
-	public int Fitness;
+	public int fitness;
 	public int IDNo;
 	
 	
@@ -13,7 +13,6 @@ public class Citizen implements Comparable<Citizen>, Runnable{
 	//Constructors
 	public Citizen() {
 		personalMatrix = new SimilarityMatrix();
-			
 	}
 	
 	public Citizen(int id){
@@ -21,7 +20,7 @@ public class Citizen implements Comparable<Citizen>, Runnable{
 		personalMatrix = new SimilarityMatrix();
 		IDNo = id;
 		//XXX For testing purposes XXX
-		Fitness = (int) Math.floor(Math.random() * 100);
+		fitness = (int) Math.floor(Math.random() * 100);
 	}
 	
 	public Citizen(int id, SimilarityMatrix matrix){
@@ -29,7 +28,7 @@ public class Citizen implements Comparable<Citizen>, Runnable{
 		personalMatrix = matrix;
 		IDNo = id;
 		//XXX For testing purposes XXX
-		Fitness = (int) Math.floor(Math.random() * 100);
+		fitness = (int) Math.floor(Math.random() * 100);
 	}
 
 	
@@ -38,13 +37,13 @@ public class Citizen implements Comparable<Citizen>, Runnable{
 
 	@Override
 	public int compareTo(Citizen citizen) {
-		return Integer.compare(citizen.Fitness, this.Fitness);
+		return Integer.compare(citizen.fitness, this.fitness);
 		
 	}
 	
 	@Override
 	public String toString(){
-		return "[Fitness: " +  Integer.toString(Fitness) + " Citizen ID: " + Integer.toString(IDNo) + "]";
+		return "[Fitness: " +  Integer.toString(fitness) + " Citizen ID: " + Integer.toString(IDNo) + "]";
 		
 	}
 
@@ -55,6 +54,14 @@ public class Citizen implements Comparable<Citizen>, Runnable{
 		//then figure out fitness
 		System.out.println("Citizen No: " + IDNo + " is running.");
 		
+	}
+	
+	public int getFitness() {
+		return this.fitness;	
+	}
+	
+	private void EvaluateFitness() {
+		//TODO: implement
 	}
 
 
