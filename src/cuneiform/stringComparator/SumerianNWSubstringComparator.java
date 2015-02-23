@@ -6,11 +6,16 @@ import cuneiform.stringComparator.SimilarityMatrix;
 public class SumerianNWSubstringComparator {
     
 	static SimilarityMatrix simMat;
+	// A flag that prevents compares from accessing similarity matrix if it is null.
+	static boolean hasMatrix = false;
     static boolean debug = true; // If true, print debug messages in this class
     // foundStart is an offset of the tablet text. fix this if we can.
     // 
     public static void compare(String known, String[] allFoundGraphemes, 
         final int foundStart, double[] conf, int[] indx, int[] dist) {
+    		if (!hasMatrix){
+    			System.out.print("No similarity matrix, defaulting to edit distance.");
+    		}
             // Split string into graphemes
             String[] knownGraphemes = known.split("-| ");
             String[] foundGraphemes = Arrays.copyOfRange(allFoundGraphemes, foundStart, allFoundGraphemes.length);
@@ -49,10 +54,10 @@ public class SumerianNWSubstringComparator {
             }
     }
     
-    public static void setSimilarityMatrix()
+    public static void setSimilarityMatrix(SimilarityMatrix value)
     {
-    	simMat = new SimilarityMatrix();
-    	
+    	simMat = value;
+    	hasMatrix = false;
     }
     private static String joinAlignment(String[] graphemes) {
     	StringBuilder alignment = new StringBuilder();
@@ -124,7 +129,15 @@ public class SumerianNWSubstringComparator {
 
     private static int similarity(String graphemeA, String graphemeB) {
         // For now, ignore input and return 0, for edit distance emulation
-        return getCost(graphemeA, graphemeB);
+    	int cost = getCost(graphemeA, graphemeB);
+    	if (hasMatrix) {
+    		try {
+    			cost += simMat.score(graphemeA, graphemeB);
+    		} catch (Exception e) {
+    			System.out.println("No Similarity matrix was found.");
+    		}
+    	}
+    	return cost;
     }
 
     private static int linGap() {

@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-import cuneiform.Parser;
-
 public class SimilarityMatrix implements Cloneable{
 
 	// Lower triangular adjacency matrix
@@ -16,6 +14,7 @@ public class SimilarityMatrix implements Cloneable{
 		// TODO Auto-generated constructor stub
 		try 
 		{
+			testAlphabetGen(); //XXX
 			/*
 			readAlphabet(Parser.alphabetFilePath);
 			readMatrix(Parser.alphabetFilePath); 
@@ -26,11 +25,21 @@ public class SimilarityMatrix implements Cloneable{
 			System.out.printf("Something went wrong:/n/s/n", e.getMessage());
 		}
 		AllocateMatrix(alphabet.size());
+		randomizeMatrix();
 	}
 	
 	public SimilarityMatrix(SimilarityMatrix existing){
 		this.alphabet = existing.alphabet;
 		this.dynamicMatrix = existing.dynamicMatrix;
+	}
+	//XXX
+	private void testAlphabetGen(){
+		String[] english = {"a", "b", "c", "d", "e", "f", "g", "h", "i", "j"};
+		int i = 0;
+		
+		for (String s : english) {
+			alphabet.put(s, i++);
+		}
 	}
 	
 	private void AllocateMatrix(int size)
@@ -72,7 +81,7 @@ public class SimilarityMatrix implements Cloneable{
 		return getCell(indexA, indexB);		
 	}
 
-	//TODO implmement real version
+	//TODO implement real version
 	public void randomizeMatrix(){
 		for (byte[] row :dynamicMatrix) {
 			for (byte b : row) {
@@ -80,27 +89,6 @@ public class SimilarityMatrix implements Cloneable{
 			}
 		}
 	}
-	
-	
-	
-	//Getters and setters TODO: implement below getters and setters
-	
-//	private int[][] testMatrix = new int[5][5]; //for testing purposes XXX
-	
-	//XXX - Incorrect
-	//get a cell in the matrix based off row and col (x and y)
-	//return -1 if can't find cell
-//	public int getCellTest(int x, int y){
-//		return testMatrix[x][y];
-//	}
-//	
-//	//set cell in matrix based off row and col
-//	//return true if succeed in setting
-//	public boolean setCellTest(int x, int y, int val){
-//		testMatrix[x][y] = val;
-//		
-//		return true;
-//	}
 	
 	public boolean setCell(int x, int y, byte val) {
 		// Get the row so we can get the byte array and get the column 

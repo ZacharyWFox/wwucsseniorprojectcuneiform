@@ -223,7 +223,7 @@ public class Experiment {
 		//Spawn thread for each citizen.
 		//in that thread, have the citizen run the needleman wunsch algo with their unique
 		//similarity matrix. Based off of how good they do against the data, assign them
-		//a fitness score.
+		//a fitness score. TODO: check out this warning
 		ArrayList<Future> futureCit = new ArrayList<Future>();
 		
 		
