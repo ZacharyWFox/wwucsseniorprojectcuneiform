@@ -137,8 +137,8 @@ public class Experiment {
 		newCitNo++;
 		
 		
-		int Xmax = A.personalMatrix.rowLength();
-		int Ymax = A.personalMatrix.colLength();
+		int Xmax = A.personalMatrix.rowLength() - 1;
+		int Ymax = A.personalMatrix.colLength() - 1;
 		int loopMax = (int) (Math.floor(100 * Math.random()));
 		
 		for (int i = 0; i < loopMax; i++){
@@ -146,9 +146,13 @@ public class Experiment {
 			int x = (int) (Math.floor(Xmax * Math.random()));
 			int y = (int) (Math.floor(Ymax * Math.random()));
 			int add = (int) (Math.floor(50 * Math.random()));
-			
-			mutant.personalMatrix.setCell(x, y, (A.personalMatrix.getCell(x, y) + add) % 127);
-			
+			try {
+				mutant.personalMatrix.setCell(x, y, (byte)((A.personalMatrix.getCell(x, y) + add) % 127));
+			} catch (Exception e) {
+				//TODO: handle gracefully
+				System.out.println("Something went horribly wrong (or there is an off by one):" + e.getMessage());
+				i--;
+			}
 		}
 		
 		System.out.println("Citizen A matrix: " + A.personalMatrix.toString());
@@ -172,18 +176,34 @@ public class Experiment {
 				double coin = Math.random();
 				
 				if (coin > .5){
-					child.personalMatrix.setCell(i, j,  A.personalMatrix.getCell(i, j));
+					try {
+						child.personalMatrix.setCell(i, j,  A.personalMatrix.getCell(i, j));
+					} catch (Exception e) {
+						System.out.println("Something went wrong (coin > .5)" + e.getMessage());
+					}
 				}
-				else if (coin < .5){
-					child.personalMatrix.setCell(i, j,  B.personalMatrix.getCell(i, j));
+				else if (coin <= .5){
+					try {
+						child.personalMatrix.setCell(i, j,  B.personalMatrix.getCell(i, j));
+					} catch (Exception e) {
+						System.out.println("Something went wrong (coin <= .5)" + e.getMessage());
+					}
 				}
 				else{
 					if (dealbreaker == 1){
-						child.personalMatrix.setCell(i, j,  A.personalMatrix.getCell(i, j));
+						try {
+							child.personalMatrix.setCell(i, j,  A.personalMatrix.getCell(i, j));
+						} catch (Exception e) {
+							System.out.println("Something went wrong (dealbreaker == 1). " + e.getMessage());
+						}
 						dealbreaker = 0;
 					}
 					else{
-						child.personalMatrix.setCell(i, j,  B.personalMatrix.getCell(i, j));
+						try {
+							child.personalMatrix.setCell(i, j,  B.personalMatrix.getCell(i, j));
+						} catch (Exception e) {
+							System.out.println("Something went wrong (dealbreaker != 1). " + e.getMessage());
+						}
 						dealbreaker = 1;
 					}
 					

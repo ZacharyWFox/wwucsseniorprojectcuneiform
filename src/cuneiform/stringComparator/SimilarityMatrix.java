@@ -17,15 +17,15 @@ public class SimilarityMatrix implements Cloneable{
 		try 
 		{
 			/*
-			ReadAlphabet(Parser.alphabetFilePath);
-			ReadMatrix(Parser.alphabetFilePath); 
+			readAlphabet(Parser.alphabetFilePath);
+			readMatrix(Parser.alphabetFilePath); 
 			*/
 		}
 		catch (Exception e)
 		{
 			System.out.printf("Something went wrong:/n/s/n", e.getMessage());
 		}
-		AllocateMatrix();
+		AllocateMatrix(alphabet.size());
 	}
 	
 	public SimilarityMatrix(SimilarityMatrix existing){
@@ -33,16 +33,16 @@ public class SimilarityMatrix implements Cloneable{
 		this.dynamicMatrix = existing.dynamicMatrix;
 	}
 	
-	private void AllocateMatrix()
+	private void AllocateMatrix(int size)
 	{
-		dynamicMatrix = new ArrayList<byte[]>(alphabet.size());
+		dynamicMatrix = new ArrayList<byte[]>(size);
 		for ( int i = 1; i <= dynamicMatrix.size(); ++i){
 			// Shrink number of columns with each row since we're diagonal
 			dynamicMatrix.add(new byte[i]);
 		}
 	}
 	
-	private void ReadAlphabet(String filePath) throws Exception
+	private void readAlphabet(String filePath) throws Exception
 	{
 		throw new Exception("Not Implemented");
 		
@@ -53,12 +53,12 @@ public class SimilarityMatrix implements Cloneable{
 		
 	}
 	
-	private void ReadMatrix(String filePath) throws Exception
+	private void readMatrix(String filePath) throws Exception
 	{
 		throw new Exception("Not Implemented");
 	}
 	
-	public byte Score(String graphemeA, String graphemeB) throws Exception
+	public byte score(String graphemeA, String graphemeB) throws Exception
 	{
 		// Get the index of the graphemes
 		Integer indexA = this.alphabet.get(graphemeA);
@@ -71,8 +71,7 @@ public class SimilarityMatrix implements Cloneable{
 		
 		return getCell(indexA, indexB);		
 	}
-	
-	
+
 	//TODO implmement real version
 	public void randomizeMatrix(){
 		for (byte[] row :dynamicMatrix) {
