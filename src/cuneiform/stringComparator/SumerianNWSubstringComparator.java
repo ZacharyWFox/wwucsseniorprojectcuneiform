@@ -54,10 +54,11 @@ public class SumerianNWSubstringComparator {
             }
     }
     
-    public static void setSimilarityMatrix(SimilarityMatrix value)
+    //TODO: this is a test method, change this before you put this into "Production"
+    public static void setSimilarityMatrix(cuneiform.Citizen cit)
     {
-    	simMat = value;
-    	hasMatrix = false;
+    	simMat = cit.personalMatrix;
+    	hasMatrix = true;
     }
     private static String joinAlignment(String[] graphemes) {
     	StringBuilder alignment = new StringBuilder();

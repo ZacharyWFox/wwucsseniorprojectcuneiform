@@ -1,5 +1,9 @@
 package cuneiform;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+
 import cuneiform.stringComparator.SimilarityMatrix;
 
 public class Citizen implements Comparable<Citizen>, Runnable{
@@ -52,6 +56,9 @@ public class Citizen implements Comparable<Citizen>, Runnable{
 	public void run() {
 		// TODO run the needleman-wunsch algo with personalMatrix
 		//then figure out fitness
+		
+		cuneiform.stringComparator.SumerianNWSubstringComparator.setSimilarityMatrix(this);
+		
 		System.out.println("Citizen No: " + IDNo + " is running.");
 		
 	}

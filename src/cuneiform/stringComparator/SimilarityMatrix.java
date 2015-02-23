@@ -14,7 +14,7 @@ public class SimilarityMatrix implements Cloneable{
 		// TODO Auto-generated constructor stub
 		try 
 		{
-			testAlphabetGen(); //XXX
+			 //XXX
 			/*
 			readAlphabet(Parser.alphabetFilePath);
 			readMatrix(Parser.alphabetFilePath); 
@@ -24,7 +24,8 @@ public class SimilarityMatrix implements Cloneable{
 		{
 			System.out.printf("Something went wrong:/n/s/n", e.getMessage());
 		}
-		AllocateMatrix(alphabet.size());
+		testAlphabetGen();
+		allocateMatrix(alphabet.size());
 		randomizeMatrix();
 	}
 	
@@ -42,7 +43,7 @@ public class SimilarityMatrix implements Cloneable{
 		}
 	}
 	
-	private void AllocateMatrix(int size)
+	private void allocateMatrix(int size)
 	{
 		dynamicMatrix = new ArrayList<byte[]>(size);
 		for ( int i = 1; i <= dynamicMatrix.size(); ++i){
