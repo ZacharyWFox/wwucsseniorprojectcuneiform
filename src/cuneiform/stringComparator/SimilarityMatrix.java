@@ -76,7 +76,7 @@ public class SimilarityMatrix implements Cloneable{
 		
 		if (indexA == null || indexB == null){
 			// If the either of the index lookups failed, we need to whine
-			throw new Exception("Grapheme not in alphabet.");
+			return (byte)0;
 		}
 		
 		return getCell(indexA, indexB);		
@@ -145,7 +145,9 @@ public class SimilarityMatrix implements Cloneable{
 		return alphabet.size();
 	}
 	
-	
+	public void setMatrix(ArrayList<byte[]> value) {
+		this.dynamicMatrix = value;
+	}
 	//overrides TODO: test
 	
 	@Override

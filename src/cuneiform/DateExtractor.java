@@ -99,6 +99,12 @@ public class DateExtractor {
             }
         }
     }
+    
+    public FoundDate alignDateString(String[] graphemes) {
+    	FoundDate year = getConfidence(graphemes, 0, this.knownYears);
+    	return year;
+    	// TODO: include found month?
+    }
 
     private FoundDate getConfidence(String[] graphemes, int i, List<KnownDate> dates) {
         KnownDate guess = null;

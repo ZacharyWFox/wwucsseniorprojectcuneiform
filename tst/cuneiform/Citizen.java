@@ -12,8 +12,6 @@ public class Citizen implements Comparable<Citizen>, Runnable{
 	public int fitness;
 	public int IDNo;
 	
-	
-	
 	//Constructors
 	public Citizen() {
 		personalMatrix = new SimilarityMatrix();
@@ -60,11 +58,11 @@ public class Citizen implements Comparable<Citizen>, Runnable{
 		cuneiform.stringComparator.SumerianNWSubstringComparator.setSimilarityMatrix(this);
 		
 		System.out.println("Citizen No: " + IDNo + " is running.");
-		
+		// TODO: add new DateExtractor and extract some dates
 	}
 	
 	public int getFitness() {
-		return this.fitness;	
+		return this.fitness;
 	}
 	
 	private void EvaluateFitness() {
