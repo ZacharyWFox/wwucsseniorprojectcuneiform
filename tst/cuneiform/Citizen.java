@@ -56,7 +56,12 @@ public class Citizen implements Comparable<Citizen>, Runnable{
 		ParallelDateExtractor extractor = new ParallelDateExtractor();
 		
 		
-		extractor.call(); //TODO: capture return value
+		try {
+			extractor.call();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} //TODO: capture return value
 		
 		cuneiform.stringComparator.SumerianNWSubstringComparator.setSimilarityMatrix(this);
 		
@@ -86,7 +91,4 @@ public class Citizen implements Comparable<Citizen>, Runnable{
 		
 		fitness = Math.abs(correct/guesses.size());
 	}
-}
-
-
 }
