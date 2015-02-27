@@ -1,15 +1,20 @@
 package cuneiform;
 
+import java.io.Serializable;
 import java.util.List;
 
 import cuneiform.stringComparator.SimilarityMatrix;
 
-public class Citizen implements Comparable<Citizen>, Runnable{
+public class Citizen implements Comparable<Citizen>, Runnable, Serializable{
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 558045442181825459L;
 	public SimilarityMatrix personalMatrix;
 	public int fitness;
 	public int IDNo;
-	private int threads = 1; //TODO: add the number of threads we want (method or here)
+	private int threads = 4;     //TODO: determine the number of threads we want (method or here)
 	
 	//Constructors
 	public Citizen() {
@@ -32,6 +37,9 @@ public class Citizen implements Comparable<Citizen>, Runnable{
 		fitness = (int) Math.floor(Math.random() * 100);
 	}
 
+	public void setThreads(int threads) {
+		this.threads = threads;
+	}
 	
 	
 	//Overrides
@@ -53,11 +61,10 @@ public class Citizen implements Comparable<Citizen>, Runnable{
 	public void run() {
 		// TODO run the needleman-wunsch algo with personalMatrix
 		//then figure out fitness
-		ParallelDateExtractor extractor = new ParallelDateExtractor();
 		
 		
 		try {
-			extractor.call();
+			//extractor.call(); //TODO: implement
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

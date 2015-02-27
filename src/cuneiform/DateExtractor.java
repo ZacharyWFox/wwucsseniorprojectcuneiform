@@ -26,6 +26,11 @@ public class DateExtractor {
         this.knownMonths = readKnownMonths(conn);
         this.knownYears  = readKnownYears(conn);
     }
+    
+    public DateExtractor(List<KnownDate> months, List<KnownDate> years) {
+    	this.knownMonths = months;
+    	this.knownYears = years;
+    }
 
     private List<KnownDate> readKnownMonths(Connection conn)
             throws SQLException
