@@ -1,9 +1,10 @@
 package cuneiform.stringComparator;
-
 import java.util.Arrays;
 import cuneiform.stringComparator.SimilarityMatrix;
 
+
 public class SumerianNWSubstringComparator {
+
     
 	static SimilarityMatrix simMat;
 	// A flag that prevents compares from accessing similarity matrix if it is null.
@@ -19,38 +20,60 @@ public class SumerianNWSubstringComparator {
             // Split string into graphemes
             String[] knownGraphemes = known.split("-| ");
             String[] foundGraphemes = Arrays.copyOfRange(allFoundGraphemes, foundStart, allFoundGraphemes.length);
-            
-            int[][] alignment = new int[knownGraphemes.length][foundGraphemes.length];
+            int xAlignLen = knownGraphemes.length + 1;
+            int yAlignLen = foundGraphemes.length + 1;
+            int[][] alignment = new int[xAlignLen][yAlignLen];
             
             // Initialize edges for alignment
-            for (int i = 0; i < knownGraphemes.length; i++) {
-                alignment[i][0] = linGap() * i;
+            for (int i = 0; i < xAlignLen; i++) {
+                alignment[i][0] = 1 * -i;
             }
-            for (int j = 0; j < foundGraphemes.length; j++) {
-                alignment[0][j] = linGap() * j;
+            for (int j = 0; j < yAlignLen; j++) {
+                alignment[0][j] = 1 * -j;
             }
 
             // Compute alignment matrix
-            for (int i = 1; i < knownGraphemes.length; i++) {
-                for(int j = 1; j < foundGraphemes.length; j++) {
-                    int match  = alignment[i - 1][j - 1] + similarity(knownGraphemes[i], foundGraphemes[j]);
+            for (int i = 1; i < xAlignLen; i++) {
+                for(int j = 1; j < yAlignLen; j++) {
+                    int match  = alignment[i - 1][j - 1] + similarity(knownGraphemes[i-1], foundGraphemes[j-1]);
                     int delete = alignment[i - 1][j] + linGap();
                     int insert = alignment[i][j - 1] + linGap();
                     alignment[i][j] = max(match, delete, insert);
                 }
             }
-            int bestValue = alignment[knownGraphemes.length-1][foundGraphemes.length-1];
+            int bestValue = alignment[xAlignLen-1][yAlignLen-1];
             if (bestValue > knownGraphemes.length)
-            	//System.out.print("stuff went wrong\n");
+            	System.out.print("stuff went wrong\n");
             conf[0] = 100.0 * Math.abs(knownGraphemes.length - bestValue) / knownGraphemes.length;
             indx[0] = foundGraphemes.length;
             dist[0] = bestValue;
             if (debug) {
+            	String Alignment = "[ [ _ ";
+            	for (int i = 0; i < foundGraphemes.length; i++){
+            		Alignment += foundGraphemes[i] + " ";
+            	}
+            	Alignment += "]\n";
+            	for (int i = 0; i < xAlignLen; i++) {
+            		if (i == 0){
+            			Alignment +="_ [ ";
+            		}
+            		else{
+            			Alignment += knownGraphemes[i-1] + " [ ";
+            		}
+            		
+                    for(int j = 0; j < yAlignLen; j++) {
+                    	Alignment += alignment[i][j] + " ";
+                    }
+                    Alignment += "]\n";
+            	}
+            	Alignment += "]";
+            	System.out.println("Alignment matrix:\n" + Alignment);
+            	
 	            String[] optAligns = constructAlignment(alignment, knownGraphemes, foundGraphemes);
 	            
-	            System.out.printf("aligned\n%s and %s as\n%s\n%s\n", 
+	            System.out.printf("aligned\n%s and %s as\n%s\n%s\n%s\n", 
 	            		joinAlignment(knownGraphemes), joinAlignment(foundGraphemes), 
-	            		optAligns[0], optAligns[1]);
+	            		optAligns[0], optAligns[1], optAligns[2]);
             }
     }
     
@@ -70,56 +93,65 @@ public class SumerianNWSubstringComparator {
     
     public static String[] constructAlignment(int[][] alignMatrix, String[] known, String[] unknown) {
     	//TODO: error checking
-    	int i = known.length - 1;
-    	int j = unknown.length - 1;
+    	int i = alignMatrix.length-1;
+    	int j = alignMatrix[0].length-1;
     	StringBuilder knownAlign = new StringBuilder(); 
     	StringBuilder foundAlign = new StringBuilder();
+    	StringBuilder myversion = new StringBuilder();
+    	int indel = 0;
     	
     	while (i > 0 || j > 0) {
-    		if ( i > 0 && j > 0 && (alignMatrix[i][j] == (alignMatrix[i - 1][j - 1] + similarity(known[i], unknown[j]))))
+    		if ( i > 0 && j > 0 && (alignMatrix[i][j] == (alignMatrix[i - 1][j - 1] + similarity(known[i-1], unknown[j-1]))))
     		{
-    			knownAlign.insert(0, known[i] + " ");
-    			foundAlign.insert(0, unknown[j] + " ");
+    			myversion.append(known[i-1]);
+    			knownAlign.insert(0, known[i-1] + " ");
+    			foundAlign.insert(0, unknown[j-1] + " ");
     			i--;
     			j--;
     		} else if (i > 0 && alignMatrix[i][j] == (alignMatrix[i - 1][j] + linGap())) {
-    			knownAlign.insert(0, known[i] + " ");
+    			myversion.append("-");
+    			knownAlign.insert(0, known[i-1] + " ");
     			foundAlign.insert(0, "- ");
+    			indel++;
     			i--;
     		} else if (j > 0 && alignMatrix[i][j] == (alignMatrix[i][j - 1] + linGap())) {
+    			myversion.append("_");
     			knownAlign.insert(0, "- ");
-    			foundAlign.insert(0, unknown[j] + " ");
+    			foundAlign.insert(0, unknown[j-1] + " ");
+    			indel++;
     			j--;
     		}
     	}
-    	
-    	return new String[]{knownAlign.toString(), foundAlign.toString()};
+    	myversion = myversion.reverse();
+    	return new String[]{knownAlign.toString(), foundAlign.toString(), myversion.toString()};
     }
     
     // Each string represents a grapheme
     static int getCost(String c1, String c2) {
         c1 = c1.replace("<>[]", "");
         c2 = c2.replace("<>[]", "");
+        int match = 3;
+        int mismatch = 0;
         // If both are empty, 
         if (c1.isEmpty() ^ c2.isEmpty()) {
-            return 1;
+            return mismatch;
         }
         if (c1.equalsIgnoreCase(c2)) {
-            return 0; // Match
+            return match; // Match
         } else if (c1.equalsIgnoreCase("{d}" + c2) || c2.equalsIgnoreCase("{d}" + c1)) {
-            return 0; //Divine name
+            return match; //Divine name
         } else if (c1.equalsIgnoreCase(c2 + "{ki}") || c2.equalsIgnoreCase(c1 + "{ki}")) {
-            return 0;
+            return match;
         } else if (c1.equalsIgnoreCase(c2 + "(disz)") || c2.equalsIgnoreCase(c1 + "(disz)")) {
-            return 0;
+            return match;
         } else if (c1.equalsIgnoreCase(c2 + "#") || c2.equalsIgnoreCase(c1 + "#")) {
-            return 0;
+            return match;
         } else if (c1.equalsIgnoreCase("{d}en.zu") && c2.equalsIgnoreCase("{d}suen")) {
-            return 0; // {d}en.zu and {d}suen are equivalent
+            return match; // {d}en.zu and {d}suen are equivalent
         } else if (c1.equalsIgnoreCase("{d}suen") && c2.equalsIgnoreCase("{d}en.zu")) {
-            return 0; // {d}en.zu and {d}suen are equivalent
+            return match; // {d}en.zu and {d}suen are equivalent
         } else {
-            return 1;
+            return mismatch;
         }
     }
     
@@ -145,3 +177,6 @@ public class SumerianNWSubstringComparator {
         return 1;
     }
 }
+
+
+
