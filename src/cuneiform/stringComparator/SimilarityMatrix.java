@@ -1,5 +1,8 @@
 package cuneiform.stringComparator;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -9,7 +12,7 @@ public class SimilarityMatrix implements Cloneable{
 	// Lower triangular adjacency matrix
 	private ArrayList<byte[]> dynamicMatrix;
 	
-	private Map<String, Integer> alphabet = new HashMap<String, Integer>();
+	private static Map<String, Integer> alphabet = new HashMap<String, Integer>();
 	public SimilarityMatrix() {
 		// TODO Auto-generated constructor stub
 		try 
@@ -25,6 +28,17 @@ public class SimilarityMatrix implements Cloneable{
 			System.out.printf("Something went wrong:/n/s/n", e.getMessage());
 		}
 		testAlphabetGen();
+		allocateMatrix(alphabet.size());
+		randomizeMatrix();
+	}
+	
+	public SimilarityMatrix(String filename){
+		try {
+			readAlphabet(filename);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		allocateMatrix(alphabet.size());
 		randomizeMatrix();
 	}
@@ -52,15 +66,18 @@ public class SimilarityMatrix implements Cloneable{
 		}
 	}
 	
-	private void readAlphabet(String filePath) throws Exception
+
+	public void readAlphabet(String filePath) throws Exception 
 	{
-		throw new Exception("Not Implemented");
 		
-		//while ()
-		// TODO: Implement
-		// TODO: Read in alphabet
-		// TODO: Set the number of letters
-		
+		BufferedReader in = new BufferedReader(new FileReader(filePath));
+		String blah;
+		int i = 0;
+		while (in.ready()){
+			blah = in.readLine();
+			alphabet.put(blah, i++);
+		}
+		in.close();
 	}
 	
 	private void readMatrix(String filePath) throws Exception
