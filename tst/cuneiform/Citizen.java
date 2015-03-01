@@ -5,6 +5,7 @@ import java.util.List;
 
 import cuneiform.stringComparator.SimilarityMatrix;
 
+
 public class Citizen implements Comparable<Citizen>, Runnable, Serializable{
 
 	/**
@@ -78,7 +79,11 @@ public class Citizen implements Comparable<Citizen>, Runnable, Serializable{
 	}
 	
 	public int getFitness() {
-		return this.fitness;
+		//XXX For testing purposes
+		if (this.fitness > 0)
+			return this.fitness;
+		else
+			return this.fitness = (int) Math.floor(Math.random() * 100);
 	}
 	
 	private void EvaluateFitness(List<GuessPair> guesses) {

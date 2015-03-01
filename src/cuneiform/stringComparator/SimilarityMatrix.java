@@ -170,7 +170,10 @@ public class SimilarityMatrix implements Cloneable{
 	
 	//use this in mutate
 	public SimilarityMatrix clone(){
-		return new SimilarityMatrix(this);
+		//this probably only makes a new pointer to this instance
+		//TODO need to actually make a copy of dynamic matrix (so can edit it w/o 
+		//changing orig simMatrix
+		return new SimilarityMatrix(this); 
 	}
 	
 	

@@ -2,6 +2,9 @@ package cuneiform;
 
 import java.util.ArrayList;
 
+import cuneiform.stringComparator.SimilarityMatrix;
+
+
 
 
 //object pool, so we dont constantly create new citizens
@@ -45,6 +48,7 @@ public class CitizenPool {
 			usedCitizens.add(freeCitizens.get(0));
 			freeCitizens.remove(0);
 			newCit.IDNo = IDNo;
+			newCit.personalMatrix = new SimilarityMatrix();
 		}
 		else if (usedCitizens.size() < maxNum){
 			//create new cit, add to usedCit
@@ -73,6 +77,16 @@ public class CitizenPool {
 		}
 		
 	
+	}
+	
+	public String getStats(){
+		String retStr = "";
+		
+		retStr += "Used Cits: " + usedCitizens.size();
+		retStr += "\nFree Cits: " + freeCitizens.size();
+		
+		
+		return retStr;
 	}
 
 }
