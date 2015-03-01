@@ -1,12 +1,18 @@
 package cuneiform;
 
 import java.io.PrintStream;
+import java.io.Serializable;
 
 import cuneiform.stringComparator.Confidence;
 
 public class FoundDate
-        implements Comparable<FoundDate> {
-    public final KnownDate  date;
+        implements Comparable<FoundDate>, Serializable {
+    	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 2599817058317562233L;
+	public final KnownDate  date;
     public final String     foundDate;
     public final Confidence confidence;
 
