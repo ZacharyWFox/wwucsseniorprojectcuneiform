@@ -22,6 +22,8 @@ public class ParallelDateExtractor implements Callable<List<GuessPair>>{
 		FoundDate attestation; //TODO: get from factory
 		FoundDate found;
 		GuessPair guess;
+		
+		this.extranctinator.alignYearsTest();
 		//TODO: LOOP
 //		while((attestation = DateFactory.get()) != null) {
 //		

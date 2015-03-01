@@ -110,6 +110,27 @@ public class DateExtractor {
     	return year;
     	// TODO: include found month?
     }
+    
+    public List<FoundDate> alignYearsTest() {
+    	List<FoundDate> allFound = new ArrayList<FoundDate>(this.knownYears.size());
+    	FoundDate found;
+    	for (KnownDate k : this.knownYears) {
+    		found = new FoundDate(k, k.text, new Confidence(0, 100F));
+    	}
+    	return allFound;
+    }
+    
+    public List<FoundDate> alignYears(){
+    	List<FoundDate> allFound = new ArrayList<FoundDate>(this.knownYears.size());
+    	FoundDate found;
+    	String[] graphemes;
+    	for( KnownDate k : this.knownYears) {
+    		graphemes = k.getText().split("-| ");
+    		found = alignDateString(graphemes);
+    		allFound.add(found);
+    	}
+    	return allFound;
+    }
 
     private FoundDate getConfidence(String[] graphemes, int i, List<KnownDate> dates) {
         KnownDate guess = null;

@@ -42,7 +42,9 @@ public class Citizen implements Comparable<Citizen>, Runnable, Serializable{
 		this.threads = threads;
 	}
 	
-	
+	public void findServer() {
+		
+	}
 	//Overrides
 
 	@Override
@@ -63,17 +65,19 @@ public class Citizen implements Comparable<Citizen>, Runnable, Serializable{
 		// TODO run the needleman-wunsch algo with personalMatrix
 		//then figure out fitness
 		
+		System.out.println("Citizen No: " + IDNo + " is running.");
+		//Submit live
 		
 		try {
 			//extractor.call(); //TODO: implement
+			
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} //TODO: capture return value
 		
-		cuneiform.stringComparator.SumerianNWSubstringComparator.setSimilarityMatrix(this);
 		
-		System.out.println("Citizen No: " + IDNo + " is running.");
+		
 		// TODO: add new DateExtractor and extract some dates
 		//EvaluateFitness();
 	}
