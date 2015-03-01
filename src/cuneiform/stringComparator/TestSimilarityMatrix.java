@@ -1,10 +1,67 @@
 package cuneiform.stringComparator;
 
 //this is so we can test expirement without dealing with completly implemented simMatrix
+//also has a main to test the similarity matrix with
+
+
 
 
 public class TestSimilarityMatrix extends SimilarityMatrix {
 
+	
+	
+	public static void main(String[] args) {
+		
+		//make sure actually can read from alphabet and randomize correctly
+		SimilarityMatrix test = new SimilarityMatrix("data/test.txt");
+		
+		
+		
+		String matrix = test.toString();
+		System.out.println(matrix);
+		
+		
+		//make sure clone works properly
+		SimilarityMatrix cloneTest = test.clone();
+		try {
+			byte blah = cloneTest.getCell(0, 1);
+			System.out.println("got: " + blah + "\n");
+		} catch (Exception e) {
+			
+			e.printStackTrace();
+		}
+		cloneTest.setCell(0, 1, (byte) 0);
+		
+		System.out.println("orig: \n" + test.toString());
+		
+		System.out.println("clone: \n" + cloneTest.toString());
+		
+
+		
+		try {
+			test.readMatrix("data/WriteTest.txt");
+		} catch (Exception e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		System.out.println("orig after reading from file: \n" + test.toString());
+		
+		try {
+			byte score = test.score("asdfasd", "three");
+			System.out.println("Score was: " + score + "\n");
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		
+	}
+	
+	
+	
+	
+	
+	
 	
 	byte[][] simMatrix;
 	

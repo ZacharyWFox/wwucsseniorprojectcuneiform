@@ -11,7 +11,7 @@ public class Parser {
     public static final String dbHost = "jdbc:mysql://localhost/cuneiform";
     public static final String dbUser = "dingo";
     public static final String dbPass = "hungry!";
-    public static final String alphabetFilePath = "FILLHERE"; //TODO: add relative file path
+    public static final String alphabetFilePath = "/data/ur3_sign_list.txt"; //relative to wwucsseniorprojectcuneiform
 
     public static void main(String[] args)
             throws IOException, InterruptedException {
