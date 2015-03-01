@@ -51,7 +51,7 @@ public class SumerianNWSubstringComparator {
             
 
             //confidence is 100 - percentage off from the best value (an exact match)
-            conf[0] =  (100.0 * Math.abs(bestValue - finalMatch) / bestValue) ;
+            conf[0] =  100- (100.0 * Math.abs(bestValue - finalMatch) / bestValue) ;
             indx[0] = bestValue;
             dist[0] = finalMatch;
             if (debug) {
