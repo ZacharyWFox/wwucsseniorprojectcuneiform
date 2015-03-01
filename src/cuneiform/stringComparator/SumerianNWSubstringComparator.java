@@ -39,14 +39,21 @@ public class SumerianNWSubstringComparator {
                     int delete = alignment[i - 1][j] + linGap();
                     int insert = alignment[i][j - 1] + linGap();
                     alignment[i][j] = max(match, delete, insert);
+                    
+                    
                 }
             }
-            int bestValue = alignment[xAlignLen-1][yAlignLen-1];
-            if (bestValue > knownGraphemes.length)
-            	System.out.print("stuff went wrong\n");
-            conf[0] = 100.0 * Math.abs(knownGraphemes.length - bestValue) / knownGraphemes.length;
-            indx[0] = foundGraphemes.length;
-            dist[0] = bestValue;
+            int finalMatch = alignment[xAlignLen -1][yAlignLen -1];
+            int bestValue = 0;
+            for (int i = 0; i < knownGraphemes.length; i++){
+            	bestValue += similarity(knownGraphemes[i], knownGraphemes[i]);
+            }
+            
+
+            //confidence is 100 - percentage off from the best value (an exact match)
+            conf[0] =  (100.0 * Math.abs(bestValue - finalMatch) / bestValue) ;
+            indx[0] = bestValue;
+            dist[0] = finalMatch;
             if (debug) {
             	String Alignment = "[ [ _ ";
             	for (int i = 0; i < foundGraphemes.length; i++){
@@ -69,11 +76,12 @@ public class SumerianNWSubstringComparator {
             	Alignment += "]";
             	System.out.println("Alignment matrix:\n" + Alignment);
             	
+            	
 	            String[] optAligns = constructAlignment(alignment, knownGraphemes, foundGraphemes);
 	            
-	            System.out.printf("aligned\n%s and %s as\n%s\n%s\n%s\n", 
+	            System.out.printf("aligned\n%s and %s as\n%s\n%s\n%s\nindels: %s\n", 
 	            		joinAlignment(knownGraphemes), joinAlignment(foundGraphemes), 
-	            		optAligns[0], optAligns[1], optAligns[2]);
+	            		optAligns[0], optAligns[1], optAligns[2], optAligns[3]);
             }
     }
     
@@ -100,38 +108,38 @@ public class SumerianNWSubstringComparator {
     	StringBuilder myversion = new StringBuilder();
     	int indel = 0;
     	
-    	while (i > 0 || j > 0) {
-    		if ( i > 0 && j > 0 && (alignMatrix[i][j] == (alignMatrix[i - 1][j - 1] + similarity(known[i-1], unknown[j-1]))))
+    	while (i > 0 && j > 0) {
+    		if ( (alignMatrix[i][j] == (alignMatrix[i - 1][j - 1] + similarity(known[i-1], unknown[j-1]))))
     		{
-    			myversion.append(known[i-1]);
+    			myversion.insert(0, known[i-1]);
     			knownAlign.insert(0, known[i-1] + " ");
     			foundAlign.insert(0, unknown[j-1] + " ");
     			i--;
     			j--;
-    		} else if (i > 0 && alignMatrix[i][j] == (alignMatrix[i - 1][j] + linGap())) {
-    			myversion.append("-");
+    		} else if (alignMatrix[i][j] == (alignMatrix[i - 1][j] + linGap())) {
+    			myversion.insert(0,"-");
     			knownAlign.insert(0, known[i-1] + " ");
     			foundAlign.insert(0, "- ");
     			indel++;
     			i--;
-    		} else if (j > 0 && alignMatrix[i][j] == (alignMatrix[i][j - 1] + linGap())) {
-    			myversion.append("_");
+    		} else if (alignMatrix[i][j] == (alignMatrix[i][j - 1] + linGap())) {
+    			myversion.insert(0, "_");
     			knownAlign.insert(0, "- ");
     			foundAlign.insert(0, unknown[j-1] + " ");
     			indel++;
     			j--;
     		}
     	}
-    	myversion = myversion.reverse();
-    	return new String[]{knownAlign.toString(), foundAlign.toString(), myversion.toString()};
+    	
+    	return new String[]{knownAlign.toString(), foundAlign.toString(), myversion.toString(), Integer.toString(indel)};
     }
     
     // Each string represents a grapheme
     static int getCost(String c1, String c2) {
         c1 = c1.replace("<>[]", "");
         c2 = c2.replace("<>[]", "");
-        int match = 3;
-        int mismatch = 0;
+        int match = 1;
+        int mismatch = -1;
         // If both are empty, 
         if (c1.isEmpty() ^ c2.isEmpty()) {
             return mismatch;
@@ -174,7 +182,7 @@ public class SumerianNWSubstringComparator {
     }
 
     private static int linGap() {
-        return 1;
+        return -1;
     }
 }
 
