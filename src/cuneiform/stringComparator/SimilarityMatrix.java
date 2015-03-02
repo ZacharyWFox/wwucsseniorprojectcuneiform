@@ -1,13 +1,10 @@
 package cuneiform.stringComparator;
 
-<<<<<<< HEAD
-=======
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
->>>>>>> 5cdfa6ea887f81a301932a39fcf3b41e41a27f60
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -39,8 +36,6 @@ public class SimilarityMatrix implements Cloneable{
 		randomizeMatrix();
 	}
 	
-<<<<<<< HEAD
-=======
 	public SimilarityMatrix(String filename){
 		try {
 			readAlphabet(filename);
@@ -51,7 +46,6 @@ public class SimilarityMatrix implements Cloneable{
 		randomizeMatrix();
 	}
 	
->>>>>>> 5cdfa6ea887f81a301932a39fcf3b41e41a27f60
 	public SimilarityMatrix(SimilarityMatrix existing){
 		//only difference will be the dynamicMatrix
 		this.dynamicMatrix = new ArrayList<byte[]>();
@@ -83,16 +77,7 @@ public class SimilarityMatrix implements Cloneable{
 	
 	private void readAlphabet(String filePath) throws Exception
 	{
-<<<<<<< HEAD
-		throw new Exception("Not Implemented");
-		
-		//while ()
-		// TODO: Implement
-		// TODO: Read in alphabet
-		// TODO: Set the number of letters
-=======
 		//starts relative file path from wwucsseniorprojectcuneiform
->>>>>>> 5cdfa6ea887f81a301932a39fcf3b41e41a27f60
 		
 	}
 	
@@ -244,11 +229,7 @@ public class SimilarityMatrix implements Cloneable{
 	
 	//use this in mutate
 	public SimilarityMatrix clone(){
-<<<<<<< HEAD
 		return new SimilarityMatrix(this);
-=======
-		return new SimilarityMatrix(this); 
->>>>>>> 5cdfa6ea887f81a301932a39fcf3b41e41a27f60
 	}
 	
 	
