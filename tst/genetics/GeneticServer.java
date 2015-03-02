@@ -16,7 +16,7 @@ import java.util.List;
 import cuneiform.Citizen;
 import cuneiform.FoundDate;
 import cuneiform.GuessPair;
-import cuneiform.ParallelDateExtractor;
+import cuneiform.CallableDateExtractor;
 
 public class GeneticServer implements Server {
 	String name = "Default";
@@ -45,13 +45,13 @@ public class GeneticServer implements Server {
 		List<List<FoundDate>> threadDivisions = new ArrayList<List<FoundDate>>(threadsPerCitizen);
 		
 		int min;
-		int max;
+		int max = -1;
 		int leftover;
 		//divide work
 		for (int i = 0; i < threadsPerCitizen; ++i) {
 			min = i * divider;
-			max = min + divider;
-			leftover = max - attestations.size();
+			max = min + divider - 1;
+			leftover = max - (attestations.size() - 1) + 2;
 			if(leftover > 0)
 				max -= leftover;
 			try {

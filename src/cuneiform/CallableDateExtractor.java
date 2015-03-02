@@ -1,29 +1,33 @@
 package cuneiform;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.Callable;
 
 import cuneiform.stringComparator.Confidence;
 
-public class ParallelDateExtractor implements Callable<List<GuessPair>>{
+public class CallableDateExtractor implements Callable<List<GuessPair>>{
 	
 	DateExtractor extranctinator;
 	// this extracts dates and only dates...parallelelely.
-	public ParallelDateExtractor(List<KnownDate> months, List<KnownDate> years) {
-		this.extranctinator = new DateExtractor(months, years);
+	public CallableDateExtractor(List<KnownDate> months, List<KnownDate> years) {
+		this.extranctinator = new DateExtractor(months, years);	
 	}
 	
 	@Override
 	public List<GuessPair> call() throws Exception {
 		// TODO Auto-generated method stub
 		
-		List<GuessPair> guesses = new ArrayList<GuessPair>(300);
+		List<GuessPair> guesses = new ArrayList<GuessPair>(250);
 		FoundDate attestation; //TODO: get from factory
-		FoundDate found;
+		FoundDate curFound;
 		GuessPair guess;
 		
-		this.extranctinator.alignYearsTest();
+//		@SuppressWarnings("unchecked")
+//		List<KnownDate> clone = (List<KnownDate>)((ArrayList<KnownDate>)this.extranctinator.knownYears).clone();
+		guesses = this.extranctinator.alignYearsTest();
+		
 		//TODO: LOOP
 //		while((attestation = DateFactory.get()) != null) {
 //		
@@ -34,7 +38,7 @@ public class ParallelDateExtractor implements Callable<List<GuessPair>>{
 //		guesses.add(guess);
 //		}
 		
-		return null;
+		return guesses;
 	}
 	
 }

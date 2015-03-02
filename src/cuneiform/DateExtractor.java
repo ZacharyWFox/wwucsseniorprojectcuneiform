@@ -111,13 +111,16 @@ public class DateExtractor {
     	// TODO: include found month?
     }
     
-    public List<FoundDate> alignYearsTest() {
-    	List<FoundDate> allFound = new ArrayList<FoundDate>(this.knownYears.size());
+    public List<GuessPair> alignYearsTest() {
+    	List<GuessPair> allGuesses = new ArrayList<GuessPair>(this.knownYears.size());
     	FoundDate found;
+    	GuessPair guess;
     	for (KnownDate k : this.knownYears) {
     		found = new FoundDate(k, k.text, new Confidence(0, 100F));
+    		guess = new GuessPair(k, found);
+    		allGuesses.add(guess);
     	}
-    	return allFound;
+    	return allGuesses;
     }
     
     public List<FoundDate> alignYears(){
