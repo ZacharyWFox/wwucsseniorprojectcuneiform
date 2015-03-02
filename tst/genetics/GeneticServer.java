@@ -1,5 +1,7 @@
 package genetics;
 
+import interfaces.Server;
+
 import java.net.InetAddress;
 import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
