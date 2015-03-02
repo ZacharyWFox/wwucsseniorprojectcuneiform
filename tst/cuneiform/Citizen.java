@@ -42,9 +42,6 @@ public class Citizen implements Comparable<Citizen>, Runnable, Serializable{
 		this.threads = threads;
 	}
 	
-	public void findServer() {
-		
-	}
 	//Overrides
 
 	@Override
@@ -90,21 +87,5 @@ public class Citizen implements Comparable<Citizen>, Runnable, Serializable{
 			return this.fitness = (int) Math.floor(Math.random() * 100);
 	}
 	
-	private void EvaluateFitness(List<GuessPair> guesses) {
-		//TODO: implement
-		int correct = 0;
-		for(GuessPair g : guesses) {
-			if(g.isMatch()) {
-				correct++;
-			}
-		}
-		
-		if (guesses.isEmpty()) {
-			System.out.println ("ERROR: Recieved empty list of guesses. That's bad.");
-			return;
-			// TODO: throw exception?
-		}
-		
-		fitness = Math.abs(correct/guesses.size());
-	}
+	
 }
