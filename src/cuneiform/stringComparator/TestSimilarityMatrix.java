@@ -47,7 +47,7 @@ public class TestSimilarityMatrix extends SimilarityMatrix {
 		System.out.println("orig after reading from file: \n" + test.toString());
 		
 		try {
-			byte score = test.score("asdfasd", "three");
+			byte score = test.score("one", "three");
 			System.out.println("Score was: " + score + "\n");
 		} catch (Exception e) {
 			// TODO Auto-generated catch block

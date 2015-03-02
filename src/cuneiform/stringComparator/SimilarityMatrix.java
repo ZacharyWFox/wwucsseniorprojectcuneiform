@@ -79,6 +79,15 @@ public class SimilarityMatrix implements Cloneable{
 	{
 		//starts relative file path from wwucsseniorprojectcuneiform
 		
+				BufferedReader in = new BufferedReader(new FileReader(filePath));
+				String blah;
+				int i = 0;
+				while (in.ready()){
+					blah = in.readLine();
+					alphabet.put(blah, i++);
+				}
+				in.close();
+		
 	}
 	
 	public void readMatrix(String filePath) throws Exception
@@ -232,6 +241,9 @@ public class SimilarityMatrix implements Cloneable{
 		return new SimilarityMatrix(this);
 	}
 	
+	public byte[] getRow(int x){
+		return dynamicMatrix.get(x);
+	}
 	
 	
 }
