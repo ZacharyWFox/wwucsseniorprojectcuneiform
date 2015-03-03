@@ -14,4 +14,6 @@ public interface Server extends Remote {
 	
 	String getHostName();
 	String getIPAddressString();
+	int getMaxCitizens();
+	int getNumCitizens();
 }

@@ -10,10 +10,13 @@ import java.util.List;
 import cuneiform.Citizen;
 import cuneiform.FoundDate;
 
-public class Abode {
+public class CoalMine {
 	String host;
 	GeneticServer server;
-	public Abode(String hostname) {
+	
+	int citizenCap = 4;
+	int numCitizens = 0;
+	public CoalMine(String hostname) {
 		if(System.getSecurityManager() == null) {
 			System.setSecurityManager(new SecurityManager());
 		}
@@ -23,14 +26,23 @@ public class Abode {
 			Registry reg = LocateRegistry.getRegistry(hostname);
 			//
 			GeneticServer server = (GeneticServer)reg.lookup(key);
-			
+			this.citizenCap = server.getMaxCitizens();
+			this.numCitizens = server.getNumCitizens();
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
 			e.printStackTrace();
 		}
 	}
 	
-	public float timeOfYourLife(Citizen cit, List<FoundDate> attestations) {
+	public boolean roomLeft() {
+		if (this.numCitizens >= this.citizenCap) {
+			return false;
+		}
+		this.numCitizens++;
+		return true;
+	}
+	
+	public float workLifeAway(Citizen cit, List<FoundDate> attestations) {
 		try {
 			return server.live(cit, attestations);
 		} catch (RemoteException e) {

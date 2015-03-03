@@ -42,7 +42,7 @@ public class GeneticServer implements Server {
 	
 	
 	@Override
-	public float live(Citizen cit, List<FoundDate> attestations)
+	public synchronized float live(Citizen cit, List<FoundDate> attestations)
 			throws RemoteException {
 		// TODO Auto-generated method stub
 		int divider = (int)Math.ceil(attestations.size()/threadsPerCitizen);
@@ -101,7 +101,8 @@ public class GeneticServer implements Server {
 			throw new RemoteException(e.getMessage(), e);
 		}
 		// Done!
-		
+		//TODO: needs synchronized access somehow
+		this.currentCitizens--;
 		return fitness;
 	}
 	
@@ -131,38 +132,6 @@ public class GeneticServer implements Server {
 		return known;
 	}
 	
-	public static void main(String[] args) {
-		if (System.getSecurityManager() == null) {
-			System.setSecurityManager(new SecurityManager());
-		}
-		
-		try {
-			
-			String key = "Server";
-			Server jenkins;
-			if( args.length < 2) {
-				jenkins = new GeneticServer(6, 4);
-			} else {
-				int cit = Integer.parseInt(args[0]);
-				int thds = Integer.parseInt(args[1]);
-				jenkins = new GeneticServer(cit, thds);
-			}
-			
-			
-			
-			
-			if (args.length > 2)
-				jenkins.setName(args[2]);
-			
-			
-			Server stub = (Server) UnicastRemoteObject.exportObject(jenkins);
-			
-			Registry registry = LocateRegistry.getRegistry();
-			registry.rebind(key, stub);
-		} catch (Exception e) {
-			System.out.println("Failed to start GeneticServer");
-		}
-	}
 
 	@Override
 	public String getName() {
@@ -198,5 +167,50 @@ public class GeneticServer implements Server {
 			e.printStackTrace();
 		}
 		return "";
+	}
+	
+	@Override
+	public int getMaxCitizens() {
+		// TODO Auto-generated method stub
+		return this.capCitizens;
+	}
+
+	@Override
+	public synchronized int getNumCitizens() {
+		// TODO Auto-generated method stub
+		return this.currentCitizens;
+	}
+	
+	public static void main(String[] args) {
+		if (System.getSecurityManager() == null) {
+			System.setSecurityManager(new SecurityManager());
+		}
+		
+		try {
+			
+			String key = "Server";
+			Server jenkins;
+			if( args.length < 2) {
+				jenkins = new GeneticServer(6, 4);
+			} else {
+				int cit = Integer.parseInt(args[0]);
+				int thds = Integer.parseInt(args[1]);
+				jenkins = new GeneticServer(cit, thds);
+			}
+			
+			
+			
+			
+			if (args.length > 2)
+				jenkins.setName(args[2]);
+			
+			
+			Server stub = (Server) UnicastRemoteObject.exportObject(jenkins);
+			
+			Registry registry = LocateRegistry.getRegistry();
+			registry.rebind(key, stub);
+		} catch (Exception e) {
+			System.out.println("Failed to start GeneticServer");
+		}
 	}
 }

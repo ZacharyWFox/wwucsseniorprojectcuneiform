@@ -15,7 +15,6 @@ public class Citizen implements Comparable<Citizen>, Runnable, Serializable{
 	public SimilarityMatrix personalMatrix;
 	public int fitness;
 	public int IDNo;
-	private int threads = 4;     //TODO: determine the number of threads we want (method or here)
 	
 	//Constructors
 	public Citizen() {
@@ -37,12 +36,6 @@ public class Citizen implements Comparable<Citizen>, Runnable, Serializable{
 		//XXX For testing purposes XXX
 		fitness = (int) Math.floor(Math.random() * 100);
 	}
-
-	public void setThreads(int threads) {
-		this.threads = threads;
-	}
-	
-	//Overrides
 
 	@Override
 	public int compareTo(Citizen citizen) {
