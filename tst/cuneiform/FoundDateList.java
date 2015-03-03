@@ -50,7 +50,8 @@ public class FoundDateList {
 	
 	private void createFoundDates(Connection conn, List<YearReference> yearRefList) {
 		// Randomly trim the list of YearReferences until reaching sample_size
-		Random rand = new Random();
+		long seed = 1234;
+		Random rand = new Random(seed);
 		while(yearRefList.size() > sample_size) {
 			yearRefList.remove(rand.nextInt(yearRefList.size()));
 		}
