@@ -42,6 +42,7 @@ public class CoalMine {
 		return true;
 	}
 	
+	//TODO: Make asynchronous, this blocks currently.
 	public float workLifeAway(Citizen cit, List<FoundDate> attestations) {
 		try {
 			return server.live(cit, attestations);

@@ -42,7 +42,7 @@ public class GeneticServer implements Server {
 	
 	
 	@Override
-	public synchronized float live(Citizen cit, List<FoundDate> attestations)
+	public float live(Citizen cit, List<FoundDate> attestations)
 			throws RemoteException {
 		// TODO Auto-generated method stub
 		int divider = (int)Math.ceil(attestations.size()/threadsPerCitizen);
@@ -69,8 +69,8 @@ public class GeneticServer implements Server {
 		
 		// Separate
 		//Start threads
-				
-		this.currentCitizens++;
+		//
+		incrementCitizen();
 		
 		List<Future<List<GuessPair>>> results = new ArrayList<Future<List<GuessPair>>>(this.threadsPerCitizen);
 		
@@ -102,11 +102,18 @@ public class GeneticServer implements Server {
 		}
 		// Done!
 		//TODO: needs synchronized access somehow
-		this.currentCitizens--;
+		decrementCitizen();
 		return fitness;
 	}
 	
-	public float evaluateFitness(List<GuessPair> guesses) throws Exception{
+	private synchronized void incrementCitizen() {
+		this.currentCitizens++;
+	}
+	private synchronized void decrementCitizen(){
+		this.currentCitizens--;
+	}
+	
+	private float evaluateFitness(List<GuessPair> guesses) throws Exception{
 		if (guesses.isEmpty()) {
 			System.out.println ("ERROR: Recieved empty list of guesses. That's bad.");
 			throw new Exception("ERROR: Recieved empty list of guesses. That's bad.");
@@ -134,7 +141,7 @@ public class GeneticServer implements Server {
 	
 
 	@Override
-	public String getName() {
+	public String getName() throws RemoteException {
 		// TODO Auto-generated method stub
 		return this.name;
 	}
@@ -158,7 +165,7 @@ public class GeneticServer implements Server {
 	}
 
 	@Override
-	public String getIPAddressString() {
+	public String getIPAddressString() throws RemoteException {
 		// TODO Auto-generated method stub
 		try {
 			return InetAddress.getLocalHost().getHostAddress();
@@ -182,9 +189,9 @@ public class GeneticServer implements Server {
 	}
 	
 	public static void main(String[] args) {
-		if (System.getSecurityManager() == null) {
-			System.setSecurityManager(new SecurityManager());
-		}
+//		if (System.getSecurityManager() == null) {
+//			System.setSecurityManager(new SecurityManager());
+//		}
 		
 		try {
 			
@@ -205,12 +212,14 @@ public class GeneticServer implements Server {
 				jenkins.setName(args[2]);
 			
 			
-			Server stub = (Server) UnicastRemoteObject.exportObject(jenkins);
+			Server stub = (Server) UnicastRemoteObject.exportObject(jenkins, 0);
 			
 			Registry registry = LocateRegistry.getRegistry();
 			registry.rebind(key, stub);
 		} catch (Exception e) {
 			System.out.println("Failed to start GeneticServer");
+			System.out.println(e.getMessage());
+			e.printStackTrace();
 		}
 	}
 }

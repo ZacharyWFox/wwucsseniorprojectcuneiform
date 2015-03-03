@@ -9,11 +9,11 @@ import cuneiform.FoundDate;
 
 public interface Server extends Remote {
 	float live(Citizen cit, List<FoundDate> attestations) throws RemoteException;
-	String getName();
-	void setName(String name);
+	String getName() throws RemoteException;
+	void setName(String name) throws RemoteException;
 	
-	String getHostName();
-	String getIPAddressString();
-	int getMaxCitizens();
-	int getNumCitizens();
+	String getHostName() throws RemoteException;
+	String getIPAddressString() throws RemoteException;
+	int getMaxCitizens() throws RemoteException;
+	int getNumCitizens() throws RemoteException;
 }

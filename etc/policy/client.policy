@@ -1,0 +1,3 @@
+grant codeBase "file:../../tst" {
+    permission java.security.AllPermission;
+};
