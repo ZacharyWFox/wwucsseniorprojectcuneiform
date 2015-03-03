@@ -6,6 +6,7 @@ import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.util.List;
+import java.util.concurrent.Callable;
 
 import cuneiform.Citizen;
 import cuneiform.FoundDate;
@@ -13,7 +14,6 @@ import cuneiform.FoundDate;
 public class CoalMine {
 	String host;
 	GeneticServer server;
-	
 	int citizenCap = 4;
 	int numCitizens = 0;
 	public CoalMine(String hostname) {
@@ -38,13 +38,14 @@ public class CoalMine {
 		if (this.numCitizens >= this.citizenCap) {
 			return false;
 		}
-		this.numCitizens++;
 		return true;
 	}
 	
 	//TODO: Make asynchronous, this blocks currently.
 	public float workLifeAway(Citizen cit, List<FoundDate> attestations) {
 		try {
+			//Callable mineCart = MineCartFactory.build(cit, attestations, this.server);
+			// TODO: make this non blocking
 			return server.live(cit, attestations);
 		} catch (RemoteException e) {
 			System.out.println(e.getMessage());
@@ -52,4 +53,5 @@ public class CoalMine {
 		}
 		return -1F;
 	}
+	
 }
