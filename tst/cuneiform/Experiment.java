@@ -86,7 +86,8 @@ public class Experiment {
 				bestCit = Population.get(0);
 			}
 			
-			GenHistory.add(new Integer(Population.get(0).getFitness()));
+			// TODO: convert to float, fitness needs more resolution than 100.
+			GenHistory.add(new Integer((int)Population.get(0).getFitness()));
 			
 			
 			
@@ -125,7 +126,7 @@ public class Experiment {
 				int BIndex = -1;
 				
 				for ( int i = 0; i < Population.size(); i++){
-					int curFitness = Population.get(i).getFitness();
+					int curFitness = (int)Population.get(i).getFitness();
 					if (probA < curFitness && AIndex < 0){
 						AIndex = i;
 					}

@@ -69,7 +69,7 @@ public class CitizenPool {
 			foundCit = usedCitizens.get(index);
 			usedCitizens.remove(index);
 			
-			foundCit.fitness = 0;
+			foundCit.fitness = 0F;
 			foundCit.IDNo = 0;
 			foundCit.personalMatrix = null;
 			
