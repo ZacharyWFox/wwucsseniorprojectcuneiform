@@ -15,7 +15,7 @@ public class FoundDateList {
 
 	private final List<FoundDate> foundDates;
 	private static int sample_size = 1000;
-	private static double min_confidence = 0.70;
+	private static double min_confidence = 70.0;
 	
 	public FoundDateList(Connection conn) throws SQLException {
 		foundDates = new ArrayList<FoundDate>();
@@ -25,6 +25,7 @@ public class FoundDateList {
 	
 	public List<FoundDate> getFoundDates() {
 		return this.foundDates;
+
 	}
 	
 	private List<YearReference> readYearRefs(Connection conn) throws SQLException {
@@ -54,7 +55,8 @@ public class FoundDateList {
 	
 	private void createFoundDates(Connection conn, List<YearReference> yearRefList) {
 		// Randomly trim the list of YearReferences until reaching sample_size
-		Random rand = new Random();
+		long seed = 1234;
+		Random rand = new Random(seed);
 		while(yearRefList.size() > sample_size) {
 			yearRefList.remove(rand.nextInt(yearRefList.size()));
 		}
