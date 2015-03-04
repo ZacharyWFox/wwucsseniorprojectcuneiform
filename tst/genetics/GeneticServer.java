@@ -35,16 +35,12 @@ public class GeneticServer implements Server {
 		this.threadsPerCitizen = threadsPerCit;
 		this.capCitizens = citizenCap;
 		this.threads = Executors.newFixedThreadPool(24);
-		//TODO: initialize threads
 	}
-	
-	
-	
 	
 	@Override
 	public float live(Citizen cit, List<FoundDate> attestations)
 			throws RemoteException {
-		// TODO Auto-generated method stub
+		//return 3.14159F;
 		int divider = (int)Math.ceil(attestations.size()/threadsPerCitizen);
 		List<List<FoundDate>> threadDivisions = new ArrayList<List<FoundDate>>(threadsPerCitizen);
 		List<GuessPair> guesses = new ArrayList<GuessPair>(attestations.size());
@@ -221,5 +217,6 @@ public class GeneticServer implements Server {
 			System.out.println(e.getMessage());
 			e.printStackTrace();
 		}
+		System.out.println("Genetic Server bound.");
 	}
 }

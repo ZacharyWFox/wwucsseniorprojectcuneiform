@@ -2,19 +2,22 @@ package cuneiform;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.concurrent.Future;
 
 import cuneiform.stringComparator.SimilarityMatrix;
 
 
 public class Citizen implements Comparable<Citizen>, Runnable, Serializable{
 
+
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 558045442181825459L;
+	private static final long serialVersionUID = 2504986002193445538L;
 	public SimilarityMatrix personalMatrix;
 	public int fitness;
 	public int IDNo;
+	private Future<Float> futureFitness;
 	
 	//Constructors
 	public Citizen() {
@@ -48,8 +51,7 @@ public class Citizen implements Comparable<Citizen>, Runnable, Serializable{
 		return "[Fitness: " +  Integer.toString(fitness) + " Citizen ID: " + Integer.toString(IDNo) + "]";
 		
 	}
-
-
+	
 	@Override
 	public void run() {
 		// TODO run the needleman-wunsch algo with personalMatrix

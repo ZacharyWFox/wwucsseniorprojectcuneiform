@@ -3,12 +3,17 @@ package cuneiform;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+
+import client.CoalMine;
 
 public class Experiment {
 
@@ -25,7 +30,7 @@ public class Experiment {
 	
 	
 	public static void main(String[] args){
-		
+	
 		Experiment blah = new Experiment(10);		
 		blah.runExperiment();
 	}
@@ -293,6 +298,7 @@ public class Experiment {
 		ArrayList<Future> futureCit = new ArrayList<Future>();
 		
 		//start the threads!
+		//TODO: 
 		for (int i = 0; i < curGen.size(); i++){
 			futureCit.add(threadPool.submit(curGen.get(i)));
 		}
@@ -313,8 +319,6 @@ public class Experiment {
 				e.printStackTrace();
 			}
 		}
-		
-		
 	}
 	
 	

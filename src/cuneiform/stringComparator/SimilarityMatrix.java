@@ -5,13 +5,19 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
 import cuneiform.Parser;
 
-public class SimilarityMatrix implements Cloneable{
+public class SimilarityMatrix implements Cloneable, Serializable {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -5501164272923209758L;
 
 	// Lower triangular adjacency matrix
 	private ArrayList<byte[]> dynamicMatrix;

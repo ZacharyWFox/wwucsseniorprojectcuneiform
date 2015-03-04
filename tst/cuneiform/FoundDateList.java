@@ -23,6 +23,10 @@ public class FoundDateList {
 		createFoundDates(conn, yearRefList);
 	}
 	
+	public List<FoundDate> getFoundDates() {
+		return this.foundDates;
+	}
+	
 	private List<YearReference> readYearRefs(Connection conn) throws SQLException {
         // Generate list of YearReference objects containing data for all
         // year_reference in the database
@@ -62,7 +66,9 @@ public class FoundDateList {
 				stmt.execute("SELECT `text` FROM `canonical_year` WHERE `canonical_year_id`=" 
 						+ String.valueOf(yearRef.canonical_year_id) + ";");
 				ResultSet rs = stmt.getResultSet();
+				
 				if (rs != null) {
+					rs.next();
 					text = rs.getString("text");
 				} else {
 					text = null;
