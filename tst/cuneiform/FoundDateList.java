@@ -23,6 +23,10 @@ public class FoundDateList {
 		createFoundDates(conn, yearRefList);
 	}
 	
+	public List<FoundDate> getList() {
+		return foundDates;
+	}
+	
 	private List<YearReference> readYearRefs(Connection conn) throws SQLException {
         // Generate list of YearReference objects containing data for all
         // year_reference in the database
