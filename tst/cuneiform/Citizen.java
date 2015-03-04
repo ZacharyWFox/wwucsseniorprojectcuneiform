@@ -7,6 +7,8 @@ import java.util.concurrent.Future;
 import cuneiform.stringComparator.SimilarityMatrix;
 
 
+
+
 public class Citizen implements Comparable<Citizen>, Runnable, Serializable{
 
 
@@ -18,6 +20,7 @@ public class Citizen implements Comparable<Citizen>, Runnable, Serializable{
 	public int fitness;
 	public int IDNo;
 	private Future<Float> futureFitness;
+	private FutureState futureState = FutureState.UNBORN;
 	
 	//Constructors
 	public Citizen() {
@@ -39,6 +42,19 @@ public class Citizen implements Comparable<Citizen>, Runnable, Serializable{
 		//XXX For testing purposes XXX
 		fitness = (int) Math.floor(Math.random() * 100);
 	}
+	
+	public FutureState getFutureState() {
+		if (this.futureFitness == null) {
+			this.futureState = FutureState.UNBORN;
+		} else if (this.futureFitness.isCancelled()){
+			this.futureState = FutureState.CANCELLED;
+		} else if (this.futureFitness.isDone()) {
+			this.futureState = FutureState.DEAD;
+		} else {
+			this.futureState = FutureState.ALIVE;
+		}
+		return this.futureState;
+	}
 
 	@Override
 	public int compareTo(Citizen citizen) {
@@ -53,6 +69,7 @@ public class Citizen implements Comparable<Citizen>, Runnable, Serializable{
 	}
 	
 	@Override
+	//TODO: XXX
 	public void run() {
 		// TODO run the needleman-wunsch algo with personalMatrix
 		//then figure out fitness

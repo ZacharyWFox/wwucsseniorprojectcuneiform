@@ -14,6 +14,9 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 import cuneiform.Citizen;
 import cuneiform.FoundDate;
@@ -24,32 +27,64 @@ public class CoalMine {
 	public Server server;
 	int citizenCap = 4;
 	int numCitizens = 0;
+	ExecutorService threadPool;
 	public CoalMine(String hostname) {
 //		if(System.getSecurityManager() == null) {
 //			System.setSecurityManager(new SecurityManager());
 //		}
+		this.host = hostname;
+		load(this.host);
+		this.threadPool = Executors.newCachedThreadPool();
+	}
+	
+	private boolean load(String hostname) {
 		try {
 			//Connection stuff
 			String key = "Server";
 			Registry reg = LocateRegistry.getRegistry(hostname);
 			//
 			server = (Server)reg.lookup(key);
-//			this.citizenCap = server.getMaxCitizens();
-//			this.numCitizens = server.getNumCitizens();
+			this.citizenCap = server.getMaxCitizens();
+			this.numCitizens = server.getNumCitizens();
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
 			e.printStackTrace();
+			return false;
 		}
+		return true;
 	}
 	
-	public boolean roomLeft() {
+	public synchronized boolean roomLeft() throws RemoteException {
+		try {
+			this.numCitizens = this.server.getNumCitizens();
+		} catch (RemoteException e) {
+			// Try to reconnect.
+			if(load(this.host)) {
+				this.numCitizens = this.server.getNumCitizens();
+			} else {
+				throw new RemoteException("Can't connect to server.");
+			}
+		}
+		
 		if (this.numCitizens >= this.citizenCap) {
 			return false;
 		}
 		return true;
 	}
 	
-	//TODO: Make asynchronous, this blocks currently.
+	public Future<Float> sendToMine(Citizen cit, List<FoundDate> attestations) {
+		Callable<Float> future = MineCartFactory.build(cit, attestations, this.server);
+		return threadPool.submit(future);
+	}
+	
+	/***
+	 * This method returns a fitness score for a citizen and BLOCKS while doing so. 
+	 * Use sendToMine() for the non blocking Future implementation.
+	 * @param cit The citizen we want to send away to align things until it dies. And then we judge
+	 * it. Hooray for equality!
+	 * @param attestations The sample on which the citizen will work
+	 * @return How well the Sequence Alignment Overlords determine the citizen to have lived.
+	 */
 	public float workLifeAway(Citizen cit, List<FoundDate> attestations) {
 		try {
 			//Callable mineCart = MineCartFactory.build(cit, attestations, this.server);

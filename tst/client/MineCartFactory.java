@@ -1,6 +1,6 @@
 package client;
 
-import genetics.GeneticServer;
+import interfaces.Server;
 
 import java.util.List;
 import java.util.concurrent.Callable;
@@ -9,7 +9,7 @@ import cuneiform.FoundDate;
 
 public class MineCartFactory {
 	
-	public static Callable<Float> build(final Citizen cit, final List<FoundDate> attestations, final GeneticServer server) {
+	public static Callable<Float> build(final Citizen cit, final List<FoundDate> attestations, final Server server) {
 		return new Callable<Float>() {
 
 			@Override
