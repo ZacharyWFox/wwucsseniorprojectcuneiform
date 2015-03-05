@@ -205,15 +205,19 @@ public class Experiment {
 		
 		int Xmax = A.personalMatrix.rowLength() - 1;
 		int Ymax = A.personalMatrix.colLength() - 1;
-		int loopMax = (int) (Math.floor(100 * Math.random()));
+		int loopMax = (int) (Math.floor(populationMax * .01));
 		
 		for (int i = 0; i < loopMax; i++){
 			
 			int x = (int) (Math.floor(Xmax * Math.random()));
 			int y = (int) (Math.floor(Ymax * Math.random()));
-			int add = (int) (Math.floor(50 * Math.random()));
+			byte newVal = (byte) (Math.floor(127 * Math.random()));
+			if (Math.random() > .5){
+				newVal = (byte) -newVal;
+			}
+			
 			try {
-				mutant.personalMatrix.setCell(x, y, (byte)((A.personalMatrix.getCell(x, y) + add) % 127));
+				mutant.personalMatrix.setCell(x, y, newVal);
 			} catch (Exception e) {
 				//TODO: handle gracefully
 				System.out.println("Something went horribly wrong (or there is an off by one):" + e.getMessage());
