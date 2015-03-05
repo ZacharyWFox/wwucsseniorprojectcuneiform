@@ -41,7 +41,8 @@ public class GeneticServer implements Server {
 	public float live(Citizen cit, List<FoundDate> attestations)
 			throws RemoteException {
 		System.out.println("Life of citizen " + cit.IDNo + " has started.");
-		//TODO: add timestamp at beginning and end and print it to a file.		
+		//TODO: add timestamp at beginning and end and print it to a file.
+		long timeStart = System.currentTimeMillis();
 		incrementCitizen();
 		//return 3.14159F;
 		int divider = (int)Math.ceil(attestations.size()/threadsPerCitizen);
@@ -62,6 +63,7 @@ public class GeneticServer implements Server {
 				max -= leftover;
 			try {
 				threadDivisions.add(attestations.subList(min, max));
+				System.out.printf("Gave thread %i elements %i - %i.\n", i, min, max);
 			} catch (Exception e) {
 				System.out.println("Sublist failed.");
 			}
@@ -74,6 +76,7 @@ public class GeneticServer implements Server {
 		
 		List<Future<List<GuessPair>>> results = new ArrayList<Future<List<GuessPair>>>(this.threadsPerCitizen);
 		// Start the work
+		long threadSt = System.currentTimeMillis();
 		for (List<FoundDate> f : threadDivisions){
 			List<KnownDate> known = toKnownDateList(f);
 			
@@ -92,6 +95,7 @@ public class GeneticServer implements Server {
 				e.printStackTrace();
 			}
 		}
+		System.out.printf("Citizen %i lived for %l milliseconds...RIP.\n", System.currentTimeMillis() - threadSt);
 		// Get fitness
 		float fitness = 0;
 		try {

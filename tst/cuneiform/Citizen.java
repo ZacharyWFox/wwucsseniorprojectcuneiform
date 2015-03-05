@@ -3,7 +3,7 @@ package cuneiform;
 import java.io.Serializable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
-
+import cuneiform.FutureState;
 import cuneiform.stringComparator.SimilarityMatrix;
 
 
