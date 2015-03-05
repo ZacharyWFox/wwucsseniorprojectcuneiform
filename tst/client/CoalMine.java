@@ -1,7 +1,5 @@
 package client;
 
-import genetics.GeneticServer;
-
 import interfaces.Server;
 
 import java.net.InetAddress;
