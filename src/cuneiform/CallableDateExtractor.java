@@ -6,13 +6,16 @@ import java.util.List;
 import java.util.concurrent.Callable;
 
 import cuneiform.stringComparator.Confidence;
+import cuneiform.stringComparator.SimilarityMatrix;
 
 public class CallableDateExtractor implements Callable<List<GuessPair>>{
 	
 	DateExtractor extranctinator;
+	SimilarityMatrix simMat;
 	// this extracts dates and only dates...parallelelely.
-	public CallableDateExtractor(List<KnownDate> months, List<KnownDate> years) {
+	public CallableDateExtractor(List<KnownDate> months, List<KnownDate> years, SimilarityMatrix sim) {
 		this.extranctinator = new DateExtractor(months, years);	
+		this.simMat = sim;
 	}
 	
 	@Override
@@ -26,7 +29,7 @@ public class CallableDateExtractor implements Callable<List<GuessPair>>{
 		
 //		@SuppressWarnings("unchecked")
 //		List<KnownDate> clone = (List<KnownDate>)((ArrayList<KnownDate>)this.extranctinator.knownYears).clone();
-		guesses = this.extranctinator.alignYearsTest();
+		guesses = this.extranctinator.alignYears(this.simMat);
 		
 		//TODO: LOOP
 //		while((attestation = DateFactory.get()) != null) {

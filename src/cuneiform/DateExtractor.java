@@ -8,9 +8,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import cuneiform.stringComparator.Confidence;
+import cuneiform.stringComparator.SimilarityMatrix;
 import cuneiform.stringComparator.StringComparator;
 import cuneiform.stringComparator.SumerianComparator;
 import cuneiform.stringComparator.SumerianLevenstheinSubstringComparator;
+import cuneiform.stringComparator.SumerianNWSubstringComparator;
 import cuneiform.tablet.Container;
 import cuneiform.tablet.TabletGroup;
 import cuneiform.tablet.TextSection;
@@ -105,10 +107,9 @@ public class DateExtractor {
         }
     }
     
-    public FoundDate alignDateString(String[] graphemes) {
+    public FoundDate alignDateString(String[] graphemes, SimilarityMatrix sim) {
     	FoundDate year = getConfidence(graphemes, 0, this.knownYears);
     	return year;
-    	// TODO: include found month?
     }
     
     public List<GuessPair> alignYearsTest() {
@@ -123,14 +124,16 @@ public class DateExtractor {
     	return allGuesses;
     }
     
-    public List<FoundDate> alignYears(){
-    	List<FoundDate> allFound = new ArrayList<FoundDate>(this.knownYears.size());
+    public List<GuessPair> alignYears(SimilarityMatrix sim){
+    	List<GuessPair> allFound = new ArrayList<GuessPair>(this.knownYears.size());
     	FoundDate found;
     	String[] graphemes;
+    	GuessPair guess;
     	for( KnownDate k : this.knownYears) {
     		graphemes = k.getText().split("-| ");
-    		found = alignDateString(graphemes);
-    		allFound.add(found);
+    		found = alignDateString(graphemes, sim);
+    		guess = new GuessPair(k, found);
+    		allFound.add(guess);
     	}
     	return allFound;
     }
@@ -145,6 +148,33 @@ public class DateExtractor {
 
         for (KnownDate d : dates) {
             SumerianLevenstheinSubstringComparator.compare(d.text, graphemes, i, conf, indx, dist);
+            if (conf[0] > confd.confidence) {
+                bestIndex = indx[0];
+                confd = new Confidence(dist[0], conf[0]);
+                guess = d;
+            }
+        }
+
+        String output = "";
+        for (int j = 0; j < bestIndex; ++j) {
+            if (output.isEmpty() == false)
+                output += " ";
+            output += graphemes[j + i];
+        }
+
+        return new FoundDate(guess, output, confd);
+    }
+    
+    private FoundDate getConfidence(String[] graphemes, int i, List<KnownDate> dates, SimilarityMatrix sim) {
+        KnownDate guess = null;
+        Confidence confd = new Confidence(Integer.MAX_VALUE, -1);
+        int bestIndex = 0;
+        double[] conf = new double[1];
+        int[]    indx = new int[1];
+        int[]    dist = new int[1];
+
+        for (KnownDate d : dates) {
+            SumerianNWSubstringComparator.compare(d.text, graphemes, i, conf, indx, dist, sim);
             if (conf[0] > confd.confidence) {
                 bestIndex = indx[0];
                 confd = new Confidence(dist[0], conf[0]);

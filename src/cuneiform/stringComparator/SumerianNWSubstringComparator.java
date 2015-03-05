@@ -98,12 +98,97 @@ public class SumerianNWSubstringComparator {
             }
     }
     
+    public static void compare(String known, String[] allFoundGraphemes, 
+            final int foundStart, double[] conf, int[] indx, int[] dist, SimilarityMatrix sim) {
+
+                // Split string into graphemes
+                String[] knownGraphemes = known.split("-| ");
+                String[] foundGraphemes = Arrays.copyOfRange(allFoundGraphemes, foundStart, allFoundGraphemes.length);
+                int xAlignLen = knownGraphemes.length + 1;
+                int yAlignLen = foundGraphemes.length + 1;
+                int[][] alignment = new int[xAlignLen][yAlignLen];
+                
+                // Initialize edges for alignment
+                for (int i = 0; i < xAlignLen; i++) {
+                    alignment[i][0] = 1 * -i;
+                }
+                for (int j = 0; j < yAlignLen; j++) {
+                    alignment[0][j] = 1 * -j;
+                }
+
+                // Compute alignment matrix
+                for (int i = 1; i < xAlignLen; i++) {
+                    for(int j = 1; j < yAlignLen; j++) {
+                        int match  = alignment[i - 1][j - 1] + similarity(knownGraphemes[i-1], foundGraphemes[j-1], sim);
+                        int delete = alignment[i - 1][j] + linGap();
+                        int insert = alignment[i][j - 1] + linGap();
+                        alignment[i][j] = max(match, delete, insert);
+                        
+                        
+                    }
+                }
+                int finalMatch = alignment[xAlignLen -1][yAlignLen -1];
+                
+                
+
+                int bestValue = 0;
+                for (int i = 0; i < knownGraphemes.length; i++){
+                	bestValue += similarity(knownGraphemes[i], knownGraphemes[i]);
+                }
+
+                int worstVal = 0;
+                for (int i = 0; i < knownGraphemes.length; i++){
+                	worstVal += simMat.getMin(knownGraphemes[i]);
+                }
+                for (int i = 0; i < foundGraphemes.length - knownGraphemes.length; i++){
+                	worstVal += linGap();
+                }
+            	
+            	//if finalMatch is the same as bestValue, we get 1. as finalMatch gets closer
+                //to the worst possible value, the top gets closer and closer to 0, making the confidence
+                //go to 0
+            	conf[0] = (100.0 * Math.abs(worstVal - finalMatch) / Math.abs(worstVal - bestValue)) ;
+            	dist[0] = Math.abs(worstVal - finalMatch);
+                indx[0] = 0;
+                
+                if (debug) {
+                	String Alignment = "[ [ _ ";
+                	for (int i = 0; i < foundGraphemes.length; i++){
+                		Alignment += foundGraphemes[i] + " ";
+                	}
+                	Alignment += "]\n";
+                	for (int i = 0; i < xAlignLen; i++) {
+                		if (i == 0){
+                			Alignment +="_ [ ";
+                		}
+                		else{
+                			Alignment += knownGraphemes[i-1] + " [ ";
+                		}
+                		
+                        for(int j = 0; j < yAlignLen; j++) {
+                        	Alignment += alignment[i][j] + " ";
+                        }
+                        Alignment += "]\n";
+                	}
+                	Alignment += "]";
+                	System.out.println("Alignment matrix:\n" + Alignment);
+                	
+                	
+    	            String[] optAligns = constructAlignment(alignment, knownGraphemes, foundGraphemes);
+    	            
+    	            System.out.printf("aligned\n%s and %s as\n%s\n%s\n%s\nindels: %s\n", 
+    	            		joinAlignment(knownGraphemes), joinAlignment(foundGraphemes), 
+    	            		optAligns[0], optAligns[1], optAligns[2], optAligns[3]);
+                }
+        }
+    
     //TODO: this is a test method, change this before you put this into "Production"
     public static void setSimilarityMatrix(cuneiform.Citizen cit)
     {
     	simMat = cit.personalMatrix;
     	hasMatrix = true;
     }
+    
     private static String joinAlignment(String[] graphemes) {
     	StringBuilder alignment = new StringBuilder();
     	for (String g : graphemes) {
@@ -123,6 +208,41 @@ public class SumerianNWSubstringComparator {
     	
     	while (i > 0 && j > 0) {
     		if ( (alignMatrix[i][j] == (alignMatrix[i - 1][j - 1] + similarity(known[i-1], unknown[j-1]))))
+    		{
+    			myversion.insert(0, known[i-1] + " ");
+    			knownAlign.insert(0, known[i-1] + " ");
+    			foundAlign.insert(0, unknown[j-1] + " ");
+    			i--;
+    			j--;
+    		} else if (alignMatrix[i][j] == (alignMatrix[i - 1][j] + linGap())) {
+    			myversion.insert(0," - ");
+    			knownAlign.insert(0, known[i-1] + " ");
+    			foundAlign.insert(0, "- ");
+    			indel++;
+    			i--;
+    		} else if (alignMatrix[i][j] == (alignMatrix[i][j - 1] + linGap())) {
+    			myversion.insert(0, " _ ");
+    			knownAlign.insert(0, "- ");
+    			foundAlign.insert(0, unknown[j-1] + " ");
+    			indel++;
+    			j--;
+    		}
+    	}
+    	
+    	return new String[]{knownAlign.toString(), foundAlign.toString(), myversion.toString(), Integer.toString(indel)};
+    }
+    
+    public static String[] constructAlignment(int[][] alignMatrix, String[] known, String[] unknown, SimilarityMatrix sim) {
+    	//TODO: error checking
+    	int i = alignMatrix.length-1;
+    	int j = alignMatrix[0].length-1;
+    	StringBuilder knownAlign = new StringBuilder(); 
+    	StringBuilder foundAlign = new StringBuilder();
+    	StringBuilder myversion = new StringBuilder();
+    	int indel = 0;
+    	
+    	while (i > 0 && j > 0) {
+    		if ( (alignMatrix[i][j] == (alignMatrix[i - 1][j - 1] + similarity(known[i-1], unknown[j-1], sim))))
     		{
     			myversion.insert(0, known[i-1] + " ");
     			knownAlign.insert(0, known[i-1] + " ");
@@ -191,6 +311,17 @@ public class SumerianNWSubstringComparator {
     			System.out.println("No Similarity matrix was found.");
     		}
     	}
+    	return cost;
+    }
+    
+    private static int similarity(String graphemeA, String graphemeB, SimilarityMatrix sim) {
+        // For now, ignore input and return 0, for edit distance emulation
+    	int cost = getCost(graphemeA, graphemeB);
+		try {
+			cost += sim.score(graphemeA, graphemeB);
+		} catch (Exception e) {
+			System.out.println("No Similarity matrix was found.");
+		}
     	return cost;
     }
 
