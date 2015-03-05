@@ -44,16 +44,29 @@ public class SumerianNWSubstringComparator {
                 }
             }
             int finalMatch = alignment[xAlignLen -1][yAlignLen -1];
+            
+            
+
             int bestValue = 0;
             for (int i = 0; i < knownGraphemes.length; i++){
             	bestValue += similarity(knownGraphemes[i], knownGraphemes[i]);
             }
-            
 
-            //confidence is 100 - percentage off from the best value (an exact match)
-            conf[0] =  100- (100.0 * Math.abs(bestValue - finalMatch) / bestValue) ;
-            indx[0] = bestValue;
-            dist[0] = finalMatch;
+            int worstVal = 0;
+            for (int i = 0; i < knownGraphemes.length; i++){
+            	worstVal += simMat.getMin(knownGraphemes[i]);
+            }
+            for (int i = 0; i < foundGraphemes.length - knownGraphemes.length; i++){
+            	worstVal += linGap();
+            }
+        	
+        	//if finalMatch is the same as bestValue, we get 1. as finalMatch gets closer
+            //to the worst possible value, the top gets closer and closer to 0, making the confidence
+            //go to 0
+        	conf[0] = (100.0 * Math.abs(worstVal - finalMatch) / Math.abs(worstVal - bestValue)) ;
+        	dist[0] = Math.abs(worstVal - finalMatch);
+            indx[0] = 0;
+            
             if (debug) {
             	String Alignment = "[ [ _ ";
             	for (int i = 0; i < foundGraphemes.length; i++){
@@ -111,19 +124,19 @@ public class SumerianNWSubstringComparator {
     	while (i > 0 && j > 0) {
     		if ( (alignMatrix[i][j] == (alignMatrix[i - 1][j - 1] + similarity(known[i-1], unknown[j-1]))))
     		{
-    			myversion.insert(0, known[i-1]);
+    			myversion.insert(0, known[i-1] + " ");
     			knownAlign.insert(0, known[i-1] + " ");
     			foundAlign.insert(0, unknown[j-1] + " ");
     			i--;
     			j--;
     		} else if (alignMatrix[i][j] == (alignMatrix[i - 1][j] + linGap())) {
-    			myversion.insert(0,"-");
+    			myversion.insert(0," - ");
     			knownAlign.insert(0, known[i-1] + " ");
     			foundAlign.insert(0, "- ");
     			indel++;
     			i--;
     		} else if (alignMatrix[i][j] == (alignMatrix[i][j - 1] + linGap())) {
-    			myversion.insert(0, "_");
+    			myversion.insert(0, " _ ");
     			knownAlign.insert(0, "- ");
     			foundAlign.insert(0, unknown[j-1] + " ");
     			indel++;

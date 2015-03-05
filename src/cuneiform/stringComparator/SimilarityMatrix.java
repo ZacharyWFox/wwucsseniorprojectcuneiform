@@ -21,6 +21,7 @@ public class SimilarityMatrix implements Cloneable, Serializable {
 
 	// Lower triangular adjacency matrix
 	private ArrayList<byte[]> dynamicMatrix;
+	private byte[] minVal;
 	
 	private Map<String, Integer> alphabet = new HashMap<String, Integer>();
 	public SimilarityMatrix() {
@@ -38,6 +39,7 @@ public class SimilarityMatrix implements Cloneable, Serializable {
 			System.out.printf("Something went wrong:/n/s/n", e.getMessage());
 		}
 		//testAlphabetGen();
+		minVal = new byte[alphabet.size()];
 		allocateMatrix(alphabet.size());
 		randomizeMatrix();
 	}
@@ -49,13 +51,14 @@ public class SimilarityMatrix implements Cloneable, Serializable {
 			e.printStackTrace();
 		}
 		allocateMatrix(alphabet.size());
+		minVal = new byte[alphabet.size()];
 		randomizeMatrix();
 	}
 	
 	public SimilarityMatrix(SimilarityMatrix existing){
 		//only difference will be the dynamicMatrix
 		this.dynamicMatrix = new ArrayList<byte[]>();
-		
+		minVal = existing.minVal.clone();
 		for (byte[] row : existing.dynamicMatrix){
 			this.dynamicMatrix.add(row.clone());
 		}
@@ -102,6 +105,7 @@ public class SimilarityMatrix implements Cloneable, Serializable {
 		
 		BufferedReader in = new BufferedReader(new FileReader(filePath));
 		dynamicMatrix = new ArrayList<byte[]>();
+		minVal = new byte[alphabet.size()];
 		String rowStr;
 		
 		while (in.ready()){
@@ -111,7 +115,14 @@ public class SimilarityMatrix implements Cloneable, Serializable {
 			byte[] row = new byte[cells.length];
 			
 			for (int i = 0; i < cells.length; i++){
-				row[i] =  Byte.parseByte(cells[i].trim());
+				byte val = Byte.parseByte(cells[i].trim()); 
+				row[i] =  val;
+				if (minVal[i] > val){
+					minVal[i] = val;
+				}
+				if (minVal[dynamicMatrix.size()] > val){
+					minVal[dynamicMatrix.size()] = val;
+				}
 			}
 			
 			dynamicMatrix.add(row);
@@ -152,11 +163,19 @@ public class SimilarityMatrix implements Cloneable, Serializable {
 			byte[] curRow = dynamicMatrix.get(i);
 			
 			for (int x = 0; x < curRow.length; x++) {
-				 curRow[x] = (byte) Math.floor(Math.random() * 127);
+				byte val = (byte) Math.floor(Math.random() * 127);
+				  
 				if (Math.random() > .5){
-					curRow[x] = (byte) -curRow[x];
+					val = (byte) -val;
 				}
+				curRow[x] = val;
 				
+				if (minVal[i] > val){
+					minVal[i] = val;
+				}
+				if (minVal[x] > val){
+					minVal[x] = val;
+				}
 				
 			}
 		}
@@ -183,6 +202,15 @@ public class SimilarityMatrix implements Cloneable, Serializable {
 			row[y] = val;
 			dynamicMatrix.set(x, row);
 		}
+		
+		if (x < alphabet.size() && minVal[x] > val){
+			minVal[x] = val;
+		}
+		if (y < alphabet.size() && minVal[y] > val){
+			minVal[y] = val;
+		}
+		
+		
 		return true;
 	}
 
@@ -249,6 +277,12 @@ public class SimilarityMatrix implements Cloneable, Serializable {
 	
 	public byte[] getRow(int x){
 		return dynamicMatrix.get(x);
+	}
+	
+	public byte getMin(String x){
+		int index = alphabet.get(x);
+		return minVal[index];
+
 	}
 	
 	

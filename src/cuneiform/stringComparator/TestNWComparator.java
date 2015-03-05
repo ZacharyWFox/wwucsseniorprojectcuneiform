@@ -21,8 +21,8 @@ public class TestNWComparator {
 		SumerianNWSubstringComparator.simMat = matrix;
 		SumerianNWSubstringComparator.hasMatrix = true;
 		
-		String known = "one two three";
-		String[] unknowngraphemes = { "one",   "two", "three"};
+		String known = "one two three four five six seven";
+		String[] unknowngraphemes = {  "seven" ,   "three",  "four", "two",  "six",  "five"};
 		double[] conf = new double[2];
 		int[] indx = new int[2];
 		int[] dist = new int[2];

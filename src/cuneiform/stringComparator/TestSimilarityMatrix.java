@@ -14,28 +14,6 @@ public class TestSimilarityMatrix extends SimilarityMatrix {
 		
 		//make sure actually can read from alphabet and randomize correctly
 		SimilarityMatrix test = new SimilarityMatrix("data/test.txt");
-		
-		
-		
-		String matrix = test.toString();
-		System.out.println(matrix);
-		
-		
-		//make sure clone works properly
-		SimilarityMatrix cloneTest = test.clone();
-		try {
-			byte blah = cloneTest.getCell(0, 1);
-			System.out.println("got: " + blah + "\n");
-		} catch (Exception e) {
-			
-			e.printStackTrace();
-		}
-		cloneTest.setCell(0, 1, (byte) 0);
-		
-		System.out.println("orig: \n" + test.toString());
-		
-		System.out.println("clone: \n" + cloneTest.toString());
-		
 
 		
 		try {
@@ -45,14 +23,7 @@ public class TestSimilarityMatrix extends SimilarityMatrix {
 			e1.printStackTrace();
 		}
 		System.out.println("orig after reading from file: \n" + test.toString());
-		
-		try {
-			byte score = test.score("one", "three");
-			System.out.println("Score was: " + score + "\n");
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+	
 		
 		
 	}
