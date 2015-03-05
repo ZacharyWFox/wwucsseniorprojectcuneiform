@@ -1,8 +1,14 @@
 package cuneiform.stringComparator;
 
+import java.io.Serializable;
+
 public class Confidence
-        implements Comparable<Confidence> {
-    public final int    distance;
+        implements Comparable<Confidence>, Serializable {
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = -6181427561898401804L;
+	public final int    distance;
     public final double confidence;
 
     public Confidence(int distance, double confidence) {

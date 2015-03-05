@@ -1,20 +1,25 @@
 package cuneiform;
 
 import java.io.Serializable;
-import java.util.List;
-
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
+import cuneiform.FutureState;
 import cuneiform.stringComparator.SimilarityMatrix;
+
+
+
 
 public class Citizen implements Comparable<Citizen>, Runnable, Serializable{
 
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 558045442181825459L;
+	private static final long serialVersionUID = 2504986002193445538L;
 	public SimilarityMatrix personalMatrix;
-	public int fitness;
+	public Float fitness = -1F; // Default to invalid state
 	public int IDNo;
-	private int threads = 4;     //TODO: determine the number of threads we want (method or here)
+	private Future<Float> futureFitness;
+	private FutureState futureState = FutureState.UNBORN;
 	
 	//Constructors
 	public Citizen() {
@@ -26,7 +31,7 @@ public class Citizen implements Comparable<Citizen>, Runnable, Serializable{
 		personalMatrix = new SimilarityMatrix();
 		IDNo = id;
 		//XXX For testing purposes XXX
-		fitness = (int) Math.floor(Math.random() * 100);
+		fitness = (float) Math.floor(Math.random() * 100);
 	}
 	
 	public Citizen(int id, SimilarityMatrix matrix){
@@ -34,68 +39,104 @@ public class Citizen implements Comparable<Citizen>, Runnable, Serializable{
 		personalMatrix = matrix;
 		IDNo = id;
 		//XXX For testing purposes XXX
-		fitness = (int) Math.floor(Math.random() * 100);
-	}
-
-	public void setThreads(int threads) {
-		this.threads = threads;
+		fitness = (float) Math.floor(Math.random() * 100);
 	}
 	
+	/***
+	 * Blocks until the Future fitness is ready, then sets it in this Citizen
+	 * @return Returns true if fitness was successfully set or was in the past.
+	 */
+	public boolean evaluateFitness() {
+		switch (getFutureState()){
+		case ALIVE :
+			try {
+				this.fitness = this.futureFitness.get();
+			} catch (InterruptedException | ExecutionException e) {
+				e.printStackTrace();
+				return false;
+			}
+			break;
+		case DEAD:
+			if(fitness < 0) {
+				return false;
+			}
+			break;
+		case UNBORN:
+			return false;
+		case CANCELLED:
+			return false;
+		default:
+			return false;
+		}
+		return true;
+	}
 	
-	//Overrides
+	public boolean isFitnessReady() {
+		if (this.getFutureState() == FutureState.DEAD) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+	public void setFitnessFuture(Future<Float> oddFuture) {
+		this.futureFitness = oddFuture;
+		getFutureState();
+	}
+	
+	public FutureState getFutureState() {
+		if (this.futureFitness == null) {
+			this.futureState = FutureState.UNBORN;
+		} else if (this.futureFitness.isCancelled()){
+			this.futureState = FutureState.CANCELLED;
+		} else if (this.futureFitness.isDone()) {
+			this.futureState = FutureState.DEAD;
+		} else {
+			this.futureState = FutureState.ALIVE;
+		}
+		return this.futureState;
+	}
 
 	@Override
 	public int compareTo(Citizen citizen) {
-		return Integer.compare(citizen.fitness, this.fitness);
+		return Float.compare(citizen.fitness, this.fitness);
 		
 	}
 	
 	@Override
 	public String toString(){
-		return "[Fitness: " +  Integer.toString(fitness) + " Citizen ID: " + Integer.toString(IDNo) + "]";
+		return "[Fitness: " +  Float.toString(fitness) + " Citizen ID: " + Integer.toString(IDNo) + "]";
 		
 	}
-
-
+	
 	@Override
+	//TODO: XXX
 	public void run() {
-		// TODO run the needleman-wunsch algo with personalMatrix
 		//then figure out fitness
 		
-		
-		try {
-			//extractor.call(); //TODO: implement
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} //TODO: capture return value
-		
-		cuneiform.stringComparator.SumerianNWSubstringComparator.setSimilarityMatrix(this);
-		
 		System.out.println("Citizen No: " + IDNo + " is running.");
-		// TODO: add new DateExtractor and extract some dates
+		//Submit live
+		
+		
+		
 		//EvaluateFitness();
 	}
 	
-	public int getFitness() {
+	 /***
+	  * Get the fitness. PLEASE USE isFitnessReady first, as The value may be invalid (negative) for calculations.
+	  * @return The fitness of this citizen. If the fitness has not been evaluated, then the result will be negative.
+	  */
+	public float getFitness() {
 		return this.fitness;
 	}
 	
-	private void EvaluateFitness(List<GuessPair> guesses) {
-		//TODO: implement
-		int correct = 0;
-		for(GuessPair g : guesses) {
-			if(g.isMatch()) {
-				correct++;
-			}
-		}
-		
-		if (guesses.isEmpty()) {
-			System.out.println ("ERROR: Recieved empty list of guesses. That's bad.");
-			return;
-			// TODO: throw exception?
-		}
-		
-		fitness = Math.abs(correct/guesses.size());
+	public float getFitnessTest() {
+		//XXX For testing purposes
+		if (this.fitness > 0)
+			return this.fitness;
+		else
+			return this.fitness = (float) Math.floor(Math.random() * 100);
 	}
+	
+	
+	
 }

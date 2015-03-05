@@ -1,7 +1,13 @@
 package cuneiform.tablet;
 
-public abstract class DatabaseObject {
-    private int id = -1;
+import java.io.Serializable;
+
+public abstract class DatabaseObject implements Serializable {
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = -273299798224077536L;
+	private int id = -1;
 
     public final int getID() {
         if (this.id == -1) {

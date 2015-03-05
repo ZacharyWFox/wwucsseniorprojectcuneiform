@@ -2,6 +2,8 @@ package cuneiform.stringComparator;
 
 public class SumerianLevenstheinSubstringComparator {
 
+	private static boolean Debug = true;
+	
     protected final static int minimum(int a, int b, int c) {
         int t1 = (a < b) ? (a) : (b);
         return (c < t1) ? (c) : (t1);
@@ -65,6 +67,32 @@ public class SumerianLevenstheinSubstringComparator {
                 distance[i][j] = minimum(distance[i - 1][j] + 1, distance[i][j - 1] + 1, distance[i - 1][j - 1] + cost);
             }
         }
+        
+        if (Debug){
+	        String Alignment = "[ [ _ ";
+	    	for (int i = 0; i < foundGraphemes.length; i++){
+	    		Alignment += foundGraphemes[i] + " ";
+	    	}
+	    	Alignment += "]\n";
+	    	for (int i = 0; i < knownGraphemes.length + 1; i++) {
+	    		if (i == 0){
+	    			Alignment +="_ [ ";
+	    		}
+	    		else{
+	    			Alignment += knownGraphemes[i-1] + " [ ";
+	    		}
+	    		
+	            for(int j = 0; j < foundGraphemes.length - foundStart + 1; j++) {
+	            	Alignment += distance[i][j] + " ";
+	            }
+	            Alignment += "]\n";
+	    	}
+	    	Alignment += "]";
+	    	System.out.println("Distance matrix:\n" + Alignment);
+        
+        }
+        
+        
 
         int bestIndex = 0;
         int bestValue = Integer.MAX_VALUE;

@@ -17,7 +17,11 @@ public class Name
         extends DatabaseObject
         implements Comparable<Name>
 {
-    public final String             name;
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 3812825642117582326L;
+	public final String             name;
     private final List<TabletGroup> tablets = new ArrayList<>();
 
     public Name(String name) {
