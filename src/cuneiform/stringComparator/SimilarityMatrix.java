@@ -18,7 +18,7 @@ public class SimilarityMatrix implements Cloneable, Serializable {
 	 * 
 	 */
 	private static final long serialVersionUID = -5501164272923209758L;
-
+	private static final String alphabetFilePath = "data/test.txt" ; //"data/ur3_sign_list.txt"; //relative to wwucsseniorprojectcuneiform
 	// Lower triangular adjacency matrix
 	private ArrayList<byte[]> dynamicMatrix;
 	private byte[] minVal;
@@ -28,7 +28,7 @@ public class SimilarityMatrix implements Cloneable, Serializable {
 		try 
 		{
 			if (alphabet.size() == 0){
-				readAlphabet(Parser.alphabetFilePath);
+				readAlphabet(alphabetFilePath);
 			}
 			
 			//readMatrix(Parser.alphabetFilePath); 
