@@ -6,6 +6,9 @@ import java.io.InputStreamReader;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.rmi.RemoteException;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.concurrent.ExecutionException;
@@ -14,6 +17,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
 import client.CoalMine;
+import client.LoadBalancer;
 
 public class Experiment {
 
@@ -21,12 +25,13 @@ public class Experiment {
 	private ArrayList<Citizen> Population;
 	private int GenerationNo;
 	private Citizen bestCit;
-	private ExecutorService threadPool;
 	private int newCitNo = 0;
 	private int populationMax;
 	private CitizenPool allCitizens;
 	private boolean Debug = true;
-	private ArrayList<Integer> GenHistory;
+	private ArrayList<Float> GenHistory;
+	private LoadBalancer loadBalancer;
+	private FoundDateList foundDateList;
 	
 	
 	public static void main(String[] args){
@@ -41,7 +46,27 @@ public class Experiment {
 		populationMax = populationNum;
 		Population = new ArrayList<Citizen>();
 		allCitizens = new CitizenPool((populationNum *2) + 10);
-		GenHistory = new ArrayList<Integer>();
+		GenHistory = new ArrayList<Float>();
+		loadBalancer = new LoadBalancer();
+		
+		//get the database connection
+		Connection dbConn = null;
+		try {
+			dbConn = DriverManager.getConnection(Parser.dbHost, Parser.dbUser, Parser.dbPass);
+		} catch (SQLException e) {
+			System.out.println("couldn't connect to database. Dying.");
+			e.printStackTrace();
+			 System.exit(-1);
+		}
+		
+		try {
+			foundDateList = new FoundDateList(dbConn);
+		} catch (SQLException e) {
+			System.out.println("tried to get found dates, failed miserably. Dying.");
+			e.printStackTrace();
+			System.exit(-1);
+		}
+		
 		
 		for (int i = 0; i < populationNum; i++){
 			Citizen newCit = allCitizens.getCitizen(newCitNo);
@@ -49,8 +74,7 @@ public class Experiment {
 			Population.add(newCit);
 			newCitNo++;
 		}
-		GenerationNo = 1;
-		threadPool = Executors.newFixedThreadPool(populationNum); 
+		GenerationNo = 1; 
 	}
 	
 	 
@@ -87,7 +111,7 @@ public class Experiment {
 			}
 			
 			// TODO: convert to float, fitness needs more resolution than 100.
-			GenHistory.add(new Integer((int)Population.get(0).getFitness()));
+			GenHistory.add(new Float((int)Population.get(0).getFitness()));
 			
 			
 			
@@ -183,7 +207,18 @@ public class Experiment {
 		
 		System.out.println("Generation No: " + GenerationNo);
 		System.out.println("Best citizen: " + bestCit.toString());
-		System.out.println("The best similarity matrix: " + bestCit.personalMatrix.toString());
+		String outfileName = "data/finalMatrix.txt";
+		try {
+			bestCit.personalMatrix.writeMatrix(outfileName);
+		} catch (Exception e) {
+			System.out.println("couldn't write to file...Gonna have to print out here... it's gonna be big.\n");
+			System.out.println(bestCit.personalMatrix.toString().replace("{", " ").replace("}", " "));
+			
+			e.printStackTrace();
+		}
+		System.out.println("The best similarity matrix is written to: " + outfileName);
+		
+		
 
 		
 			
@@ -193,7 +228,7 @@ public class Experiment {
 	public Citizen Mutate(Citizen A){
 
 		//Modify citizen's similarity matrix. 
-		//limit number of cells to mutate to max 100
+		//limit number of cells to mutate to max 1%
 		//limit numbers in the similarity matrix to <= 127, since it's stored in bytes (largest num represent is 127)
 		Citizen mutant = allCitizens.getCitizen(newCitNo); 
 		mutant.personalMatrix = A.personalMatrix.clone();
@@ -219,8 +254,8 @@ public class Experiment {
 			try {
 				mutant.personalMatrix.setCell(x, y, newVal);
 			} catch (Exception e) {
-				//TODO: handle gracefully
-				System.out.println("Something went horribly wrong (or there is an off by one):" + e.getMessage());
+
+				System.out.println("Something went horribly wrong (or there is an off by one) in mutate:" + e.getMessage());
 				i--;
 			}
 		}
@@ -252,14 +287,14 @@ public class Experiment {
 					try {
 						child.personalMatrix.setCell(i, j,  A.personalMatrix.getCell(i, j));
 					} catch (Exception e) {
-						System.out.println("Something went wrong (coin > .5)" + e.getMessage());
+						System.out.println("Something went wrong (coin > .5) in crossover()" + e.getMessage());
 					}
 				}
 				else if (coin <= .5){
 					try {
 						child.personalMatrix.setCell(i, j,  B.personalMatrix.getCell(i, j));
 					} catch (Exception e) {
-						System.out.println("Something went wrong (coin <= .5)" + e.getMessage());
+						System.out.println("Something went wrong (coin <= .5) in crossover()" + e.getMessage());
 					}
 				}
 				else{
@@ -267,7 +302,7 @@ public class Experiment {
 						try {
 							child.personalMatrix.setCell(i, j,  A.personalMatrix.getCell(i, j));
 						} catch (Exception e) {
-							System.out.println("Something went wrong (dealbreaker == 1). " + e.getMessage());
+							System.out.println("Something went wrong (dealbreaker == 1) in crossover(). " + e.getMessage());
 						}
 						dealbreaker = 0;
 					}
@@ -275,7 +310,7 @@ public class Experiment {
 						try {
 							child.personalMatrix.setCell(i, j,  B.personalMatrix.getCell(i, j));
 						} catch (Exception e) {
-							System.out.println("Something went wrong (dealbreaker != 1). " + e.getMessage());
+							System.out.println("Something went wrong (dealbreaker != 1) in crossover(). " + e.getMessage());
 						}
 						dealbreaker = 1;
 					}
@@ -296,36 +331,33 @@ public class Experiment {
 	}
 
 	public void Live(ArrayList<Citizen> curGen){
-		//Spawn thread for each citizen.
-		//in that thread, have the citizen run the needleman wunsch algo with their unique
-		//similarity matrix. Based off of how good they do against the data, assign them
-		//a fitness score. TODO: check out this warning
-		ArrayList<Future> futureCit = new ArrayList<Future>();
 		
-		//start the threads!
-		//TODO: 
-		for (int i = 0; i < curGen.size(); i++){
-			futureCit.add(threadPool.submit(curGen.get(i)));
+		//send them all to the mines!
+		for (Citizen curCit : curGen){
+			boolean ret = loadBalancer.sendToMine(curCit, foundDateList.getFoundDates());
 		}
-		
-		
-		//TODO deal with exceptions somehow? (stick them in the thread pool again, just record?)
-		//now that each person is doing their thing,
-		//we have to wait for all of them to finish.
-		for (int i = 0; i < futureCit.size(); i++){
-			try {
-				futureCit.get(i).get();
-				
-			} catch (InterruptedException e) {
-				// Auto-generated catch block
-				e.printStackTrace();
-			} catch (ExecutionException e) {
-				// Auto-generated catch block
-				e.printStackTrace();
+
+		//now that they're there, wait for them to die
+		for (Citizen curCit : curGen){
+			boolean result = curCit.evaluateFitness();
+			
+			if (!result){
+				//something went wrong
+
 			}
+			
+			
+			
 		}
+		
+		//got them all
+		
 	}
 	
+	
+	public void deadCitizenHistory(Citizen deadCit){
+		
+	}
 	
 	
 	public void printStatus(){
