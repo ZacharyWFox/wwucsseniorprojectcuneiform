@@ -78,6 +78,10 @@ public class Citizen implements Comparable<Citizen>, Runnable, Serializable{
 			return false;
 		}
 	}
+	public void setFitnessFuture(Future<Float> oddFuture) {
+		this.futureFitness = oddFuture;
+		getFutureState();
+	}
 	
 	public FutureState getFutureState() {
 		if (this.futureFitness == null) {

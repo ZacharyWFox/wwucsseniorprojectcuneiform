@@ -54,7 +54,9 @@ public class CoalMine {
 		return true;
 	}
 	
-	public synchronized boolean roomLeft() throws RemoteException {
+
+	
+	public synchronized boolean roomLeft() throws RemoteException {		
 		try {
 			this.numCitizens = this.server.getNumCitizens();
 		} catch (RemoteException e) {
@@ -72,9 +74,11 @@ public class CoalMine {
 		return true;
 	}
 	
-	public Future<Float> sendToMine(Citizen cit, List<FoundDate> attestations) {
-		Callable<Float> future = MineCartFactory.build(cit, attestations, this.server);
-		return threadPool.submit(future);
+	public boolean sendToMine(Citizen cit, List<FoundDate> attestations) {
+		Callable<Float> mineCart = MineCartFactory.build(cit, attestations, this.server);
+		Future<Float> future = threadPool.submit(mineCart);
+		cit.setFitnessFuture(future);
+		return true;
 	}
 	
 	/***
@@ -100,8 +104,9 @@ public class CoalMine {
     public static final String dbHost = "jdbc:mysql://cuneiform.cs.wwu.edu/cuneiform";
     public static final String dbUser = "dingo";
     public static final String dbPass = "hungry!";
-	
+    
 	public static void main(String[] args) {
+		
 		//CoalMine cm = new CoalMine("cf405-19.cs.wwu.edu");
 		CoalMine cm = new CoalMine("cf416-15.cs.wwu.edu");
 		Citizen cit = new Citizen();
