@@ -10,8 +10,26 @@ import cuneiform.FoundDate;
 public class LoadBalancer {
 	/***
 	 * List of the names (or addresses) of the nodes.
-	 */
-	String[] hostNames = new String[]{ };
+	 *///TODO: test connections to these names
+	String[] hostNames = new String[]{
+			"compute-0-0", 
+			"compute-0-1", 
+			"compute-0-2", 
+			"compute-0-3",
+			"compute-0-4", 
+			"compute-0-5", 
+			"compute-0-6", 
+			"compute-0-7",
+			"compute-0-8", 
+			"compute-0-9", 
+			"compute-0-10", 
+			"compute-0-11",
+			"compute-0-12", 
+			"compute-0-13", 
+			"compute-0-14", 
+			"compute-0-15", 
+			"compute-0-16"
+			};
 	List<CoalMine> theMines;
 	public LoadBalancer() {
 		this.theMines = new ArrayList<CoalMine>(hostNames.length);
