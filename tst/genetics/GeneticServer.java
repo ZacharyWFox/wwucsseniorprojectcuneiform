@@ -4,7 +4,6 @@ import interfaces.Server;
 
 import java.net.InetAddress;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -21,6 +20,7 @@ import cuneiform.FoundDate;
 import cuneiform.GuessPair;
 import cuneiform.CallableDateExtractor;
 import cuneiform.KnownDate;
+import cuneiform.stringComparator.SimilarityMatrix;
 
 public class GeneticServer implements Server {
 	String name = "Default";
@@ -41,20 +41,23 @@ public class GeneticServer implements Server {
 	public float live(Citizen cit, List<FoundDate> attestations)
 			throws RemoteException {
 		System.out.println("Life of citizen " + cit.IDNo + " has started.");
+		//TODO: add timestamp at beginning and end and print it to a file.		
+		incrementCitizen();
 		//return 3.14159F;
 		int divider = (int)Math.ceil(attestations.size()/threadsPerCitizen);
 		List<List<FoundDate>> threadDivisions = new ArrayList<List<FoundDate>>(threadsPerCitizen);
 		List<GuessPair> guesses = new ArrayList<GuessPair>(attestations.size());
 		
-		int min;
-		int max = -1;
+		int min = 0;
+		int max = 0;
 		int leftover;
 		
 		//divide work
+		// TODO: test
 		for (int i = 0; i < threadsPerCitizen; ++i) {
 			min = i * divider;
-			max = min + divider - 1;
-			leftover = max - (attestations.size() - 1) + 2;
+			max = min + divider;
+			leftover = max - attestations.size();
 			if(leftover > 0)
 				max -= leftover;
 			try {
@@ -67,14 +70,14 @@ public class GeneticServer implements Server {
 		// Separate
 		//Start threads
 		//
-		incrementCitizen();
+
 		
 		List<Future<List<GuessPair>>> results = new ArrayList<Future<List<GuessPair>>>(this.threadsPerCitizen);
-		
+		// Start the work
 		for (List<FoundDate> f : threadDivisions){
 			List<KnownDate> known = toKnownDateList(f);
 			
-			results.add(threads.submit(new CallableDateExtractor(null, known)));
+			results.add(threads.submit(new CallableDateExtractor(null, known, cit.personalMatrix)));
 		}
 		
 		//Join
@@ -202,9 +205,6 @@ public class GeneticServer implements Server {
 				int thds = Integer.parseInt(args[1]);
 				jenkins = new GeneticServer(cit, thds);
 			}
-			
-			
-			
 			
 			if (args.length > 2)
 				jenkins.setName(args[2]);
