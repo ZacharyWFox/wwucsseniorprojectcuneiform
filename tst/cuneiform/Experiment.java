@@ -1,6 +1,9 @@
 package cuneiform;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.InetAddress;
@@ -30,8 +33,11 @@ public class Experiment {
 	private CitizenPool allCitizens;
 	private boolean Debug = true;
 	private ArrayList<Float> GenHistory;
+	private ArrayList<Long> GenTimeHistory;
 	private LoadBalancer loadBalancer;
 	private FoundDateList foundDateList;
+	private String outputGenList = "data/CurGen";
+	private String statusFilePath = "data/status.txt";
 	
 	
 	public static void main(String[] args){
@@ -48,9 +54,9 @@ public class Experiment {
 		allCitizens = new CitizenPool((populationNum *2) + 10);
 		GenHistory = new ArrayList<Float>();
 		loadBalancer = new LoadBalancer();
-		
+		GenTimeHistory = new ArrayList<Long>();
 		//get the database connection
-		Connection dbConn = null;
+		/*Connection dbConn = null;
 		try {
 			dbConn = DriverManager.getConnection(Parser.dbHost, Parser.dbUser, Parser.dbPass);
 		} catch (SQLException e) {
@@ -65,7 +71,7 @@ public class Experiment {
 			System.out.println("tried to get found dates, failed miserably. Dying.");
 			e.printStackTrace();
 			System.exit(-1);
-		}
+		}*/
 		
 		
 		for (int i = 0; i < populationNum; i++){
@@ -86,6 +92,7 @@ public class Experiment {
 		ArrayList<Citizen> newPop = new ArrayList<Citizen>();
 		
 		while (true){
+			long starttime = System.nanoTime();
 			
 			if (Debug){
 				String curPopStr = "Current Population: \n";
@@ -101,6 +108,10 @@ public class Experiment {
 			
 			Live(Population);
 			Collections.sort(Population);
+			
+
+			
+			
 			//Top 10 are immortal
 			//rest of population for new gen is created from
 			//crossovers of current gen (randomized over entire pop, lean towards top 10 for crossover, lean away from bottom) 
@@ -201,6 +212,8 @@ public class Experiment {
 			}
 			
 			GenerationNo++;
+			long endtime = System.nanoTime();
+			GenTimeHistory.add((endtime - starttime));
 		}
 		
 		System.out.println("The program has ended. Here are the results: ");
@@ -229,7 +242,7 @@ public class Experiment {
 
 		//Modify citizen's similarity matrix. 
 		//limit number of cells to mutate to max 1%
-		//limit numbers in the similarity matrix to <= 127, since it's stored in bytes (largest num represent is 127)
+		//limit numbers in the similarity matrix to <= 127 and >= -127, since it's stored in bytes (largest num represent is 127)
 		Citizen mutant = allCitizens.getCitizen(newCitNo); 
 		mutant.personalMatrix = A.personalMatrix.clone();
 		newCitNo++;
@@ -331,13 +344,38 @@ public class Experiment {
 	}
 
 	public void Live(ArrayList<Citizen> curGen){
-		
 		//send them all to the mines!
-		for (Citizen curCit : curGen){
+		/*for (Citizen curCit : curGen){
 			boolean ret = loadBalancer.sendToMine(curCit, foundDateList.getFoundDates());
-		}
+			
+			if (!ret){
+				//something went wrong
+			}
+		}*/
+		
+					//output current best citizen to file
+			long starttimes = System.nanoTime();
+			try {
+				File genFile = new File(outputGenList);
+				
+				if (!genFile.exists()){
+					genFile.mkdir();
+				}
+				String path = genFile.getPath();
+				for (int i= 0; i < Population.size(); i++){
+					Population.get(i).personalMatrix.writeMatrix(path + "/Cit" + i + ".txt");
+				}
+				
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			long endtimes = System.nanoTime();
+			
+			System.out.println("it took: " + (endtimes - starttimes) + "nanoseconds");
 
-		//now that they're there, wait for them to die
+			
+		/*//now that they're there, wait for them to die
 		for (Citizen curCit : curGen){
 			boolean result = curCit.evaluateFitness();
 			
@@ -350,7 +388,7 @@ public class Experiment {
 			
 		}
 		
-		//got them all
+		//got them all*/
 		
 	}
 	
@@ -364,16 +402,42 @@ public class Experiment {
 		
 		String genHist = "[";
 		String genChange = "[";
+		String genTime = "[";
 		
 		for (int i = 0; i < GenHistory.size(); i++){
 			genHist += " " + GenHistory.get(i) + ",";
+			
 			if (i > 0){
 				genChange += " " + (GenHistory.get(i) - GenHistory.get(i-1)) + ",";
 			}
 		}
 		
+		for (int i = 0; i < GenTimeHistory.size(); i++){
+			genTime += " " + GenTimeHistory.get(i) + ",";
+		}
+		
+		genHist += "]";
+		genChange += "]";
+		genTime += "]";
+		
+		System.out.println("Current gen is: " + GenerationNo);
 		System.out.println("Best fitness for each Generation: " + genHist);
 		System.out.println("Change in fitness between each Generation: " + genChange);
+		System.out.print("Time to complete: " + genTime);
+		
+		
+		try {
+			BufferedWriter out = new BufferedWriter(new FileWriter(statusFilePath));
+			out.write("Best fitness for each Generation: " + genHist);
+			out.write("Change in fitness between each Generation: " + genChange);
+			out.write("Time to complete for each Generation " + genTime);
+			out.write("\n\n");
+			out.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
 		
 		
 		
