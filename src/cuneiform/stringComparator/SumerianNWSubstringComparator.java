@@ -237,7 +237,6 @@ public class SumerianNWSubstringComparator {
     }
     
     public static String[] constructAlignment(int[][] alignMatrix, String[] known, String[] unknown, SimilarityMatrix sim) {
-    	//TODO: error checking
     	int i = alignMatrix.length-1;
     	int j = alignMatrix[0].length-1;
     	StringBuilder knownAlign = new StringBuilder(); 
