@@ -153,7 +153,8 @@ public class SumerianNWSubstringComparator {
                 //go to 0
                 int denom = Math.abs(worstVal - bestValue);
                 // If our denominator is 0, we know that worstVal == finalMatch anyways, so we avoid
-                // The division by zero.
+                // The division by zero and still get good-ish data //TODO: determine (1) what best == worst implies and 
+                // (2) if that means the worst match is just really good, or if the best match is really bad. 
                 if(denom == 0) {
                 	conf[0] = 0;
                 } else {
