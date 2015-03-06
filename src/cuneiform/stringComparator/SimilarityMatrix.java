@@ -18,7 +18,7 @@ public class SimilarityMatrix implements Cloneable, Serializable {
 	 * 
 	 */
 	private static final long serialVersionUID = -5501164272923209758L;
-	private static final String alphabetFilePath = "data/test.txt" ; //"data/ur3_sign_list.txt"; //relative to wwucsseniorprojectcuneiform
+	private static final String alphabetFilePath = "data/signs.txt"; //relative to wwucsseniorprojectcuneiform
 	// Lower triangular adjacency matrix
 	private ArrayList<byte[]> dynamicMatrix;
 	private byte[] minVal;
@@ -30,8 +30,6 @@ public class SimilarityMatrix implements Cloneable, Serializable {
 			if (alphabet.size() == 0){
 				readAlphabet(alphabetFilePath);
 			}
-			boolean wereOK = alphabet.containsKey("bi2");
-			boolean wereOK2 = alphabet.containsKey("bi2");
 			//readMatrix(Parser.alphabetFilePath); 
 			
 		}
@@ -272,6 +270,17 @@ public class SimilarityMatrix implements Cloneable, Serializable {
 	}
 	
 	
+	
+	
+	public String detectMetaData(String x) {
+		String lower = x.toLowerCase();
+		if (lower.contains("{ki}")) {
+			return "{ki}";
+		}
+		
+		return "";
+	}
+	
 	//use this in mutate
 	public SimilarityMatrix clone(){
 		return new SimilarityMatrix(this);
@@ -283,10 +292,23 @@ public class SimilarityMatrix implements Cloneable, Serializable {
 	
 	public byte getMin(String x){
 		if(x == null || x.isEmpty()) {
-			
+			return 0;
 		}
-		int index = alphabet.get(x);
-		return minVal[index];
+		
+		int index = 0;
+		if (alphabet.containsKey(x.trim())) {
+			index = alphabet.get(x);
+		}
+		else {
+			System.out.println("Grapheme " + x + " was not in the alphabet, defaulting to 0.");
+			return 0;
+		}
+		
+		if (index >= 0 && index < minVal.length){
+			return minVal[index];
+		} else {
+			return 0;
+		}
 
 	}
 	

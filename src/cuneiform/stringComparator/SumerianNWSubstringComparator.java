@@ -151,7 +151,15 @@ public class SumerianNWSubstringComparator {
             	//if finalMatch is the same as bestValue, we get 1. as finalMatch gets closer
                 //to the worst possible value, the top gets closer and closer to 0, making the confidence
                 //go to 0
-            	conf[0] = (100.0 * Math.abs(worstVal - finalMatch) / Math.abs(worstVal - bestValue)) ;
+                int denom = Math.abs(worstVal - bestValue);
+                // If our denominator is 0, we know that worstVal == finalMatch anyways, so we avoid
+                // The division by zero.
+                if(denom == 0) {
+                	conf[0] = 0;
+                } else {
+                	conf[0] = (100.0 * Math.abs(worstVal - finalMatch) / denom) ;
+                }
+                
             	dist[0] = Math.abs(worstVal - finalMatch);
                 indx[0] = allFoundGraphemes.length - 1; //TODO: FIX
                 
