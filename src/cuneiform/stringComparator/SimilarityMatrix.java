@@ -30,7 +30,8 @@ public class SimilarityMatrix implements Cloneable, Serializable {
 			if (alphabet.size() == 0){
 				readAlphabet(Parser.alphabetFilePath);
 			}
-			
+			boolean wereOK = alphabet.containsKey("bi2");
+			boolean wereOK2 = alphabet.containsKey("bi2");
 			//readMatrix(Parser.alphabetFilePath); 
 			
 		}
@@ -92,7 +93,7 @@ public class SimilarityMatrix implements Cloneable, Serializable {
 				String blah;
 				int i = 0;
 				while (in.ready()){
-					blah = in.readLine();
+					blah = in.readLine().trim();
 					alphabet.put(blah, i++);
 				}
 				in.close();
@@ -151,7 +152,8 @@ public class SimilarityMatrix implements Cloneable, Serializable {
 		
 		if (indexA == null || indexB == null){
 			// If the either of the index lookups failed, we need to whine
-			throw new Exception("grapheme not found!");
+			
+			return 0;
 		}
 		
 		return getCell(indexA, indexB);		
@@ -280,6 +282,9 @@ public class SimilarityMatrix implements Cloneable, Serializable {
 	}
 	
 	public byte getMin(String x){
+		if(x == null || x.isEmpty()) {
+			
+		}
 		int index = alphabet.get(x);
 		return minVal[index];
 

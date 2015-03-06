@@ -63,7 +63,7 @@ public class GeneticServer implements Server {
 				max -= leftover;
 			try {
 				threadDivisions.add(attestations.subList(min, max));
-				System.out.printf("Gave thread %i elements %i - %i.\n", i, min, max);
+				System.out.printf("Gave thread %d elements %d - %d.\n", i, min, max);
 			} catch (Exception e) {
 				System.out.println("Sublist failed.");
 			}
@@ -95,7 +95,7 @@ public class GeneticServer implements Server {
 				e.printStackTrace();
 			}
 		}
-		System.out.printf("Citizen %i lived for %l milliseconds...RIP.\n", System.currentTimeMillis() - threadSt);
+		System.out.printf("Citizen %d lived for %d milliseconds...RIP.\n", cit.IDNo, System.currentTimeMillis() - threadSt);
 		// Get fitness
 		float fitness = 0;
 		try {

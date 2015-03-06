@@ -9,7 +9,7 @@ public class SumerianNWSubstringComparator {
 	static SimilarityMatrix simMat;
 	// A flag that prevents compares from accessing similarity matrix if it is null.
 	static boolean hasMatrix = false;
-    static boolean debug = true; // If true, print debug messages in this class
+    static boolean debug = false; // If true, print debug messages in this class
     // foundStart is an offset of the tablet text. fix this if we can.
     // 
     public static void compare(String known, String[] allFoundGraphemes, 
@@ -63,6 +63,8 @@ public class SumerianNWSubstringComparator {
         	//if finalMatch is the same as bestValue, we get 1. as finalMatch gets closer
             //to the worst possible value, the top gets closer and closer to 0, making the confidence
             //go to 0
+            
+            
         	conf[0] = (100.0 * Math.abs(worstVal - finalMatch) / Math.abs(worstVal - bestValue)) ;
         	dist[0] = Math.abs(worstVal - finalMatch);
             indx[0] = 0;
@@ -133,12 +135,14 @@ public class SumerianNWSubstringComparator {
 
                 int bestValue = 0;
                 for (int i = 0; i < knownGraphemes.length; i++){
-                	bestValue += similarity(knownGraphemes[i], knownGraphemes[i]);
+                	bestValue += similarity(knownGraphemes[i], knownGraphemes[i], sim);
                 }
 
+                //TODO: why the NPE's?
                 int worstVal = 0;
+                worstVal = -126;
                 for (int i = 0; i < knownGraphemes.length; i++){
-                	worstVal += simMat.getMin(knownGraphemes[i]);
+                	worstVal += sim.getMin(knownGraphemes[i]);
                 }
                 for (int i = 0; i < foundGraphemes.length - knownGraphemes.length; i++){
                 	worstVal += linGap();
@@ -149,7 +153,7 @@ public class SumerianNWSubstringComparator {
                 //go to 0
             	conf[0] = (100.0 * Math.abs(worstVal - finalMatch) / Math.abs(worstVal - bestValue)) ;
             	dist[0] = Math.abs(worstVal - finalMatch);
-                indx[0] = 0;
+                indx[0] = allFoundGraphemes.length - 1; //TODO: FIX
                 
                 if (debug) {
                 	String Alignment = "[ [ _ ";
@@ -174,7 +178,7 @@ public class SumerianNWSubstringComparator {
                 	System.out.println("Alignment matrix:\n" + Alignment);
                 	
                 	
-    	            String[] optAligns = constructAlignment(alignment, knownGraphemes, foundGraphemes);
+    	            String[] optAligns = constructAlignment(alignment, knownGraphemes, foundGraphemes, sim);
     	            
     	            System.out.printf("aligned\n%s and %s as\n%s\n%s\n%s\nindels: %s\n", 
     	            		joinAlignment(knownGraphemes), joinAlignment(foundGraphemes), 
@@ -320,7 +324,7 @@ public class SumerianNWSubstringComparator {
 		try {
 			cost += sim.score(graphemeA, graphemeB);
 		} catch (Exception e) {
-			System.out.println("No Similarity matrix was found.");
+			return 0;
 		}
     	return cost;
     }

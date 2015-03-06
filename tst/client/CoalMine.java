@@ -106,7 +106,7 @@ public class CoalMine {
 	public static void main(String[] args) {
 		
 		//CoalMine cm = new CoalMine("cf405-19.cs.wwu.edu");
-		CoalMine cm = new CoalMine("cf416-15.cs.wwu.edu");
+		CoalMine cm = new CoalMine("cf405-13.cs.wwu.edu");
 		Citizen cit = new Citizen();
 		registerMySqlDriver();
 		
@@ -120,7 +120,7 @@ public class CoalMine {
 			
 			float f = cm.server.live(cit, firstDate);
 			
-			//float g = belh.server.live(null, null);
+//			float g = belh.server.live(null, null);
 			System.out.println("Running client on " + InetAddress.getLocalHost().getHostName());
 			System.out.println("Float " + f + " recieved from server on:\n" +cm.server.getHostName());
 			//System.out.println("Float " + g + " recieved from server on:\n" + belh.server.getHostName());
