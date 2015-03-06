@@ -31,13 +31,15 @@ public class Experiment {
 	private int newCitNo = 0;
 	private int populationMax;
 	private CitizenPool allCitizens;
-	private boolean Debug = true;
+	private boolean Debug = false;
 	private ArrayList<Float> GenHistory;
 	private ArrayList<Long> GenTimeHistory;
 	private LoadBalancer loadBalancer;
 	private FoundDateList foundDateList;
 	private String outputGenList = "data/CurGen";
 	private String statusFilePath = "data/status.txt";
+	private String outfileName = "data/finalMatrix.txt";
+	private boolean quitNow = false;
 	
 	
 	public static void main(String[] args){
@@ -85,13 +87,17 @@ public class Experiment {
 	
 	 
 	public void runExperiment(){
-		int creamOfCrop = 3;
+		int creamOfCrop = 10;
 		double mutantPercent = .2;
 		BufferedReader cin = new BufferedReader( new InputStreamReader(System.in));
 
 		ArrayList<Citizen> newPop = new ArrayList<Citizen>();
 		
 		while (true){
+			
+			
+			
+			
 			long starttime = System.nanoTime();
 			
 			if (Debug){
@@ -107,6 +113,9 @@ public class Experiment {
 			
 			
 			Live(Population);
+			if (quitNow){
+				break;
+			}
 			Collections.sort(Population);
 			
 
@@ -121,7 +130,7 @@ public class Experiment {
 				bestCit = Population.get(0);
 			}
 			
-			// TODO: convert to float, fitness needs more resolution than 100.
+			// convert to float, fitness needs more resolution than 100.
 			GenHistory.add(new Float((int)Population.get(0).getFitness()));
 			
 			
@@ -213,14 +222,14 @@ public class Experiment {
 			
 			GenerationNo++;
 			long endtime = System.nanoTime();
-			GenTimeHistory.add((endtime - starttime));
+			GenTimeHistory.add((endtime - starttime)/1000000000);
 		}
 		
 		System.out.println("The program has ended. Here are the results: ");
 		
 		System.out.println("Generation No: " + GenerationNo);
 		System.out.println("Best citizen: " + bestCit.toString());
-		String outfileName = "data/finalMatrix.txt";
+		
 		try {
 			bestCit.personalMatrix.writeMatrix(outfileName);
 		} catch (Exception e) {
@@ -344,16 +353,19 @@ public class Experiment {
 	}
 
 	public void Live(ArrayList<Citizen> curGen){
+		BufferedReader cin = new BufferedReader( new InputStreamReader(System.in));
+		
 		//send them all to the mines!
-		/*for (Citizen curCit : curGen){
-			boolean ret = loadBalancer.sendToMine(curCit, foundDateList.getFoundDates());
+		for (Citizen curCit : curGen){
+			boolean ret = loadBalancer.sendToMine(curCit, new ArrayList<FoundDate>());
 			
 			if (!ret){
 				//something went wrong
 			}
-		}*/
+		}
 		
-					//output current best citizen to file
+			//output all current citizens to file (for catastrophic overload)
+			//overlapping time that citzens need to calculate fitness
 			long starttimes = System.nanoTime();
 			try {
 				File genFile = new File(outputGenList);
@@ -367,15 +379,16 @@ public class Experiment {
 				}
 				
 			} catch (Exception e) {
-				// TODO Auto-generated catch block
+
 				e.printStackTrace();
 			}
 			long endtimes = System.nanoTime();
 			
-			System.out.println("it took: " + (endtimes - starttimes) + "nanoseconds");
-
+			if (Debug){
+				System.out.println("it took: " + (endtimes - starttimes) + "nanoseconds");
+			}
 			
-		/*//now that they're there, wait for them to die
+		//now that they're there, wait for them to die
 		for (Citizen curCit : curGen){
 			boolean result = curCit.evaluateFitness();
 			
@@ -385,15 +398,26 @@ public class Experiment {
 			}
 			
 			
+			try {
+				if (cin.ready()){
+					String line = cin.readLine();
+					if (line.toLowerCase().equalsIgnoreCase("quit")){
+						quitNow = true;
+					}
+					if (line.toLowerCase().equalsIgnoreCase("status")){
+						printStatus();
+					}
+				}
+			} catch (IOException e) {
+				
+				e.printStackTrace();
+			}
+			
 			
 		}
 		
-		//got them all*/
-		
-	}
-	
-	
-	public void deadCitizenHistory(Citizen deadCit){
+		//got them all
+		return;
 		
 	}
 	
@@ -423,18 +447,18 @@ public class Experiment {
 		System.out.println("Current gen is: " + GenerationNo);
 		System.out.println("Best fitness for each Generation: " + genHist);
 		System.out.println("Change in fitness between each Generation: " + genChange);
-		System.out.print("Time to complete: " + genTime);
+		System.out.print("Time to complete each Generation (in sec): " + genTime);
 		
 		
 		try {
 			BufferedWriter out = new BufferedWriter(new FileWriter(statusFilePath));
-			out.write("Best fitness for each Generation: " + genHist);
-			out.write("Change in fitness between each Generation: " + genChange);
-			out.write("Time to complete for each Generation " + genTime);
-			out.write("\n\n");
+			out.append("Best fitness for each Generation: " + genHist);
+			out.append("Change in fitness between each Generation: " + genChange);
+			out.append("Time to complete for each Generation (in sec) " + genTime);
+			out.append("\n\n");
 			out.close();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
+			
 			e.printStackTrace();
 		}
 

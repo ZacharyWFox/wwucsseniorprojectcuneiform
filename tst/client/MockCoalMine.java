@@ -64,7 +64,9 @@ public class MockCoalMine {
     }
 	
 	
-
+    public String toString(){
+    	return "[Num of Citizens in me: " + numCitizens + "]";
+    }
 
 	
 	

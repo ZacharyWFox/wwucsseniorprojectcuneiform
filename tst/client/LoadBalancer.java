@@ -33,15 +33,15 @@ public class LoadBalancer {
 	List<CoalMine> theMines;
 	public List<MockCoalMine> fakeMines;
 	public LoadBalancer() {
-		//this.theMines = new ArrayList<CoalMine>(hostNames.length);
-		this.fakeMines = new ArrayList<MockCoalMine>(hostNames.length);
+		this.theMines = new ArrayList<CoalMine>(hostNames.length);
+		//this.fakeMines = new ArrayList<MockCoalMine>(hostNames.length);
 		generateMines(hostNames);
 	}
 	
 	private void generateMines(String[] hosts) {
 		for (String name : hosts) {
-			//this.theMines.add(new CoalMine(name));
-			this.fakeMines.add(new MockCoalMine(name));
+			this.theMines.add(new CoalMine(name));
+			//this.fakeMines.add(new MockCoalMine(name));
 		}
 	}
 	
@@ -53,7 +53,7 @@ public class LoadBalancer {
 	 */
 	public boolean sendToMine(Citizen cit, List<FoundDate> attestations) {
 		//randomize starting index means less likely to hit full one right off the bat
-		int size = fakeMines.size();
+		int size = theMines.size();
 		int startIndex = (int) Math.floor(Math.random() * size);
 		int i = (startIndex+1) % size;
 		
@@ -63,7 +63,7 @@ public class LoadBalancer {
 				//looped through the whole thing, nobody's available!
 				return false;
 			}
-			MockCoalMine curMine = fakeMines.get(i);
+			CoalMine curMine = theMines.get(i);
 			try {
 				if (curMine.roomLeft()){
 					 return curMine.sendToMine(cit, attestations);
