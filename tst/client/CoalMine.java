@@ -17,8 +17,10 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
 import cuneiform.Citizen;
+import cuneiform.DateExtractor;
 import cuneiform.FoundDate;
 import cuneiform.FoundDateList;
+import cuneiform.KnownDate;
 
 public class CoalMine {
 	String host;
@@ -26,13 +28,14 @@ public class CoalMine {
 	int citizenCap = 4;
 	int numCitizens = 0;
 	ExecutorService threadPool;
-	public CoalMine(String hostname) {
+	public CoalMine(String hostname, List<KnownDate> known) {
 //		if(System.getSecurityManager() == null) {
 //			System.setSecurityManager(new SecurityManager());
 //		}
 		this.host = hostname;
 		load(this.host);
 		this.threadPool = Executors.newCachedThreadPool();
+		this.server.setAllKnownDates(known);
 	}
 	
 	private boolean load(String hostname) {
@@ -106,8 +109,7 @@ public class CoalMine {
 	public static void main(String[] args) {
 		
 		//CoalMine cm = new CoalMine("cf405-19.cs.wwu.edu");
-		CoalMine cm = new CoalMine("cf405-13.cs.wwu.edu");
-		Citizen cit = new Citizen();
+
 		registerMySqlDriver();
 		
 		
@@ -115,6 +117,9 @@ public class CoalMine {
 		try {
 			
 			Connection conn = DriverManager.getConnection(dbHost, dbUser, dbPass);
+			
+			CoalMine cm = new CoalMine("cf405-13.cs.wwu.edu", DateExtractor.readKnownYears(conn));
+			Citizen cit = new Citizen();
 			
 			List<FoundDate> firstDate = (new FoundDateList(conn)).getFoundDates();
 			

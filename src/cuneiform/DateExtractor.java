@@ -33,6 +33,14 @@ public class DateExtractor {
     	this.knownMonths = months;
     	this.knownYears = years;
     }
+    
+    
+    public DateExtractor() throws SQLException{
+    	Connection conn = null;//TODO:get a connection.
+    	
+    	this.knownMonths = readKnownMonths(conn);
+    	this.knownYears = readKnownYears(conn);
+    }
 
     private List<KnownDate> readKnownMonths(Connection conn)
             throws SQLException
@@ -55,7 +63,7 @@ public class DateExtractor {
         return months;
     }
 
-    private List<KnownDate> readKnownYears(Connection conn)
+    public static List<KnownDate> readKnownYears(Connection conn)
             throws SQLException
     {
         List<KnownDate> years = new ArrayList<KnownDate>();
@@ -126,15 +134,16 @@ public class DateExtractor {
     	return allGuesses;
     }
     
-    public List<GuessPair> alignYears(SimilarityMatrix sim){
+    public List<GuessPair> alignYears(List<FoundDate> toAlign, SimilarityMatrix sim){
     	List<GuessPair> allFound = new ArrayList<GuessPair>(this.knownYears.size());
     	FoundDate found;
     	String[] graphemes;
     	GuessPair guess;
-    	for( KnownDate k : this.knownYears) {
-    		graphemes = k.getText().split("-| ");
+    	for( FoundDate f : toAlign) {
+
+    		graphemes = f.foundDate.split("-| ");
     		found = alignDateString(graphemes, sim);
-    		guess = new GuessPair(k, found);
+    		guess = new GuessPair(f.date, found);
     		allFound.add(guess);
     	}
     	return allFound;

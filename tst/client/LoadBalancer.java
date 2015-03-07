@@ -6,6 +6,7 @@ import java.util.List;
 
 import cuneiform.Citizen;
 import cuneiform.FoundDate;
+import cuneiform.KnownDate;
 
 public class LoadBalancer {
 	/***
@@ -32,15 +33,16 @@ public class LoadBalancer {
 			};
 	List<CoalMine> theMines;
 	public List<MockCoalMine> fakeMines;
-	public LoadBalancer() {
+	public LoadBalancer(List<KnownDate> allKnownDates) {
 		this.theMines = new ArrayList<CoalMine>(hostNames.length);
 		//this.fakeMines = new ArrayList<MockCoalMine>(hostNames.length);
-		generateMines(hostNames);
+		
+		generateMines(hostNames, allKnownDates);
 	}
 	
-	private void generateMines(String[] hosts) {
+	private void generateMines(String[] hosts, List<KnownDate> allKnownDates) {
 		for (String name : hosts) {
-			this.theMines.add(new CoalMine(name));
+			this.theMines.add(new CoalMine(name, allKnownDates));
 			//this.fakeMines.add(new MockCoalMine(name));
 		}
 	}

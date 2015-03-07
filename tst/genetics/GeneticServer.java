@@ -29,12 +29,17 @@ public class GeneticServer implements Server {
 	int currentCitizens = 0;
 	int capCitizens = 6;
 	int threadsPerCitizen = 4;
+	List<KnownDate> allKnownDates;
 	
 	public GeneticServer(int citizenCap, int threadsPerCit) {
 		super();
 		this.threadsPerCitizen = threadsPerCit;
 		this.capCitizens = citizenCap;
 		this.threads = Executors.newFixedThreadPool(24);
+	}
+	
+	public void setAllKnownDates(List<KnownDate> dates) {
+		this.allKnownDates = dates;
 	}
 	
 	@Override
@@ -78,9 +83,9 @@ public class GeneticServer implements Server {
 		// Start the work
 		long threadSt = System.currentTimeMillis();
 		for (List<FoundDate> f : threadDivisions){
-			List<KnownDate> known = toKnownDateList(f);
+			//List<KnownDate> known = toKnownDateList(f);
 			
-			results.add(threads.submit(new CallableDateExtractor(null, known, cit.personalMatrix)));
+			results.add(threads.submit(new CallableDateExtractor(null, allKnownDates, f, cit.personalMatrix)));
 		}
 		
 		//Join

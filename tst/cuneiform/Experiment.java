@@ -14,6 +14,7 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -44,7 +45,7 @@ public class Experiment {
 	
 	public static void main(String[] args){
 	
-		Experiment blah = new Experiment(10);		
+		Experiment blah = new Experiment(10); //TODO 		
 		blah.runExperiment();
 	}
 	
@@ -55,12 +56,16 @@ public class Experiment {
 		Population = new ArrayList<Citizen>();
 		allCitizens = new CitizenPool((populationNum *2) + 10);
 		GenHistory = new ArrayList<Float>();
-		loadBalancer = new LoadBalancer();
+		
 		GenTimeHistory = new ArrayList<Long>();
 		//get the database connection
-		/*Connection dbConn = null;
+		List<KnownDate> allKnownDates = null;
+		Connection dbConn = null;
 		try {
 			dbConn = DriverManager.getConnection(Parser.dbHost, Parser.dbUser, Parser.dbPass);
+			System.out.println("DB connection secured.");
+			allKnownDates = DateExtractor.readKnownYears(dbConn);
+			System.out.println("KnownYears read.");
 		} catch (SQLException e) {
 			System.out.println("couldn't connect to database. Dying.");
 			e.printStackTrace();
@@ -73,8 +78,9 @@ public class Experiment {
 			System.out.println("tried to get found dates, failed miserably. Dying.");
 			e.printStackTrace();
 			System.exit(-1);
-		}*/
+		}
 		
+		loadBalancer = new LoadBalancer(allKnownDates);
 		
 		for (int i = 0; i < populationNum; i++){
 			Citizen newCit = allCitizens.getCitizen(newCitNo);

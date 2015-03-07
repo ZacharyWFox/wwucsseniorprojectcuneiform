@@ -6,9 +6,11 @@ import java.util.List;
 
 import cuneiform.Citizen;
 import cuneiform.FoundDate;
+import cuneiform.KnownDate;
 
 public interface Server extends Remote {
 	float live(Citizen cit, List<FoundDate> attestations) throws RemoteException;
+	public void setAllKnownDates(List<KnownDate> dates);
 	String getName() throws RemoteException;
 	void setName(String name) throws RemoteException;
 	

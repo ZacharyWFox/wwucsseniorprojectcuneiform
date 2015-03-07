@@ -12,10 +12,12 @@ public class CallableDateExtractor implements Callable<List<GuessPair>>{
 	
 	DateExtractor extranctinator;
 	SimilarityMatrix simMat;
+	List<FoundDate> sample;
 	// this extracts dates and only dates...parallelelely.
-	public CallableDateExtractor(List<KnownDate> months, List<KnownDate> years, SimilarityMatrix sim) {
+	public CallableDateExtractor(List<KnownDate> months, List<KnownDate> years, List<FoundDate> sample, SimilarityMatrix sim) {
 		this.extranctinator = new DateExtractor(months, years);	
 		this.simMat = sim;
+		this.sample = sample;
 	}
 	
 	@Override
@@ -29,7 +31,7 @@ public class CallableDateExtractor implements Callable<List<GuessPair>>{
 		
 //		@SuppressWarnings("unchecked")
 //		List<KnownDate> clone = (List<KnownDate>)((ArrayList<KnownDate>)this.extranctinator.knownYears).clone();
-		guesses = this.extranctinator.alignYears(this.simMat);
+		guesses = this.extranctinator.alignYears(this.sample, this.simMat);
 		
 		//TODO: LOOP
 //		while((attestation = DateFactory.get()) != null) {
