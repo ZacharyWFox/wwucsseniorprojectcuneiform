@@ -31,16 +31,21 @@ public class LoadBalancer {
 			"compute-0-15", 
 			"compute-0-16"
 			};
+	//XXX
+	String[] testNames = new String[]{
+		"cf405-13",
+		"cf405-16"
+	};
 	List<CoalMine> theMines;
 	public List<MockCoalMine> fakeMines;
-	public LoadBalancer(List<KnownDate> allKnownDates) {
+	public LoadBalancer(List<KnownDate> allKnownDates) throws RemoteException{
 		this.theMines = new ArrayList<CoalMine>(hostNames.length);
 		//this.fakeMines = new ArrayList<MockCoalMine>(hostNames.length);
 		
 		generateMines(hostNames, allKnownDates);
 	}
 	
-	private void generateMines(String[] hosts, List<KnownDate> allKnownDates) {
+	private void generateMines(String[] hosts, List<KnownDate> allKnownDates) throws RemoteException{
 		for (String name : hosts) {
 			this.theMines.add(new CoalMine(name, allKnownDates));
 			//this.fakeMines.add(new MockCoalMine(name));

@@ -160,9 +160,12 @@ public class SumerianNWSubstringComparator {
                 } else {
                 	conf[0] = (100.0 * Math.abs(worstVal - finalMatch) / denom) ;
                 }
+                if (conf[0] > 100.0) {
+                	conf[0] = 100.0;
+                }
                 
             	dist[0] = Math.abs(worstVal - finalMatch);
-                indx[0] = allFoundGraphemes.length - 1; //TODO: FIX
+                indx[0] = allFoundGraphemes.length; //TODO: FIX
                 
                 if (debug) {
                 	String Alignment = "[ [ _ ";

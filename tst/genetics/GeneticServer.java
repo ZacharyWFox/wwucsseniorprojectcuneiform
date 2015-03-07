@@ -221,7 +221,7 @@ public class GeneticServer implements Server {
 			
 			Server stub = (Server) UnicastRemoteObject.exportObject(jenkins, 0);
 			
-			Registry registry = LocateRegistry.getRegistry();
+			Registry registry = LocateRegistry.createRegistry(1099);
 			registry.rebind(key, stub);
 		} catch (Exception e) {
 			System.out.println("Failed to start GeneticServer");

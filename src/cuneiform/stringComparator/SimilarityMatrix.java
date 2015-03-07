@@ -300,7 +300,7 @@ public class SimilarityMatrix implements Cloneable, Serializable {
 			index = alphabet.get(x);
 		}
 		else {
-			System.out.println("Grapheme " + x + " was not in the alphabet, defaulting to 0.");
+			//System.out.println("Grapheme " + x + " was not in the alphabet, defaulting to 0.");
 			return 0;
 		}
 		

@@ -28,7 +28,7 @@ public class CoalMine {
 	int citizenCap = 4;
 	int numCitizens = 0;
 	ExecutorService threadPool;
-	public CoalMine(String hostname, List<KnownDate> known) {
+	public CoalMine(String hostname, List<KnownDate> known) throws RemoteException {
 //		if(System.getSecurityManager() == null) {
 //			System.setSecurityManager(new SecurityManager());
 //		}
@@ -118,17 +118,19 @@ public class CoalMine {
 			
 			Connection conn = DriverManager.getConnection(dbHost, dbUser, dbPass);
 			
-			CoalMine cm = new CoalMine("cf405-13.cs.wwu.edu", DateExtractor.readKnownYears(conn));
+			CoalMine cm = new CoalMine("cf405-13", DateExtractor.readKnownYears(conn));
+			CoalMine cm2 = new CoalMine("cf405-16", DateExtractor.readKnownYears(conn));
 			Citizen cit = new Citizen();
+			Citizen cit2 = new Citizen();
 			
 			List<FoundDate> firstDate = (new FoundDateList(conn)).getFoundDates();
 			
 			float f = cm.server.live(cit, firstDate);
-			
+			float g = cm2.server.live(cit2, firstDate);
 //			float g = belh.server.live(null, null);
 			System.out.println("Running client on " + InetAddress.getLocalHost().getHostName());
 			System.out.println("Float " + f + " recieved from server on:\n" +cm.server.getHostName());
-			//System.out.println("Float " + g + " recieved from server on:\n" + belh.server.getHostName());
+			System.out.println("Float " + g + " recieved from server on:\n" + cm2.server.getHostName());
 		} catch (RemoteException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

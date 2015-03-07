@@ -140,10 +140,11 @@ public class DateExtractor {
     	String[] graphemes;
     	GuessPair guess;
     	for( FoundDate f : toAlign) {
-
+    		long time = System.currentTimeMillis();
     		graphemes = f.foundDate.split("-| ");
     		found = alignDateString(graphemes, sim);
     		guess = new GuessPair(f.date, found);
+    		System.out.println("Alignment took " + (System.currentTimeMillis() - time) + " seconds.");
     		allFound.add(guess);
     	}
     	return allFound;

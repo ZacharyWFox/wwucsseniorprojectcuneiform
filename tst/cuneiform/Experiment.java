@@ -40,12 +40,13 @@ public class Experiment {
 	private String outputGenList = "data/CurGen";
 	private String statusFilePath = "data/status.txt";
 	private String outfileName = "data/finalMatrix.txt";
+	private Connection dbConn;
 	private boolean quitNow = false;
 	
 	
 	public static void main(String[] args){
 	
-		Experiment blah = new Experiment(10); //TODO 		
+		Experiment blah = new Experiment(10); //TODO correct number		
 		blah.runExperiment();
 	}
 	
@@ -60,8 +61,8 @@ public class Experiment {
 		GenTimeHistory = new ArrayList<Long>();
 		//get the database connection
 		List<KnownDate> allKnownDates = null;
-		Connection dbConn = null;
 		try {
+			registerMySqlDriver();
 			dbConn = DriverManager.getConnection(Parser.dbHost, Parser.dbUser, Parser.dbPass);
 			System.out.println("DB connection secured.");
 			allKnownDates = DateExtractor.readKnownYears(dbConn);
@@ -79,8 +80,14 @@ public class Experiment {
 			e.printStackTrace();
 			System.exit(-1);
 		}
+		try {
+			loadBalancer = new LoadBalancer(allKnownDates);
+		} catch (RemoteException e) {
+			System.out.println("Couldn't start load Balancer. Taking arrow to face.");
+			e.printStackTrace();
+			System.exit(-1);
+		}
 		
-		loadBalancer = new LoadBalancer(allKnownDates);
 		
 		for (int i = 0; i < populationNum; i++){
 			Citizen newCit = allCitizens.getCitizen(newCitNo);
@@ -91,7 +98,33 @@ public class Experiment {
 		GenerationNo = 1; 
 	}
 	
-	 
+	private static void registerMySqlDriver()
+    {
+    	/*
+    	 * 	Steps to register MySQL JDBC under Ubuntu:
+    	 * 		1. sudo apt-get install libmysql-java
+    	 * 		2. Ensure that /usr/share/java/mysql.jar exists.
+    	 * 		3. Register external .jar with your IDE.
+    	 * 			In Eclipse:
+    	 * 			Project --> Properties --> Java Build Path
+    	 * 				--> Add External JARs...
+    	 */
+    	try
+    	{
+    		// Register the MySQL JDBC driver.
+    		
+    		Class.forName("com.mysql.jdbc.Driver");
+    	}
+    	catch (ClassNotFoundException e)
+    	{
+    		// The MySQL Java connector does not appear to be installed.
+    		// There's not much we can do about that !
+    		
+    		System.err.println("Failed to register the JDBC driver.");
+    		e.printStackTrace();
+    	}
+    } 
+	
 	public void runExperiment(){
 		int creamOfCrop = 10;
 		double mutantPercent = .2;
@@ -360,10 +393,27 @@ public class Experiment {
 
 	public void Live(ArrayList<Citizen> curGen){
 		BufferedReader cin = new BufferedReader( new InputStreamReader(System.in));
-		
+		List<FoundDate> nthDateIKnow;
+		try {
+			if(dbConn.isClosed()) {
+				dbConn = DriverManager.getConnection(Parser.dbHost, Parser.dbUser, Parser.dbPass);
+			}
+			
+			nthDateIKnow = (new FoundDateList(dbConn)).getFoundDates();
+		} catch (SQLException e) {
+			try {
+				dbConn = DriverManager.getConnection(Parser.dbHost, Parser.dbUser, Parser.dbPass);
+				nthDateIKnow = (new FoundDateList(dbConn)).getFoundDates();
+			} catch (SQLException e1) {
+				System.out.println("Tried to reconnect to database and failed. *Dies of preventable illness*");
+				e1.printStackTrace();
+				this.quitNow = true;
+				return;
+			}			
+		}
 		//send them all to the mines!
 		for (Citizen curCit : curGen){
-			boolean ret = loadBalancer.sendToMine(curCit, new ArrayList<FoundDate>());
+			boolean ret = loadBalancer.sendToMine(curCit, nthDateIKnow);
 			
 			if (!ret){
 				//something went wrong

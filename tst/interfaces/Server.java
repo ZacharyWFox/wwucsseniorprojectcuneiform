@@ -10,7 +10,7 @@ import cuneiform.KnownDate;
 
 public interface Server extends Remote {
 	float live(Citizen cit, List<FoundDate> attestations) throws RemoteException;
-	public void setAllKnownDates(List<KnownDate> dates);
+	void setAllKnownDates(List<KnownDate> dates) throws RemoteException;
 	String getName() throws RemoteException;
 	void setName(String name) throws RemoteException;
 	
