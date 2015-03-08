@@ -32,7 +32,7 @@ public class Experiment {
 	private int newCitNo = 0;
 	private int populationMax;
 	private CitizenPool allCitizens;
-	private boolean Debug = false;
+	private boolean Debug = true;
 	private ArrayList<Float> GenHistory;
 	private ArrayList<Long> GenTimeHistory;
 	private LoadBalancer loadBalancer;
@@ -46,7 +46,8 @@ public class Experiment {
 	
 	public static void main(String[] args){
 	
-		Experiment blah = new Experiment(10); //TODO correct number		
+		Experiment blah = new Experiment(15); //TODO correct number	
+//		Experiment blah = new Expermiment(100);
 		blah.runExperiment();
 	}
 	
@@ -126,7 +127,7 @@ public class Experiment {
     } 
 	
 	public void runExperiment(){
-		int creamOfCrop = 10;
+		int creamOfCrop = (int) Math.round(this.populationMax * .1);
 		double mutantPercent = .2;
 		BufferedReader cin = new BufferedReader( new InputStreamReader(System.in));
 
@@ -200,11 +201,13 @@ public class Experiment {
 			}
 			
 			while (newPop.size() < populationMax){
-				//breed my citizens! mwahahaha
+				//breed my citizens! mwahahaha <--- pervert.
 				//Note: we also allow hermaphrodites
 				
 				int probA = (int) Math.floor((Math.random() * totalFitness));
 				int probB = (int) Math.floor((Math.random() * totalFitness));
+				
+				// TODO: Handle zero
 				int AIndex = -1;
 				int BIndex = -1;
 				
@@ -412,46 +415,60 @@ public class Experiment {
 			}			
 		}
 		//send them all to the mines!
+		System.out.println("The dwarves are digging too deep and too greedily.");
 		for (Citizen curCit : curGen){
+			System.out.println("Sent citizen " + curCit.IDNo + " to the mines.");
 			boolean ret = loadBalancer.sendToMine(curCit, nthDateIKnow);
-			
+	
 			if (!ret){
 				//something went wrong
 			}
 		}
+		System.out.println("Citizens deployed. I hear drums...drums in the deep.");
 		
-			//output all current citizens to file (for catastrophic overload)
-			//overlapping time that citzens need to calculate fitness
-			long starttimes = System.nanoTime();
-			try {
-				File genFile = new File(outputGenList);
-				
-				if (!genFile.exists()){
-					genFile.mkdir();
-				}
-				String path = genFile.getPath();
-				for (int i= 0; i < Population.size(); i++){
-					Population.get(i).personalMatrix.writeMatrix(path + "/Cit" + i + ".txt");
-				}
-				
-			} catch (Exception e) {
+		//output all current citizens to file (for catastrophic overload)
+		//overlapping time that citzens need to calculate fitness
+		long starttimes = System.nanoTime();
+		try {
+			File genFile = new File(outputGenList);
+			
+			if (!genFile.exists()){
+				genFile.mkdir();
+			}
+			String path = genFile.getPath();
+			for (int i= 0; i < Population.size(); i++){
+				Population.get(i).personalMatrix.writeMatrix(path + "/Cit" + i + ".txt");
+			}
+			
+		} catch (Exception e) {
 
+			e.printStackTrace();
+		}
+		long endtimes = System.nanoTime();
+		
+		if (Debug){
+			System.out.println("it took: " + (endtimes - starttimes) + "nanoseconds");
+		}
+			
+		// Now that they're there, wait for them to die
+		while(!this.loadBalancer.isAllDone()) {
+			try {
+				Thread.sleep(5000);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			long endtimes = System.nanoTime();
+		}
 			
-			if (Debug){
-				System.out.println("it took: " + (endtimes - starttimes) + "nanoseconds");
-			}
+		
+//		for (Citizen curCit : curGen){
 			
-		//now that they're there, wait for them to die
-		for (Citizen curCit : curGen){
-			boolean result = curCit.evaluateFitness();
-			
-			if (!result){
-				//something went wrong
-
-			}
+//			boolean result = curCit.getFitness();
+//			
+//			if (!result){
+//				//something went wrong
+//
+//			}
 			
 			
 			try {
@@ -470,7 +487,7 @@ public class Experiment {
 			}
 			
 			
-		}
+//		}
 		
 		//got them all
 		return;

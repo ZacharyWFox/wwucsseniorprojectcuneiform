@@ -118,7 +118,7 @@ public class DateExtractor {
     public FoundDate alignDateString(String[] graphemes, SimilarityMatrix sim) {
     	long st = System.currentTimeMillis();
     	FoundDate year = getConfidence(graphemes, 0, this.knownYears, sim);
-    	System.out.printf("Alignment took %d milliseconds\n", System.currentTimeMillis() - st);
+    	//System.out.printf("Alignment took %d milliseconds\n", System.currentTimeMillis() - st);
     	return year;
     }
     

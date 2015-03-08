@@ -42,7 +42,7 @@ public class LoadBalancer {
 		this.theMines = new ArrayList<CoalMine>(hostNames.length);
 		//this.fakeMines = new ArrayList<MockCoalMine>(hostNames.length);
 		
-		generateMines(hostNames, allKnownDates);
+		generateMines(testNames, allKnownDates);
 	}
 	
 	private void generateMines(String[] hosts, List<KnownDate> allKnownDates) throws RemoteException{
@@ -83,5 +83,14 @@ public class LoadBalancer {
 		}
 		
 	} 
+	
+	public boolean isAllDone() {
+		for(CoalMine cm: this.theMines) {
+			if (!cm.isDone()) {
+				return false;
+			}
+		}
+		return true;
+	}
 	
 }

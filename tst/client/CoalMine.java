@@ -10,8 +10,10 @@ import java.rmi.registry.Registry;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -28,6 +30,7 @@ public class CoalMine {
 	int citizenCap = 4;
 	int numCitizens = 0;
 	ExecutorService threadPool;
+	List<MineCart> mineCarts;
 	public CoalMine(String hostname, List<KnownDate> known) throws RemoteException {
 //		if(System.getSecurityManager() == null) {
 //			System.setSecurityManager(new SecurityManager());
@@ -36,6 +39,7 @@ public class CoalMine {
 		load(this.host);
 		this.threadPool = Executors.newCachedThreadPool();
 		this.server.setAllKnownDates(known);
+		this.mineCarts = new ArrayList<MineCart>(citizenCap);
 	}
 	
 	private boolean load(String hostname) {
@@ -55,7 +59,14 @@ public class CoalMine {
 		return true;
 	}
 	
-
+	public boolean isDone() {
+		for (MineCart mc : this.mineCarts) {
+			if (!mc.isDone()) {
+				return false;
+			}
+		}
+		return true;
+	}
 	
 	public synchronized boolean roomLeft() throws RemoteException {		
 		try {
@@ -76,31 +87,51 @@ public class CoalMine {
 	}
 	
 	public boolean sendToMine(Citizen cit, List<FoundDate> attestations) {
-		Callable<Float> mineCart = MineCartFactory.build(cit, attestations, this.server);
-		Future<Float> future = threadPool.submit(mineCart);
-		cit.setFitnessFuture(future);
+//		Callable<Float> mineCart = MineCartFactory.buildCallable(cit, attestations, this.server);
+//		Runnable run = MineCartFactory.buildRunnable(cit, attestations, this.server);
+//		Future<Float> future = threadPool.submit(cit, cit.fitness);
+//		cit.setFitnessFuture(future);
+//		threadPool.submit(cit).
+		//
+		MineCart mc = new MineCart(cit, attestations, this.server);
+		mineCarts.add(mc);
+		
+		Future f = this.threadPool.submit(mc);
+		//XXX test
+//		try {
+//			f.get();
+//		} catch (InterruptedException | ExecutionException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+		///
 		return true;
 	}
 	
-	/***
-	 * This method returns a fitness score for a citizen and BLOCKS while doing so. 
-	 * Use sendToMine() for the non blocking Future implementation.
-	 * @param cit The citizen we want to send away to align things until it dies. And then we judge
-	 * it. Hooray for equality!
-	 * @param attestations The sample on which the citizen will work
-	 * @return How well the Sequence Alignment Overlords determine the citizen to have lived.
-	 */
-	public float workLifeAway(Citizen cit, List<FoundDate> attestations) {
-		try {
-			//Callable mineCart = MineCartFactory.build(cit, attestations, this.server);
-			// TODO: make this non blocking
-			return server.live(cit, attestations);
-		} catch (RemoteException e) {
-			System.out.println(e.getMessage());
-			e.printStackTrace();
-		}
-		return -1F;
+	public void join() {
+		
 	}
+	
+	//XXX
+//	/***
+//	 * This method returns a fitness score for a citizen and BLOCKS while doing so. 
+//	 * Use sendToMine() for the non blocking Future implementation.
+//	 * @param cit The citizen we want to send away to align things until it dies. And then we judge
+//	 * it. Hooray for equality!
+//	 * @param attestations The sample on which the citizen will work
+//	 * @return How well the Sequence Alignment Overlords determine the citizen to have lived.
+//	 */
+//	public float workLifeAway(Citizen cit, List<FoundDate> attestations) {
+//		try {
+//			//Callable mineCart = MineCartFactory.build(cit, attestations, this.server);
+//			// TODO: make this non blocking
+//			return server.live(cit, attestations);
+//		} catch (RemoteException e) {
+//			System.out.println(e.getMessage());
+//			e.printStackTrace();
+//		}
+//		return -1F;
+//	}
 	//XXX
     public static final String dbHost = "jdbc:mysql://cuneiform.cs.wwu.edu/cuneiform";
     public static final String dbUser = "dingo";
@@ -125,12 +156,16 @@ public class CoalMine {
 			
 			List<FoundDate> firstDate = (new FoundDateList(conn)).getFoundDates();
 			
-			float f = cm.server.live(cit, firstDate);
-			float g = cm2.server.live(cit2, firstDate);
+//			Callable<Float> test = MineCartFactory.buildCallable(cit2, firstDate, cm2.server);
+//			Future<Float> fut = cm2.threadPool.submit(test);
+			
+//			float f = cm.server.live(cit, firstDate);
+//			float g = cm2.server.live(cit2, firstDate);
+//			float g = fut.get();
 //			float g = belh.server.live(null, null);
 			System.out.println("Running client on " + InetAddress.getLocalHost().getHostName());
-			System.out.println("Float " + f + " recieved from server on:\n" +cm.server.getHostName());
-			System.out.println("Float " + g + " recieved from server on:\n" + cm2.server.getHostName());
+//			System.out.println("Float " + f + " recieved from server on:\n" +cm.server.getHostName());
+//			System.out.println("Float " + g + " recieved from server on:\n" + cm2.server.getHostName());
 		} catch (RemoteException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -141,6 +176,13 @@ public class CoalMine {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+//		catch (InterruptedException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		} catch (ExecutionException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
 	}
 	//XXX
     private static void registerMySqlDriver()
