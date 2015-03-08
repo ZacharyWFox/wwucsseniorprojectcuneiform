@@ -1,11 +1,11 @@
 #!/usr/bin/python
 
 import subprocess, sys, os
-os.chdir(os.path.expanduser("~"))
-os.chdir("/home/foxz/workspace/Parser/bin/JARS")
 # check args
 hostname = sys.argv[1]
+path=sys.argv[2]
 codebase = "Server.jar"
+os.chdir(path)
 # copy over java binaries 
 
 # ensure that we're in the binaries (somehow)
@@ -15,7 +15,7 @@ codebase = "Server.jar"
 # start the GeneticServer process
 
 # All of our jars are in <packageroot>/bin
-cmd = ["java", "-cp", "*", "-Djava.rmi.server.hostname=" + hostname, "-Djava.rmi.server.codebase=file:" + codebase, "genetics.GeneticServer"]
+cmd = ["java", "-cp", "*", "-Djava.rmi.server.hostname=" + hostname, "-Djava.rmi.server.codebase=file:" + codebase, "genetics.GeneticServer", "nohup"]
 server = subprocess.Popen(cmd)
 
 # keep writing Server output to log file.
