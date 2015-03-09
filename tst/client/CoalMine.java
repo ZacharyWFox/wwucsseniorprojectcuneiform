@@ -27,7 +27,7 @@ import cuneiform.KnownDate;
 public class CoalMine {
 	String host;
 	public Server server;
-	int citizenCap = 4;
+	int citizenCap = 12;
 	int numCitizens = 0;
 	ExecutorService threadPool;
 	List<MineCart> mineCarts;

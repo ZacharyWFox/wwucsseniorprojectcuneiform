@@ -208,7 +208,7 @@ public class GeneticServer implements Server {
 			String key = "Server";
 			Server jenkins;
 			if( args.length < 2) {
-				jenkins = new GeneticServer(6, 4);
+				jenkins = new GeneticServer(12, 2);
 			} else {
 				int cit = Integer.parseInt(args[0]);
 				int thds = Integer.parseInt(args[1]);

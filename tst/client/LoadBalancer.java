@@ -22,14 +22,14 @@ public class LoadBalancer {
 			"compute-0-6", 
 			"compute-0-7",
 			"compute-0-8", 
-			"compute-0-9", 
-			"compute-0-10", 
-			"compute-0-11",
-			"compute-0-12", 
-			"compute-0-13", 
-			"compute-0-14", 
-			"compute-0-15", 
-			"compute-0-16"
+			"compute-0-9"//, 
+//			"compute-0-10", 
+//			"compute-0-11",
+//			"compute-0-12", 
+//			"compute-0-13", 
+//			"compute-0-14", 
+//			"compute-0-15", 
+//			"compute-0-16"
 			};
 	//XXX
 	String[] testNames = new String[]{
@@ -42,7 +42,7 @@ public class LoadBalancer {
 		this.theMines = new ArrayList<CoalMine>(hostNames.length);
 		//this.fakeMines = new ArrayList<MockCoalMine>(hostNames.length);
 		
-		generateMines(testNames, allKnownDates);
+		generateMines(hostNames, allKnownDates);
 	}
 	
 	private void generateMines(String[] hosts, List<KnownDate> allKnownDates) throws RemoteException{

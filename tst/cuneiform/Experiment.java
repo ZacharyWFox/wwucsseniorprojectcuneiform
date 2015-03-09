@@ -46,8 +46,8 @@ public class Experiment {
 	
 	public static void main(String[] args){
 	
-		Experiment blah = new Experiment(15); //TODO correct number	
-//		Experiment blah = new Expermiment(100);
+//		Experiment blah = new Experiment(15); //TODO correct number	
+		Experiment blah = new Experiment(100);
 		blah.runExperiment();
 	}
 	
