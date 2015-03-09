@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Arrays;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -203,4 +204,47 @@ public class DateExtractor {
 
         return new FoundDate(guess, output, confd);
     }
+
+    // Separates {x} from {x}word and word{x} and wo{x}rd
+    // will separate any number of determinants from a single word (just in case!)
+	private String separateDeterminants(String text) {
+	    for (int i=0; i < text.length(); i++) {
+	        if(i != text.length()-1 && text.charAt(i) == '}' && text.charAt(i+1) != ' ') {
+	            text = text.substring(0, i+1) + " " + text.substring(i+1, text.length());
+	            i++;
+	            // insert a space after the '}'
+	        } else if(i != 0 && text.charAt(i) == '{' && text.charAt(i-1) != ' ') {
+	            text = text.substring(0, i) + " " + text.substring(i, text.length());
+	            i++;
+	            // insert a space before the '{'
+	        }
+	    }
+	    return text;
+	}
+	
+	// Same as separateDeterminants(String) except each word is a string
+	// in the array graphemes.
+	private String[] separateDeterminants(String[] graphemes) {
+		ArrayList<String> graphemeList = new ArrayList<String>(Arrays.asList(graphemes));
+	    for (int i=0; i < graphemeList.size(); i++) {
+	        String text = graphemeList.get(i);
+	        for (int j=0; j < text.length(); j++) {
+	            if(text.charAt(j) == '}' && j != text.length()-1) {
+	            	// Split after the '}'
+	                graphemeList.add(i, text.substring(0, j+1));
+	                text = text.substring(j+1, text.length());
+	                graphemeList.set(i+1, text);
+	                break;
+	            } else if(text.charAt(j) == '{' && j != 0) {
+	            	// Split before the '{'
+	            	graphemeList.add(i, text.substring(0, j));
+	            	text = text.substring(j, text.length());
+	            	graphemeList.set(i+1, text);
+	            	break;
+	            }
+	        }
+	    }
+	    graphemes = graphemeList.toArray(graphemes);
+	    return graphemes;
+	}
 }
