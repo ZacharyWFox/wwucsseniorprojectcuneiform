@@ -18,13 +18,10 @@ public class Citizen implements Comparable<Citizen>, Serializable{
 	 */
 	private static final long serialVersionUID = 2504986002193445538L;
 	public SimilarityMatrix personalMatrix;
-	public Float fitness = -1F; // Default to invalid state
+	private Float fitness = -1F; // Default to invalid state
 	public int IDNo;
-//	private Future<Float> futureFitness;
 	private volatile FutureState futureState = FutureState.UNBORN;
-//	private Server server;
-//	private boolean serverSet;
-	
+
 	//Constructors
 	public Citizen() {
 		personalMatrix = new SimilarityMatrix();
@@ -54,6 +51,21 @@ public class Citizen implements Comparable<Citizen>, Serializable{
 	public void setFitness(float fit) {
 		this.fitness = fit;
 		this.futureState = FutureState.DEAD;
+	}
+	
+	public void resetState() {
+		this.futureState = FutureState.UNBORN;
+	}
+	
+	public void resetFitness() {
+		this.fitness = -1F;
+	}
+	
+	public void rebirth() {
+		resetState();
+		this.IDNo = 0;
+		resetFitness();
+		this.personalMatrix = null;
 	}
 //	public boolean evaluateFitness() {
 //		switch (getFutureState()){

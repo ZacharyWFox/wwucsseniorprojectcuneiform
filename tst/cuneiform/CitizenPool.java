@@ -49,6 +49,7 @@ public class CitizenPool {
 			freeCitizens.remove(0);
 			newCit.IDNo = IDNo;
 			newCit.personalMatrix = new SimilarityMatrix();
+			newCit.resetState();
 		}
 		else if (usedCitizens.size() < maxNum){
 			//create new cit, add to usedCit
@@ -69,9 +70,7 @@ public class CitizenPool {
 			foundCit = usedCitizens.get(index);
 			usedCitizens.remove(index);
 			
-			foundCit.fitness = 0F;
-			foundCit.IDNo = 0;
-			foundCit.personalMatrix = null;
+			foundCit.rebirth();
 			
 			freeCitizens.add(foundCit);
 		}

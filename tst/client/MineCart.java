@@ -24,7 +24,7 @@ public class MineCart implements Runnable{
 		
 	void setFitness() throws Exception {
 		this.fitness = server.live(cit, attestations);
-		cit.fitness = this.fitness;
+		cit.setFitness(this.fitness);
 	}
 	
 	public boolean isDone() {
@@ -38,7 +38,7 @@ public class MineCart implements Runnable{
 	
 	public float getFitness(){
 		
-		cit.fitness = this.fitness;
+		cit.setFitness(this.fitness);//XXX?
 		return this.fitness;
 	}
 	
