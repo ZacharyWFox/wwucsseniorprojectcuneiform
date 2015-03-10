@@ -3,15 +3,19 @@ package cuneiform;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.PrintStream;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.nio.file.Files;
 import java.rmi.RemoteException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -19,6 +23,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.Date;
 
 import client.CoalMine;
 import client.LoadBalancer;
@@ -45,7 +50,7 @@ public class Experiment {
 	
 	
 	public static void main(String[] args){
-	
+		redirectOutputToFile();
 //		Experiment blah = new Experiment(15); //TODO correct number	
 		Experiment blah = new Experiment(100);
 		blah.runExperiment();
@@ -558,10 +563,36 @@ public class Experiment {
 			
 			e.printStackTrace();
 		}
-
-		
-		
-		
 	}
 	
+	private static void redirectOutputToFile() {
+		// Provides simple and easy logging of output from the experiment.
+		
+		String outFilename;
+		String errFilename;
+		String dirName = "Logs";
+		String timeStamp = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss").format(new Date());
+		String node = System.getenv("HOSTNAME");
+
+		try {
+			File logDir = new File(dirName);
+			if (!logDir.isDirectory()) {
+				logDir.mkdirs();
+			}
+		} catch(Exception e) {
+			e.printStackTrace();
+			return;
+		}
+
+		outFilename = dirName + "/" + timeStamp + " - " + node + " out.log";
+		errFilename = dirName + "/" + timeStamp + " - " + node + " err.log";
+
+		try {
+			System.setOut(new PrintStream(new File(outFilename)));
+			System.setErr(new PrintStream(new File(errFilename)));
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}	
+	}
 }
