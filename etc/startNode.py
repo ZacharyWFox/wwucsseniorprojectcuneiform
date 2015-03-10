@@ -15,16 +15,17 @@ os.chdir(path)
 # start the GeneticServer process
 
 # All of our jars are in <packageroot>/bin
-cmd = ["java", "-cp", "*", "-Djava.rmi.server.hostname=" + hostname, "-Djava.rmi.server.codebase=file:" + codebase, "genetics.GeneticServer", "nohup"]
+cmd = ["java", "-cp", "*", "-Djava.rmi.server.hostname=" + hostname, "-Djava.rmi.server.codebase=file:" + codebase, "genetics.GeneticServer", hostname , "nohup"]
 server = subprocess.Popen(cmd)
 #server.communicate();
 # keep writing Server output to log file.
-with open(hostname + ".log", "a+") as outFile:
-	while server.poll():
-		[out, err] = server.communicate();
-		if out:
-			outFile.write(out)
-		if err:
-			outfile.write(err)
+#with open(hostname + ".log", "a+") as outFile:
+#       while server.poll():
+#               [out, err] = server.communicate();
+#               if out:
+#                       outFile.write(out)
+#               if err:
+#                       outfile.write(err)
 
 #server.kill()
+
