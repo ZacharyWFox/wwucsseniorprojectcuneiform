@@ -207,12 +207,17 @@ public class Experiment {
 				int probA = (int) Math.floor((Math.random() * totalFitness));
 				int probB = (int) Math.floor((Math.random() * totalFitness));
 				
-				// TODO: Handle zero
 				int AIndex = -1;
 				int BIndex = -1;
-				
+				int firstZeroIndex = -1;
 				for ( int i = 0; i < Population.size(); i++){
 					int curFitness = (int)Population.get(i).getFitness();
+					
+					if (curFitness == 0 && firstZeroIndex < 0){
+						firstZeroIndex = i;
+					}
+					
+					
 					if (probA < curFitness && AIndex < 0){
 						AIndex = i;
 					}
@@ -226,9 +231,28 @@ public class Experiment {
 					if (AIndex >= 0 && BIndex >=0){
 						break;
 					}
+					//zero fitness, have to go to other setup
+					if (probA == 0 && probB == 0){
+						break;
+					}
 					
 				}
 				
+				
+				//if we manage to get through the whole thing
+				//without assigning a value they're zero fitnesses
+				if (AIndex == -1){
+					if (firstZeroIndex > -1){
+						int var = (int) Math.floor(Math.random() * (Population.size() - 1 - firstZeroIndex));
+						AIndex = firstZeroIndex + var;
+					}
+				}
+				if (BIndex == -1){
+					if (firstZeroIndex > -1){
+						int var = (int) Math.floor(Math.random() * (Population.size() -1 - firstZeroIndex));
+						BIndex = firstZeroIndex + var;
+					}
+				}
 				
 				newPop.add(Crossover(Population.get(AIndex), Population.get(BIndex)));
 				
