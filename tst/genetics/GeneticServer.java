@@ -2,7 +2,11 @@ package genetics;
 
 import interfaces.Server;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.PrintStream;
 import java.net.InetAddress;
+import java.text.SimpleDateFormat;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -13,6 +17,7 @@ import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import cuneiform.Citizen;
@@ -40,6 +45,37 @@ public class GeneticServer implements Server {
 	
 	public void setAllKnownDates(List<KnownDate> dates) {
 		this.allKnownDates = dates;
+	}
+	
+	private static void redirectOutputToFile(String hostname) {
+		// Provides simple and easy logging of output from the experiment.
+		
+		String outFilename;
+		String errFilename;
+		String dirName = "Logs";
+		String timeStamp = new SimpleDateFormat("yyyy-MM-dd-HH-mm").format(new Date());;
+
+		try {
+			File logDir = new File(dirName);
+			if (!logDir.isDirectory()) {
+				logDir.mkdirs();
+			}
+		} catch(Exception e) {
+			e.printStackTrace();
+			return;
+		}
+
+		// Example: Logs/2015-03-10-13-45-00_compute-0-0_err.log
+		outFilename = dirName + "/" + timeStamp + "_" + hostname + "_out.log";
+		errFilename = dirName + "/" + timeStamp + "_" + hostname + "_err.log";
+
+		try {
+			System.setOut(new PrintStream(new File(outFilename)));
+			System.setErr(new PrintStream(new File(errFilename)));
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}	
 	}
 	
 	@Override
@@ -203,20 +239,30 @@ public class GeneticServer implements Server {
 //			System.setSecurityManager(new SecurityManager());
 //		}
 		
+		String hostname = "default";
+		if (args.length > 0) {
+			hostname = args[0];
+			redirectOutputToFile(hostname);
+		}
+		
 		try {
 			
 			String key = "Server";
 			Server jenkins;
-			if( args.length < 2) {
-				jenkins = new GeneticServer(12, 2);
-			} else {
-				int cit = Integer.parseInt(args[0]);
-				int thds = Integer.parseInt(args[1]);
-				jenkins = new GeneticServer(cit, thds);
-			}
 			
-			if (args.length > 2)
-				jenkins.setName(args[2]);
+			
+//			if( args.length < 2) {
+			
+			jenkins = new GeneticServer(12, 2);
+			
+//			}/* else {
+//				int cit = Integer.parseInt(args[0]);
+//				int thds = Integer.parseInt(args[1]);
+//				jenkins = new GeneticServer(cit, thds);
+//			}*/
+			
+//			if (args.length > 2)
+//				jenkins.setName(args[2]);
 			
 			
 			Server stub = (Server) UnicastRemoteObject.exportObject(jenkins, 0);
@@ -230,4 +276,5 @@ public class GeneticServer implements Server {
 		}
 		System.out.println("Genetic Server bound.");
 	}
+	
 }

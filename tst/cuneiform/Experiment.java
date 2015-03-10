@@ -50,7 +50,7 @@ public class Experiment {
 	
 	
 	public static void main(String[] args){
-		redirectOutputToFile();
+		redirectOutputToFile("Experiment");
 //		Experiment blah = new Experiment(15); //TODO correct number	
 		Experiment blah = new Experiment(100);
 		blah.runExperiment();
@@ -565,14 +565,13 @@ public class Experiment {
 		}
 	}
 	
-	private static void redirectOutputToFile() {
+	private static void redirectOutputToFile(String hostname) {
 		// Provides simple and easy logging of output from the experiment.
 		
 		String outFilename;
 		String errFilename;
 		String dirName = "Logs";
-		String timeStamp = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss").format(new Date());
-		String node = System.getenv("HOSTNAME");
+		String timeStamp = new SimpleDateFormat("yyyy-MM-dd-HH-mm").format(new Date());;
 
 		try {
 			File logDir = new File(dirName);
@@ -584,8 +583,9 @@ public class Experiment {
 			return;
 		}
 
-		outFilename = dirName + "/" + timeStamp + " - " + node + " out.log";
-		errFilename = dirName + "/" + timeStamp + " - " + node + " err.log";
+		// Example: Logs/2015-03-10-13-45-00_compute-0-0_err.log
+		outFilename = dirName + "/" + timeStamp + "_" + hostname + "_out.log";
+		errFilename = dirName + "/" + timeStamp + "_" + hostname + "_err.log";
 
 		try {
 			System.setOut(new PrintStream(new File(outFilename)));
@@ -595,4 +595,5 @@ public class Experiment {
 			e.printStackTrace();
 		}	
 	}
+	
 }
