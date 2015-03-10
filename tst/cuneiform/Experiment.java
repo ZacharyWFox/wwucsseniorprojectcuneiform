@@ -11,6 +11,7 @@ import java.io.PrintStream;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.rmi.RemoteException;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -349,6 +350,7 @@ public class Experiment {
 			} catch (Exception e) {
 
 				System.out.println("Something went horribly wrong (or there is an off by one) in mutate:" + e.getMessage());
+				e.printStackTrace();
 				i--;
 			}
 		}
@@ -381,6 +383,7 @@ public class Experiment {
 						child.personalMatrix.setCell(i, j,  A.personalMatrix.getCell(i, j));
 					} catch (Exception e) {
 						System.out.println("Something went wrong (coin > .5) in crossover()" + e.getMessage());
+						e.printStackTrace();
 					}
 				}
 				else if (coin <= .5){
@@ -388,6 +391,7 @@ public class Experiment {
 						child.personalMatrix.setCell(i, j,  B.personalMatrix.getCell(i, j));
 					} catch (Exception e) {
 						System.out.println("Something went wrong (coin <= .5) in crossover()" + e.getMessage());
+						e.printStackTrace();
 					}
 				}
 				else{
@@ -396,6 +400,7 @@ public class Experiment {
 							child.personalMatrix.setCell(i, j,  A.personalMatrix.getCell(i, j));
 						} catch (Exception e) {
 							System.out.println("Something went wrong (dealbreaker == 1) in crossover(). " + e.getMessage());
+							e.printStackTrace();
 						}
 						dealbreaker = 0;
 					}
@@ -404,6 +409,7 @@ public class Experiment {
 							child.personalMatrix.setCell(i, j,  B.personalMatrix.getCell(i, j));
 						} catch (Exception e) {
 							System.out.println("Something went wrong (dealbreaker != 1) in crossover(). " + e.getMessage());
+							e.printStackTrace();
 						}
 						dealbreaker = 1;
 					}
@@ -470,7 +476,7 @@ public class Experiment {
 			}
 			
 		} catch (Exception e) {
-
+			System.out.println("tried to access: " + Paths.get("").toAbsolutePath().toFile().getAbsolutePath() + outputGenList);
 			e.printStackTrace();
 		}
 		long endtimes = System.nanoTime();
