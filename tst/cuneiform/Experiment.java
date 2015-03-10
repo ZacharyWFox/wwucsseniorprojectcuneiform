@@ -37,7 +37,7 @@ public class Experiment {
 	private int newCitNo = 0;
 	private int populationMax;
 	private CitizenPool allCitizens;
-	private boolean Debug = true;
+	private boolean Debug = false;
 	private ArrayList<Float> GenHistory;
 	private ArrayList<Long> GenTimeHistory;
 	private LoadBalancer loadBalancer;
