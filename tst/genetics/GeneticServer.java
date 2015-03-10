@@ -133,7 +133,7 @@ public class GeneticServer implements Server {
 		int correct = 0;
 		for(GuessPair g : guesses) {
 			if(g.isMatch()) {
-				correct++;
+				correct += 2 * (g.getConfidence().confidence/100);
 			}
 		}
 		
