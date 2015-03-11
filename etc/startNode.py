@@ -6,16 +6,9 @@ hostname = sys.argv[1]
 path=sys.argv[2]
 codebase = "Server.jar"
 os.chdir(path)
-# copy over java binaries 
-
-# ensure that we're in the binaries (somehow)
-
-# start the registry
-#registry = subprocess.Popen("rmiregistry", stdout=subprocess.PIPE)
-# start the GeneticServer process
 
 # All of our jars are in <packageroot>/bin
-cmd = ["java", "-cp", "*", "-Djava.rmi.server.hostname=" + hostname, "-Djava.rmi.server.codebase=file:" + codebase, "genetics.GeneticServer", hostname , "nohup"]
+cmd = ["java", "-cp", "bin/JARS/*", "-Djava.rmi.server.hostname=" + hostname, "-Djava.rmi.server.codebase=file:" + codebase, "genetics.GeneticServer", hostname , "nohup"]
 server = subprocess.Popen(cmd)
 #server.communicate();
 # keep writing Server output to log file.

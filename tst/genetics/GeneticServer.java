@@ -264,7 +264,6 @@ public class GeneticServer implements Server {
 //			if (args.length > 2)
 //				jenkins.setName(args[2]);
 			
-			
 			Server stub = (Server) UnicastRemoteObject.exportObject(jenkins, 0);
 			
 			Registry registry = LocateRegistry.createRegistry(1099);
@@ -273,6 +272,7 @@ public class GeneticServer implements Server {
 			System.out.println("Failed to start GeneticServer");
 			System.out.println(e.getMessage());
 			e.printStackTrace();
+			System.exit(-1);
 		}
 		System.out.println("Genetic Server bound.");
 	}

@@ -29,7 +29,7 @@ with open(fileName) as f:
 
 for addr in addresses:
     addr = addr.rstrip()
-    command =  "python " + home + "etc/startNode.py " + addr + " " + home + "bin/JARS"
+    command =  "python " + home + "etc/startNode.py " + addr + " " + home
     cmd = ["python", home + "etc/startNode.py", addr, home + "bin/jars"]
     rockscmd = "rocks run host " + addr + " command=\"" + command + "\""
     bigcmd = ["rocks", "run", "host", addr, "command=\"" + command + "\""]
