@@ -38,7 +38,7 @@ public class Experiment {
 	private int newCitNo = 0;
 	private int populationMax;
 	private CitizenPool allCitizens;
-	private boolean Debug = false;
+	private static boolean Debug = false;
 	private ArrayList<Float> GenHistory;
 	private ArrayList<Long> GenTimeHistory;
 	private LoadBalancer loadBalancer;
@@ -51,6 +51,16 @@ public class Experiment {
 	
 	
 	public static void main(String[] args){
+		
+		if (args.length > 0){
+			for (String s : args){
+				if (s == "debug"){
+					Debug = true;
+				}
+			}
+			
+		}
+		
 		redirectOutputToFile("Experiment");
 //		Experiment blah = new Experiment(15); //TODO correct number	
 		Experiment blah = new Experiment(100);
@@ -147,13 +157,7 @@ public class Experiment {
 			long starttime = System.nanoTime();
 			
 			if (Debug){
-				String curPopStr = "Current Population: \n";
-				
-				for (int i = 0; i < Population.size(); i++){
-					curPopStr += Population.get(i).toString();
-				}
-				System.out.println(curPopStr);
-				System.out.println(allCitizens.getStats());
+				System.out.println("current alphabet size is: " + Population.get(0).personalMatrix.colLength());
 			}
 			
 			
@@ -329,7 +333,7 @@ public class Experiment {
 		newCitNo++;
 		
 		if (Debug){
-			System.out.println("Citizen A matrix before mutating: " + A.personalMatrix.toString());
+			System.out.println("Will be randomizing with max mutate index as: " + (A.personalMatrix.colLength() -1) );
 		}
 		
 		int Xmax = A.personalMatrix.rowLength() - 1;
@@ -344,7 +348,10 @@ public class Experiment {
 			if (Math.random() > .5){
 				newVal = (byte) -newVal;
 			}
-			
+			if (Debug){
+				System.out.println("x is " + x);
+				System.out.println("y is: " + y);
+			}
 			try {
 				mutant.personalMatrix.setCell(x, y, newVal);
 			} catch (Exception e) {
@@ -355,10 +362,7 @@ public class Experiment {
 			}
 		}
 		
-		if (Debug){
-			System.out.println("Citizen A matrix: " + A.personalMatrix.toString());
-			System.out.println("Mutant matrix: " + mutant.personalMatrix.toString());
-		}
+
 		
 		
 		return mutant;
@@ -419,11 +423,6 @@ public class Experiment {
 			}
 		}
 		
-		if (Debug){
-			System.out.println("Parent A: " + A.personalMatrix.toString());
-			System.out.println("Parent B: " + B.personalMatrix.toString());
-			System.out.println("Child: " + child.personalMatrix.toString());
-		}
 		
 		
 		return child;
@@ -461,7 +460,7 @@ public class Experiment {
 		}
 		System.out.println("Citizens deployed. I hear drums...drums in the deep.");
 		
-		//output all current citizens to file (for catastrophic overload)
+		//output top ten citizens to file (for catastrophic overload)
 		//overlapping time that citzens need to calculate fitness
 		long starttimes = System.nanoTime();
 		try {
@@ -471,7 +470,7 @@ public class Experiment {
 				genFile.mkdir();
 			}
 			String path = genFile.getPath();
-			for (int i= 0; i < Population.size(); i++){
+			for (int i= 0; i < 10; i++){
 				Population.get(i).personalMatrix.writeMatrix(path + "/Cit" + i + ".txt");
 			}
 			
@@ -482,7 +481,7 @@ public class Experiment {
 		long endtimes = System.nanoTime();
 		
 		if (Debug){
-			System.out.println("it took: " + (endtimes - starttimes) + "nanoseconds");
+			System.out.println("it took: " + (endtimes - starttimes) + "nanoseconds to print cits to file");
 		}
 			
 		// Now that they're there, wait for them to die
