@@ -62,6 +62,7 @@ public class SimilarityMatrix implements Cloneable, Serializable {
 		for (byte[] row : existing.dynamicMatrix){
 			this.dynamicMatrix.add(row.clone());
 		}
+		this.alphabet = existing.alphabet;
 
 	}
 	
