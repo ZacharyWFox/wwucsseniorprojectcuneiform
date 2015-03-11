@@ -36,6 +36,7 @@ public class SimilarityMatrix implements Cloneable, Serializable {
 		catch (Exception e)
 		{
 			System.out.printf("Something went wrong:/n/s/n", e.getMessage());
+			e.printStackTrace();
 		}
 		//testAlphabetGen();
 		minVal = new byte[alphabet.size()];
@@ -165,7 +166,7 @@ public class SimilarityMatrix implements Cloneable, Serializable {
 			for (int x = 0; x < curRow.length; x++) {
 				byte val = (byte) Math.floor(Math.random() * 127);
 				  
-				if (Math.random() > .5){
+				if ( x != i && Math.random() > .5){
 					val = (byte) -val;
 				}
 				curRow[x] = val;

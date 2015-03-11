@@ -38,7 +38,7 @@ public class Experiment {
 	private int newCitNo = 0;
 	private int populationMax;
 	private CitizenPool allCitizens;
-	private static boolean Debug = false;
+	private static boolean Debug = true;
 	private ArrayList<Float> GenHistory;
 	private ArrayList<Long> GenTimeHistory;
 	private LoadBalancer loadBalancer;
@@ -54,11 +54,18 @@ public class Experiment {
 		
 		if (args.length > 0){
 			for (String s : args){
-				if (s == "debug"){
+				if (s.toLowerCase().contains("debug")){
 					Debug = true;
+				}
+				if (s.toLowerCase().contains("realrun")){
+					Debug = false;
 				}
 			}
 			
+		}
+		
+		if (Debug){
+			System.out.println("Debug has begun...");
 		}
 		
 		redirectOutputToFile("Experiment");
