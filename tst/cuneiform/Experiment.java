@@ -550,14 +550,14 @@ public class Experiment {
 			BufferedWriter out = new BufferedWriter(new FileWriter(statusFilePath, true));
 			if (GenerationNo > 1){
 			out.append("Gen:" + GenerationNo + 
-					" topFit:" + GenTimeHistory.get(GenTimeHistory.size() - 1) +
-					" fitChange:" + (GenTimeHistory.get(GenTimeHistory.size() - 2) - GenTimeHistory.get(GenTimeHistory.size() - 1)  ) +
+					" topFit:" + GenHistory.get(GenHistory.size() - 1) +
+					" fitChange:" + (GenHistory.get(GenHistory.size() - 2) - GenHistory.get(GenHistory.size() - 1)  ) +
 					   " time:" + GenTimeHistory.get(GenTimeHistory.size() - 1)  );
 			}
 			else{
 				out.append("Gen:" + GenerationNo + 
-						" topFit:" + GenTimeHistory.get(GenTimeHistory.size() - 1) +
-						" fitChange:" + GenTimeHistory.get(GenTimeHistory.size() - 1) +
+						" topFit:" + GenHistory.get(GenHistory.size() - 1) +
+						" fitChange:" + GenHistory.get(GenHistory.size() - 1) +
 						   " time:" + GenTimeHistory.get(GenTimeHistory.size() - 1)  );
 			}
 			out.append("\n");
