@@ -138,7 +138,7 @@ public class GeneticServer implements Server {
 		}
 		System.out.printf("Citizen %d lived for %d milliseconds...RIP.\n", cit.IDNo, System.currentTimeMillis() - threadSt);
 		// Get fitness
-		float fitness = 0;
+		float fitness = -1;
 		try {
 			fitness = evaluateFitness(guesses);
 		} catch (Exception e) {
@@ -148,7 +148,7 @@ public class GeneticServer implements Server {
 		// Done!
 		//TODO: needs synchronized access somehow
 		decrementCitizen();
-		System.out.println("Life of citizen " + cit.IDNo + " has ended.");
+		System.out.println("Life of citizen " + cit.IDNo + " has ended. Fitness: " + fitness);
 		return fitness;
 	}
 	

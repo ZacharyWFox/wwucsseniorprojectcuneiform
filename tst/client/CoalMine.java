@@ -42,6 +42,10 @@ public class CoalMine {
 		this.mineCarts = new ArrayList<MineCart>(citizenCap);
 	}
 	
+	public void resetMineCarts(){
+		this.mineCarts.clear();
+	}
+	
 	private boolean load(String hostname) {
 		try {
 			//Connection stuff
@@ -93,6 +97,7 @@ public class CoalMine {
 //		cit.setFitnessFuture(future);
 //		threadPool.submit(cit).
 		//
+		
 		MineCart mc = new MineCart(cit, attestations, this.server);
 		mineCarts.add(mc);
 		

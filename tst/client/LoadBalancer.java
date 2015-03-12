@@ -84,6 +84,12 @@ public class LoadBalancer {
 		
 	} 
 	
+	public void resetGen() {
+		for (CoalMine cm : this.theMines) {
+			cm.resetMineCarts();
+		}
+	}
+	
 	public boolean isAllDone() {
 		for(CoalMine cm: this.theMines) {
 			if (!cm.isDone()) {

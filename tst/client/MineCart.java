@@ -3,7 +3,6 @@ package client;
 import interfaces.Server;
 
 import java.util.List;
-import java.util.concurrent.Callable;
 import cuneiform.Citizen;
 import cuneiform.FoundDate;
 
@@ -25,6 +24,7 @@ public class MineCart implements Runnable{
 	void setFitness() throws Exception {
 		this.fitness = server.live(cit, attestations);
 		cit.setFitness(this.fitness);
+		System.out.println("Citizen " + cit.IDNo + " came back with fitness " + this.fitness + " and has been assigned fitness of " + cit.getFitness());
 	}
 	
 	public boolean isDone() {
@@ -48,6 +48,7 @@ public class MineCart implements Runnable{
 			setFitness();
 		} catch (Exception e) {
 			this.ex = e;
+			System.out.println(e.getMessage());
 		}
 		this.done = true; // bleeeegh
 	}

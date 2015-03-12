@@ -461,8 +461,10 @@ public class Experiment {
 				return;
 			}			
 		}
+		
+		
 		//send them all to the mines!
-		System.out.println("The dwarves are digging too deep and too greedily.");
+		System.out.println("The dwarves are digging too deep and too greedily: start of Generation " + this.GenerationNo);
 		for (Citizen curCit : curGen){
 			System.out.println("Sent citizen " + curCit.IDNo + " to the mines.");
 			boolean ret = loadBalancer.sendToMine(curCit, nthDateIKnow);
@@ -500,23 +502,20 @@ public class Experiment {
 		// Now that they're there, wait for them to die
 		while(!this.loadBalancer.isAllDone()) {
 			try {
-				Thread.sleep(5000);
+				Thread.sleep(2000);
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
+		this.loadBalancer.resetGen();
 			
 		
-//		for (Citizen curCit : curGen){
+		for (Citizen curCit : curGen){
 			
-//			boolean result = curCit.getFitness();
-//			
-//			if (!result){
-//				//something went wrong
-//
-//			}
+			float result = curCit.getFitness();
 			
+			System.out.println("Citizen " + curCit.IDNo + " came back with fitness " + result);		
 			
 			try {
 				if (cin.ready()){
@@ -534,7 +533,8 @@ public class Experiment {
 			}
 			
 			
-//		}
+		}
+		System.out.println("End of Generation " + this.GenerationNo);
 		
 		//got them all
 		return;
