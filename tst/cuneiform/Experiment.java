@@ -309,6 +309,9 @@ public class Experiment {
 			printStatus();
 			
 			GenerationNo++;
+			if (Debug){
+				System.out.println("The old generation is complete, and the new generation is chosen...");
+			}
 		}
 		
 		System.out.println("The program has ended. Here are the results: ");
@@ -540,6 +543,9 @@ public class Experiment {
 	
 	
 	public void printStatus(){
+		if (Debug){
+			System.out.println("printing status");
+		}
 		try {
 			BufferedWriter out = new BufferedWriter(new FileWriter(statusFilePath, true));
 			if (GenerationNo > 1){
@@ -557,7 +563,7 @@ public class Experiment {
 			out.append("\n");
 			out.close();
 		} catch (IOException e) {
-			
+			System.err.println("An error has occured when printing status. Message: " + e.getMessage());
 			e.printStackTrace();
 		}
 	}
