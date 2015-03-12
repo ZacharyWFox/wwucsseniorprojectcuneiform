@@ -303,9 +303,12 @@ public class Experiment {
 				e.printStackTrace();
 			}
 			
-			GenerationNo++;
+			
 			long endtime = System.nanoTime();
 			GenTimeHistory.add((endtime - starttime)/1000000000);
+			printStatus();
+			
+			GenerationNo++;
 		}
 		
 		System.out.println("The program has ended. Here are the results: ");
@@ -537,39 +540,21 @@ public class Experiment {
 	
 	
 	public void printStatus(){
-		
-		String genHist = "[";
-		String genChange = "[";
-		String genTime = "[";
-		
-		for (int i = 0; i < GenHistory.size(); i++){
-			genHist += " " + GenHistory.get(i) + ",";
-			
-			if (i > 0){
-				genChange += " " + (GenHistory.get(i) - GenHistory.get(i-1)) + ",";
-			}
-		}
-		
-		for (int i = 0; i < GenTimeHistory.size(); i++){
-			genTime += " " + GenTimeHistory.get(i) + ",";
-		}
-		
-		genHist += "]";
-		genChange += "]";
-		genTime += "]";
-		
-		System.out.println("Current gen is: " + GenerationNo);
-		System.out.println("Best fitness for each Generation: " + genHist);
-		System.out.println("Change in fitness between each Generation: " + genChange);
-		System.out.print("Time to complete each Generation (in sec): " + genTime);
-		
-		
 		try {
-			BufferedWriter out = new BufferedWriter(new FileWriter(statusFilePath));
-			out.append("Best fitness for each Generation: " + genHist);
-			out.append("Change in fitness between each Generation: " + genChange);
-			out.append("Time to complete for each Generation (in sec) " + genTime);
-			out.append("\n\n");
+			BufferedWriter out = new BufferedWriter(new FileWriter(statusFilePath, true));
+			if (GenerationNo > 1){
+			out.append("Gen:" + GenerationNo + 
+					" topFit:" + GenTimeHistory.get(GenTimeHistory.size() - 1) +
+					" fitChange:" + (GenTimeHistory.get(GenTimeHistory.size() - 2) - GenTimeHistory.get(GenTimeHistory.size() - 1)  ) +
+					   " time:" + GenTimeHistory.get(GenTimeHistory.size() - 1)  );
+			}
+			else{
+				out.append("Gen:" + GenerationNo + 
+						" topFit:" + GenTimeHistory.get(GenTimeHistory.size() - 1) +
+						" fitChange:" + GenTimeHistory.get(GenTimeHistory.size() - 1) +
+						   " time:" + GenTimeHistory.get(GenTimeHistory.size() - 1)  );
+			}
+			out.append("\n");
 			out.close();
 		} catch (IOException e) {
 			
