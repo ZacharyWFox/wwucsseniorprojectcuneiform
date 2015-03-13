@@ -121,7 +121,7 @@ public class SumerianNWSubstringComparator {
                 // Compute alignment matrix
                 for (int i = 1; i < xAlignLen; i++) {
                     for(int j = 1; j < yAlignLen; j++) {
-                        int match  = alignment[i - 1][j - 1] + similarity(knownGraphemes[i-1], foundGraphemes[j-1], sim);
+                        int match  = alignment[i - 1][j - 1] + 0;//similarity(knownGraphemes[i-1], foundGraphemes[j-1], sim);
                         int delete = alignment[i - 1][j] + linGap();
                         int insert = alignment[i][j - 1] + linGap();
                         alignment[i][j] = max(match, delete, insert);
