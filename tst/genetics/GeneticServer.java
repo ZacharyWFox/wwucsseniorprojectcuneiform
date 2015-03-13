@@ -32,8 +32,8 @@ public class GeneticServer implements Server {
 	String hostName;
 	ExecutorService threads;
 	int currentCitizens = 0;
-	int capCitizens = 6;
-	int threadsPerCitizen = 4;
+	int capCitizens = 12;
+	int threadsPerCitizen = 2;
 	List<KnownDate> allKnownDates;
 	
 	public GeneticServer(int citizenCap, int threadsPerCit) {
@@ -104,7 +104,7 @@ public class GeneticServer implements Server {
 				max -= leftover;
 			try {
 				threadDivisions.add(attestations.subList(min, max));
-				System.out.printf("Gave thread %d elements %d - %d.\n", i, min, max);
+//				System.out.printf("Gave thread %d elements %d - %d.\n", i, min, max);
 			} catch (Exception e) {
 				System.out.println("Sublist failed.");
 			}

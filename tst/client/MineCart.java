@@ -49,6 +49,7 @@ public class MineCart implements Runnable{
 		} catch (Exception e) {
 			this.ex = e;
 			System.out.println(e.getMessage());
+			e.printStackTrace();
 		}
 		this.done = true; // bleeeegh
 	}

@@ -516,21 +516,21 @@ public class Experiment {
 			float result = curCit.getFitness();
 			
 			System.out.println("Citizen " + curCit.IDNo + " came back with fitness " + result);		
-			
-			try {
-				if (cin.ready()){
-					String line = cin.readLine();
-					if (line.toLowerCase().equalsIgnoreCase("quit")){
-						quitNow = true;
-					}
-					if (line.toLowerCase().equalsIgnoreCase("status")){
-						printStatus();
-					}
-				}
-			} catch (IOException e) {
-				
-				e.printStackTrace();
-			}
+//			XXX
+//			try {
+//				if (cin.ready()){
+//					String line = cin.readLine();
+//					if (line.toLowerCase().equalsIgnoreCase("quit")){
+//						quitNow = true;
+//					}
+//					if (line.toLowerCase().equalsIgnoreCase("status")){
+//						printStatus();
+//					}
+//				}
+//			} catch (IOException e) {
+//				
+//				e.printStackTrace();
+//			}
 			
 			
 		}
