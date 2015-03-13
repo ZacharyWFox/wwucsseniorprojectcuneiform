@@ -1,7 +1,4 @@
 ...
-($
-$)
-&
 1/2(asz)
 1/2(asz@c)
 1/2(disz)
@@ -348,6 +345,7 @@ eme
 eme3
 eme6
 en
+en.zu
 EN
 en3
 en6
@@ -465,6 +463,8 @@ giri17
 giri3
 girimx(|A.BU.HA.DU|)
 gissu
+{gisz}
+gisz
 gu
 gu2
 gu3
@@ -778,6 +778,7 @@ nagga
 nam
 nam2
 namma
+nammu
 nanna
 nansze
 nar
@@ -798,6 +799,7 @@ n(esze3)
 ni
 NI
 ni2
+ni3
 nibru
 nida
 nidba
@@ -849,7 +851,7 @@ pa2
 pa3
 pa4
 pa5
-pad
+pad3
 palil
 palil2
 PAP

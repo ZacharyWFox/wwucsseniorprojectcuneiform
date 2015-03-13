@@ -9,7 +9,7 @@ public class SumerianNWSubstringComparator {
 	static SimilarityMatrix simMat;
 	// A flag that prevents compares from accessing similarity matrix if it is null.
 	static boolean hasMatrix = false;
-    static boolean debug = false; // If true, print debug messages in this class
+    static boolean debug = true; // If true, print debug messages in this class
     // foundStart is an offset of the tablet text. fix this if we can.
     // 
     public static void compare(String known, String[] allFoundGraphemes, 
@@ -105,7 +105,10 @@ public class SumerianNWSubstringComparator {
 
                 // Split string into graphemes
                 String[] knownGraphemes = known.split("- |-| ");
+                System.out.println("known graphemes: " + Arrays.toString(knownGraphemes));
+                
                 String[] foundGraphemes = Arrays.copyOfRange(allFoundGraphemes, foundStart, allFoundGraphemes.length);
+                System.out.println("found graphemes: " + Arrays.toString(knownGraphemes));
                 int xAlignLen = knownGraphemes.length + 1;
                 int yAlignLen = foundGraphemes.length + 1;
                 int[][] alignment = new int[xAlignLen][yAlignLen];
@@ -330,10 +333,12 @@ public class SumerianNWSubstringComparator {
     
     private static int similarity(String graphemeA, String graphemeB, SimilarityMatrix sim) {
         // For now, ignore input and return 0, for edit distance emulation
-    	int cost = getCost(graphemeA, graphemeB);
+    	int cost;// = getCost(graphemeA, graphemeB);
 		try {
-			cost += sim.score(graphemeA, graphemeB);
+			cost = sim.score(graphemeA, graphemeB);
 		} catch (Exception e) {
+			System.out.println("caught exception getting a score, investigate");
+			e.printStackTrace();
 			return 0;
 		}
     	return cost;
