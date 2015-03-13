@@ -216,7 +216,7 @@ public class DateExtractor {
     // Separates {x} from {x}word and word{x} and wo{x}rd
     // will separate any number of determinants from a single word (just in case!)
 	private String separateDeterminants(String text) {
-		String before = text;
+//		String before = text;
 	    for (int i=0; i < text.length(); i++) {
 	        if(i != text.length()-1 && text.charAt(i) == '}' && text.charAt(i+1) != ' ') {
 	            text = text.substring(0, i+1) + " " + text.substring(i+1, text.length());
@@ -229,7 +229,7 @@ public class DateExtractor {
 	        }
 	    }
 //	    try {
-		System.out.println("separating string: before [" + before + "] after [" + text + "]");
+//		System.out.println("separating string: before [" + before + "] after [" + text + "]");
 //		} catch (IOException e) {
 //			// TODO Auto-generated catch block
 //			e.printStackTrace();
@@ -240,12 +240,12 @@ public class DateExtractor {
 	// Same as separateDeterminants(String) except each word is a string
 	// in the array graphemes.
 	private String[] separateDeterminants(String[] graphemes) {
-		StringBuilder before = new StringBuilder();
-		StringBuilder after = new StringBuilder();
-		for(String s : graphemes) {
-			before.append(s + " ");
-		}
-		before.deleteCharAt(before.lastIndexOf(" "));
+//		StringBuilder before = new StringBuilder();
+//		StringBuilder after = new StringBuilder();
+//		for(String s : graphemes) {
+//			before.append(s + " ");
+//		}
+//		before.deleteCharAt(before.lastIndexOf(" "));
 		
 		ArrayList<String> graphemeList = new ArrayList<String>(Arrays.asList(graphemes));
 	    for (int i=0; i < graphemeList.size(); i++) {
@@ -266,18 +266,12 @@ public class DateExtractor {
 	            }
 	        }
 	    }
-	    graphemes = graphemeList.toArray(graphemes);
-	    for(String s : graphemes) {
-			after.append(s + " ");
-		}
-		after.deleteCharAt(after.lastIndexOf(" "));
-		System.out.println("separating grapheme array: before [" + before.toString() + "] after [" + after.toString() + "]");
-//	    try {
-//			asdf.append("separating string: before [" + before + "] after [" + graphemes + "]");
-//		} catch (IOException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
+//	    graphemes = graphemeList.toArray(graphemes);
+//	    for(String s : graphemes) {
+//			after.append(s + " ");
 //		}
+//		after.deleteCharAt(after.lastIndexOf(" "));
+//		System.out.println("separating grapheme array: before [" + before.toString() + "] after [" + after.toString() + "]");
 	    return graphemes;
 	}
 }
