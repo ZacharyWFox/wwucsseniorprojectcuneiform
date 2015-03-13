@@ -15,7 +15,7 @@ public class FoundDateList {
 
 	private final List<FoundDate> foundDates;
 	private static int sample_size = 2000;
-	private static double min_confidence = .9F;
+	private static double min_confidence = 1F;
 	
 	public FoundDateList(Connection conn) throws SQLException {
 		foundDates = new ArrayList<FoundDate>();

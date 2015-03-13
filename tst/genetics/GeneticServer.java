@@ -81,10 +81,12 @@ public class GeneticServer implements Server {
 	@Override
 	public float live(Citizen cit, List<FoundDate> attestations)
 			throws RemoteException {
+		incrementCitizen();
+		
 		System.out.println("Life of citizen " + cit.IDNo + " has started.");
 		//TODO: add timestamp at beginning and end and print it to a file.
 		long timeStart = System.currentTimeMillis();
-		incrementCitizen();
+		
 		//return 3.14159F;
 		int divider = (int)Math.ceil(attestations.size()/threadsPerCitizen);
 		List<List<FoundDate>> threadDivisions = new ArrayList<List<FoundDate>>(threadsPerCitizen);
@@ -147,8 +149,9 @@ public class GeneticServer implements Server {
 		}
 		// Done!
 		//TODO: needs synchronized access somehow
-		decrementCitizen();
+		
 		System.out.println("Life of citizen " + cit.IDNo + " has ended. Fitness: " + fitness);
+		decrementCitizen();
 		return fitness;
 	}
 	
