@@ -1,5 +1,8 @@
 package cuneiform;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.PrintStream;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -33,6 +36,14 @@ public class DateExtractor {
     public DateExtractor(List<KnownDate> months, List<KnownDate> years) {
     	this.knownMonths = months;
     	this.knownYears = years;
+    	
+    	try {
+			System.setOut(new PrintStream(new File("dateextractor")));
+//			System.setErr(new PrintStream(new File(errFilename)));
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}	
     }
     
     
