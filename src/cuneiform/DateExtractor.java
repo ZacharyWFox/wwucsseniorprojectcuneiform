@@ -234,12 +234,12 @@ public class DateExtractor {
 	            // insert a space before the '{'
 	        }
 	    }
-	    try {
-			asdf.append("separating string: before [" + before + "] after [" + text + "]");
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+//	    try {
+		System.out.println("separating string: before [" + before + "] after [" + text + "]");
+//		} catch (IOException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
 	    return text;
 	}
 	
