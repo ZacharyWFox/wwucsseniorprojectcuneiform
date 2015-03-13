@@ -170,15 +170,17 @@ public class GeneticServer implements Server {
 		
 		// Count the number correct
 		int correct = 0;
+		float totalConf = 0F;
 		for(GuessPair g : guesses) {
 			if(g.isMatch()) {
 				correct += 2 * (g.getConfidence().confidence/100);
 				System.out.println("Found match! Confidence of " + g.getConfidence().confidence);
 			}
+			totalConf += g.getConfidence().confidence;
 		}
-		
+		System.out.println("Average confidence: " + totalConf/guesses.size());
 		//Return the ratio of correctness
-		return Math.abs(correct/guesses.size());
+		return Math.abs(correct);
 	}
 	
 	private List<KnownDate> toKnownDateList(List<FoundDate> found) {

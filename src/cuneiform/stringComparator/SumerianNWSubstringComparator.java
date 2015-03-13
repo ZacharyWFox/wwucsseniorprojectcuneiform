@@ -138,7 +138,6 @@ public class SumerianNWSubstringComparator {
                 	bestValue += similarity(knownGraphemes[i], knownGraphemes[i], sim);
                 }
 
-                //TODO: why the NPE's?
                 int worstVal = 0;
                 worstVal = -126;
                 for (int i = 0; i < knownGraphemes.length; i++){

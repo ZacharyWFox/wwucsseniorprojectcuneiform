@@ -294,6 +294,7 @@ public class SimilarityMatrix implements Cloneable, Serializable {
 	
 	public byte getMin(String x){
 		if(x == null || x.isEmpty()) {
+			System.out.println("getMin null, defaulting to 0.");
 			return 0;
 		}
 		
@@ -302,16 +303,16 @@ public class SimilarityMatrix implements Cloneable, Serializable {
 			index = alphabet.get(x);
 		}
 		else {
-			//System.out.println("Grapheme " + x + " was not in the alphabet, defaulting to 0.");
+			System.out.println("Grapheme " + x + " was not in the alphabet, defaulting to 0.");
 			return 0;
 		}
 		
 		if (index >= 0 && index < minVal.length){
 			return minVal[index];
 		} else {
+			System.out.println("getMin bad state, defaulting to 0.");
 			return 0;
 		}
-
 	}
 	
 	
