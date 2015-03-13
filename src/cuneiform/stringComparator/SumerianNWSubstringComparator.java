@@ -333,13 +333,16 @@ public class SumerianNWSubstringComparator {
     
     private static int similarity(String graphemeA, String graphemeB, SimilarityMatrix sim) {
         // For now, ignore input and return 0, for edit distance emulation
-    	int cost;// = getCost(graphemeA, graphemeB);
+    	int cost = 0;// = getCost(graphemeA, graphemeB);
 		try {
 			cost = sim.score(graphemeA, graphemeB);
 		} catch (Exception e) {
 			System.out.println("caught exception getting a score, investigate");
 			e.printStackTrace();
-			return 0;
+			
+			if (graphemeA != null && graphemeB != null) {
+				cost = getCost(graphemeA, graphemeB);
+			}
 		}
     	return cost;
     }
