@@ -270,7 +270,7 @@ public class DateExtractor {
 	    for(String s : graphemes) {
 			after.append(s + " ");
 		}
-		after.deleteCharAt(before.lastIndexOf(" "));
+		after.deleteCharAt(after.lastIndexOf(" "));
 		System.out.println("separating grapheme array: before [" + before.toString() + "] after [" + after.toString() + "]");
 //	    try {
 //			asdf.append("separating string: before [" + before + "] after [" + graphemes + "]");
