@@ -194,6 +194,7 @@ public class DateExtractor {
 
         for (KnownDate d : dates) {
         	String known = this.separateDeterminants(d.text);
+        	
         	String[] found = this.separateDeterminants(graphemes);
             SumerianNWSubstringComparator.compare(known, found, i, conf, indx, dist, sim);
             if (conf[0] > confd.confidence) {
