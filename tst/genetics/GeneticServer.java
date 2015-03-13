@@ -31,7 +31,7 @@ public class GeneticServer implements Server {
 	String name = "Default";
 	String hostName;
 	ExecutorService threads;
-	int currentCitizens = 0;
+	volatile int currentCitizens = 0;
 	int capCitizens = 12;
 	int threadsPerCitizen = 2;
 	List<KnownDate> allKnownDates;
@@ -170,6 +170,7 @@ public class GeneticServer implements Server {
 		for(GuessPair g : guesses) {
 			if(g.isMatch()) {
 				correct += 2 * (g.getConfidence().confidence/100);
+				System.out.println("Found match! Confidence of " + g.getConfidence().confidence);
 			}
 		}
 		

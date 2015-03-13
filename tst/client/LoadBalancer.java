@@ -73,7 +73,8 @@ public class LoadBalancer {
 			CoalMine curMine = theMines.get(i);
 			try {
 				if (curMine.roomLeft()){
-					 return curMine.sendToMine(cit, attestations);
+					System.out.println("Sent " + cit + " to mine "+ curMine.host);
+					return curMine.sendToMine(cit, attestations);
 				}
 			} catch (RemoteException e) {
 				e.printStackTrace();

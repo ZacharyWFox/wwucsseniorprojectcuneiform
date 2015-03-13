@@ -22,6 +22,7 @@ public class MineCart implements Runnable{
 	}
 		
 	void setFitness() throws Exception {
+		System.out.println("Citizen " + cit.IDNo + " sent to server.");
 		this.fitness = server.live(cit, attestations);
 		cit.setFitness(this.fitness);
 		System.out.println("Citizen " + cit.IDNo + " came back with fitness " + this.fitness + " and has been assigned fitness of " + cit.getFitness());
@@ -52,6 +53,12 @@ public class MineCart implements Runnable{
 			e.printStackTrace();
 		}
 		this.done = true; // bleeeegh
+	}
+	
+	@Override
+	public String toString() {
+		return "Cit: " + cit.IDNo + " Fit: " +fitness;
+		
 	}
 
 }

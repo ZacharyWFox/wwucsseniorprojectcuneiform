@@ -101,6 +101,9 @@ public class CoalMine {
 		
 		MineCart mc = new MineCart(cit, attestations, this.server);
 		mineCarts.add(mc);
+		for (MineCart m : mineCarts) {
+			System.out.println("All minecarts " + m.toString());
+		}
 		
 		Future f = this.threadPool.submit(mc);
 		//XXX test

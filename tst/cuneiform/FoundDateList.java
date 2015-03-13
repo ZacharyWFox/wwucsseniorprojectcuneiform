@@ -14,8 +14,8 @@ import cuneiform.stringComparator.Confidence;
 public class FoundDateList {
 
 	private final List<FoundDate> foundDates;
-	private static int sample_size = 1000;
-	private static double min_confidence = .7F;
+	private static int sample_size = 2000;
+	private static double min_confidence = .9F;
 	
 	public FoundDateList(Connection conn) throws SQLException {
 		foundDates = new ArrayList<FoundDate>();
