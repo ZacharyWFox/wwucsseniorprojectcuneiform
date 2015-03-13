@@ -108,7 +108,7 @@ public class SumerianNWSubstringComparator {
                 System.out.println("known graphemes: " + Arrays.toString(knownGraphemes));
                 
                 String[] foundGraphemes = Arrays.copyOfRange(allFoundGraphemes, foundStart, allFoundGraphemes.length);
-                System.out.println("found graphemes: " + Arrays.toString(knownGraphemes));
+                System.out.println("found graphemes: " + Arrays.toString(foundGraphemes));
                 int xAlignLen = knownGraphemes.length + 1;
                 int yAlignLen = foundGraphemes.length + 1;
                 int[][] alignment = new int[xAlignLen][yAlignLen];
