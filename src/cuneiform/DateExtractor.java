@@ -2,6 +2,9 @@ package cuneiform;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.io.PrintStream;
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -27,7 +30,7 @@ public class DateExtractor {
     public final StringComparator comparator = new SumerianComparator();
     final String                  yearStart  = "mu";
     final String                  monthStart = "iti";
-
+    FileWriter asdf;
     public DateExtractor(Connection conn) throws SQLException {
         this.knownMonths = readKnownMonths(conn);
         this.knownYears  = readKnownYears(conn);
@@ -36,14 +39,12 @@ public class DateExtractor {
     public DateExtractor(List<KnownDate> months, List<KnownDate> years) {
     	this.knownMonths = months;
     	this.knownYears = years;
-    	
     	try {
-			System.setOut(new PrintStream(new File("dateextractor")));
-//			System.setErr(new PrintStream(new File(errFilename)));
-		} catch (FileNotFoundException e) {
+			asdf = new FileWriter(new File("extract"), true);
+		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}	
+		}
     }
     
     
@@ -198,7 +199,9 @@ public class DateExtractor {
         int[]    dist = new int[1];
 
         for (KnownDate d : dates) {
-            SumerianNWSubstringComparator.compare(d.text, graphemes, i, conf, indx, dist, sim);
+        	String known = this.separateDeterminants(d.text);
+        	String[] found = this.separateDeterminants(graphemes);
+            SumerianNWSubstringComparator.compare(known, found, i, conf, indx, dist, sim);
             if (conf[0] > confd.confidence) {
                 bestIndex = indx[0];
                 confd = new Confidence(dist[0], conf[0]);
@@ -231,13 +234,19 @@ public class DateExtractor {
 	            // insert a space before the '{'
 	        }
 	    }
-	    System.out.println("separating determinants: before [" + before + "] after [" + text + "]");
+	    try {
+			asdf.append("separating string: before [" + before + "] after [" + text + "]");
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	    return text;
 	}
 	
 	// Same as separateDeterminants(String) except each word is a string
 	// in the array graphemes.
 	private String[] separateDeterminants(String[] graphemes) {
+		String[] before = graphemes;
 		ArrayList<String> graphemeList = new ArrayList<String>(Arrays.asList(graphemes));
 	    for (int i=0; i < graphemeList.size(); i++) {
 	        String text = graphemeList.get(i);
@@ -258,6 +267,12 @@ public class DateExtractor {
 	        }
 	    }
 	    graphemes = graphemeList.toArray(graphemes);
+//	    try {
+//			asdf.append("separating string: before [" + before + "] after [" + graphemes + "]");
+//		} catch (IOException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
 	    return graphemes;
 	}
 }
