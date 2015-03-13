@@ -208,6 +208,7 @@ public class DateExtractor {
     // Separates {x} from {x}word and word{x} and wo{x}rd
     // will separate any number of determinants from a single word (just in case!)
 	private String separateDeterminants(String text) {
+		String before = text;
 	    for (int i=0; i < text.length(); i++) {
 	        if(i != text.length()-1 && text.charAt(i) == '}' && text.charAt(i+1) != ' ') {
 	            text = text.substring(0, i+1) + " " + text.substring(i+1, text.length());
@@ -219,6 +220,7 @@ public class DateExtractor {
 	            // insert a space before the '{'
 	        }
 	    }
+	    System.out.println("separating determinants: before [" + before + "] after [" + text + "]");
 	    return text;
 	}
 	
