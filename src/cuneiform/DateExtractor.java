@@ -30,7 +30,7 @@ public class DateExtractor {
     public final StringComparator comparator = new SumerianComparator();
     final String                  yearStart  = "mu";
     final String                  monthStart = "iti";
-    FileWriter asdf;
+    
     public DateExtractor(Connection conn) throws SQLException {
         this.knownMonths = readKnownMonths(conn);
         this.knownYears  = readKnownYears(conn);
@@ -39,12 +39,6 @@ public class DateExtractor {
     public DateExtractor(List<KnownDate> months, List<KnownDate> years) {
     	this.knownMonths = months;
     	this.knownYears = years;
-    	try {
-			asdf = new FileWriter(new File("extract"), true);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
     }
     
     

@@ -104,7 +104,7 @@ public class SumerianNWSubstringComparator {
             final int foundStart, double[] conf, int[] indx, int[] dist, SimilarityMatrix sim) {
 
                 // Split string into graphemes
-                String[] knownGraphemes = known.split("-| ");
+                String[] knownGraphemes = known.split("- |-| ");
                 String[] foundGraphemes = Arrays.copyOfRange(allFoundGraphemes, foundStart, allFoundGraphemes.length);
                 int xAlignLen = knownGraphemes.length + 1;
                 int yAlignLen = foundGraphemes.length + 1;
