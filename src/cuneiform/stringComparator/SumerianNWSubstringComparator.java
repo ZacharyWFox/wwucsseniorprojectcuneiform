@@ -105,10 +105,13 @@ public class SumerianNWSubstringComparator {
 
                 // Split string into graphemes
                 String[] knownGraphemes = known.split("- |-| ");
-                System.out.println("known graphemes: " + Arrays.toString(knownGraphemes));
-                
+                if (debug){
+                	System.out.println("known graphemes: " + Arrays.toString(knownGraphemes));
+                }
                 String[] foundGraphemes = Arrays.copyOfRange(allFoundGraphemes, foundStart, allFoundGraphemes.length);
-                System.out.println("found graphemes: " + Arrays.toString(foundGraphemes));
+                if (debug){
+                	System.out.println("found graphemes: " + Arrays.toString(foundGraphemes));
+                }
                 int xAlignLen = knownGraphemes.length + 1;
                 int yAlignLen = foundGraphemes.length + 1;
                 int[][] alignment = new int[xAlignLen][yAlignLen];
@@ -142,7 +145,6 @@ public class SumerianNWSubstringComparator {
                 }
 
                 int worstVal = 0;
-                worstVal = -126;
                 for (int i = 0; i < knownGraphemes.length; i++){
                 	worstVal += sim.getMin(knownGraphemes[i]);
                 }

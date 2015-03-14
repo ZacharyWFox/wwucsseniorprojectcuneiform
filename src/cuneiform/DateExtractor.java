@@ -240,7 +240,7 @@ public class DateExtractor {
 	
 	// Same as separateDeterminants(String) except each word is a string
 	// in the array graphemes.
-	private String[] separateDeterminants(String[] graphemes) {
+	public String[] separateDeterminants(String[] graphemes) {
 //		StringBuilder before = new StringBuilder();
 //		StringBuilder after = new StringBuilder();
 //		for(String s : graphemes) {
@@ -273,6 +273,6 @@ public class DateExtractor {
 //		}
 //		after.deleteCharAt(after.lastIndexOf(" "));
 //		System.out.println("separating grapheme array: before [" + before.toString() + "] after [" + after.toString() + "]");
-	    return graphemes;
+	    return graphemeList.toArray(new String[graphemeList.size()]);
 	}
 }
