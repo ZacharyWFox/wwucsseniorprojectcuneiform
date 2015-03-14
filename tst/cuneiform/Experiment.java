@@ -270,7 +270,9 @@ public class Experiment {
 						BIndex = firstZeroIndex + var;
 					}
 				}
-				
+				if (Debug){
+					System.out.println("Aindex: " + AIndex + " BIndex: " + BIndex );
+				}
 				newPop.add(Crossover(Population.get(AIndex), Population.get(BIndex)));
 				
 				
@@ -346,7 +348,7 @@ public class Experiment {
 		newCitNo++;
 		
 		if (Debug){
-			System.out.println("Will be randomizing with max mutate index as: " + (A.personalMatrix.colLength() -1) );
+			//System.out.println("Will be randomizing with max mutate index as: " + (A.personalMatrix.colLength() -1) );
 		}
 		
 		int Xmax = A.personalMatrix.rowLength() - 1;
@@ -362,8 +364,8 @@ public class Experiment {
 				newVal = (byte) -newVal;
 			}
 			if (Debug){
-				System.out.println("x is " + x);
-				System.out.println("y is: " + y);
+				//System.out.println("x is " + x);
+				//System.out.println("y is: " + y);
 			}
 			try {
 				mutant.personalMatrix.setCell(x, y, newVal);
@@ -466,11 +468,14 @@ public class Experiment {
 		//send them all to the mines!
 		System.out.println("The dwarves are digging too deep and too greedily: start of Generation " + this.GenerationNo);
 		for (Citizen curCit : curGen){
-			System.out.println("Sent citizen " + curCit.IDNo + " to the mines.");
+			//System.out.println("Sent citizen " + curCit.IDNo + " to the mines.");
 			boolean ret = loadBalancer.sendToMine(curCit, nthDateIKnow);
 	
 			if (!ret){
 				//something went wrong
+				if (Debug){
+					System.out.println("Couldn't send a citizen to the mines");
+				}
 			}
 		}
 		System.out.println("Citizens deployed. I hear drums...drums in the deep.");
@@ -515,22 +520,10 @@ public class Experiment {
 			
 			float result = curCit.getFitness();
 			
-			System.out.println("Citizen " + curCit.IDNo + " came back with fitness " + result);		
-//			XXX
-//			try {
-//				if (cin.ready()){
-//					String line = cin.readLine();
-//					if (line.toLowerCase().equalsIgnoreCase("quit")){
-//						quitNow = true;
-//					}
-//					if (line.toLowerCase().equalsIgnoreCase("status")){
-//						printStatus();
-//					}
-//				}
-//			} catch (IOException e) {
-//				
-//				e.printStackTrace();
-//			}
+			if (Debug){
+				System.out.println("Citizen " + curCit.IDNo + " came back with fitness " + result);
+			}
+
 			
 			
 		}
