@@ -249,6 +249,8 @@ public class GeneticServer implements Server {
 		if (args.length > 0) {
 			hostname = args[0];
 			redirectOutputToFile(hostname);
+		} else {
+			redirectOutputToFile(hostname);
 		}
 		
 		try {
