@@ -191,11 +191,13 @@ public class DateExtractor {
         double[] conf = new double[1];
         int[]    indx = new int[1];
         int[]    dist = new int[1];
-
+        String[] found = this.separateDeterminants(graphemes);
+        
+        
         for (KnownDate d : dates) {
         	String known = this.separateDeterminants(d.text);
         	
-        	String[] found = this.separateDeterminants(graphemes);
+        	
             SumerianNWSubstringComparator.compare(known, found, i, conf, indx, dist, sim);
             if (conf[0] > confd.confidence) {
                 bestIndex = indx[0];
@@ -205,10 +207,10 @@ public class DateExtractor {
         }
 
         String output = "";
-        for (int j = 0; j < bestIndex; ++j) {
+        for (int j = 0; j < bestIndex; j++) {
             if (output.isEmpty() == false)
                 output += " ";
-            output += graphemes[j + i];
+            output += found[j + i];
         }
 
         return new FoundDate(guess, output, confd);
