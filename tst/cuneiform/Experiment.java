@@ -264,7 +264,7 @@ public class Experiment {
 						break;
 					}
 					//zero fitness, have to go to other setup
-					if (probA == 0 && probB == 0){
+					if (probA == 0 && probB == 0 && firstZeroIndex > 0){
 						break;
 					}
 					
@@ -287,7 +287,7 @@ public class Experiment {
 				}
 				if (Debug){
 					System.out.println("Aindex: " + AIndex + " BIndex: " + BIndex );
-					if (AIndex <= 0 || BIndex <= 0){
+					if (AIndex <= 0  || BIndex <= 0){
 						System.out.println("firstZeroIndex: " + firstZeroIndex + " Totalfitness:" + totalFitness );
 						System.out.println("prob for A: " + probARemember + " prob for B: " + probBRemember);
 					}
