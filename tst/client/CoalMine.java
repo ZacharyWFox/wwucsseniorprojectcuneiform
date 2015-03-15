@@ -4,6 +4,7 @@ import interfaces.Server;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
@@ -31,7 +32,7 @@ public class CoalMine {
 	int numCitizens = 0;
 	ExecutorService threadPool;
 	List<MineCart> mineCarts;
-	public CoalMine(String hostname, List<KnownDate> known) throws RemoteException {
+	public CoalMine(String hostname, List<KnownDate> known) throws RemoteException, NotBoundException {
 //		if(System.getSecurityManager() == null) {
 //			System.setSecurityManager(new SecurityManager());
 //		}
@@ -46,8 +47,8 @@ public class CoalMine {
 		this.mineCarts.clear();
 	}
 	
-	private boolean load(String hostname) {
-		try {
+	private boolean load(String hostname) throws RemoteException, NotBoundException {
+//		try {
 			//Connection stuff
 			String key = "Server";
 			Registry reg = LocateRegistry.getRegistry(hostname);
@@ -55,11 +56,11 @@ public class CoalMine {
 			server = (Server)reg.lookup(key);
 			this.citizenCap = server.getMaxCitizens();
 			this.numCitizens = server.getNumCitizens();
-		} catch (Exception e) {
-			System.out.println(e.getMessage());
-			e.printStackTrace();
-			return false;
-		}
+//		} catch (Exception e) {
+//			System.out.println(e.getMessage());
+//			e.printStackTrace();
+//			return false;
+//		}
 		return true;
 	}
 	
@@ -73,7 +74,7 @@ public class CoalMine {
 		return true;
 	}
 	
-	public synchronized boolean roomLeft() throws RemoteException {		
+	public synchronized boolean roomLeft() throws RemoteException, NotBoundException {		
 		try {
 			this.numCitizens = this.server.getNumCitizens();
 		} catch (RemoteException e) {
@@ -146,80 +147,80 @@ public class CoalMine {
     public static final String dbUser = "dingo";
     public static final String dbPass = "hungry!";
     
-	public static void main(String[] args) {
-		
-		//CoalMine cm = new CoalMine("cf405-19.cs.wwu.edu");
-
-		registerMySqlDriver();
-		
-		
-		
-		try {
-			
-			Connection conn = DriverManager.getConnection(dbHost, dbUser, dbPass);
-			
-			CoalMine cm = new CoalMine("cf405-13", DateExtractor.readKnownYears(conn));
-			CoalMine cm2 = new CoalMine("cf405-16", DateExtractor.readKnownYears(conn));
-			Citizen cit = new Citizen();
-			Citizen cit2 = new Citizen();
-			
-			List<FoundDate> firstDate = (new FoundDateList(conn)).getFoundDates();
-			
-//			Callable<Float> test = MineCartFactory.buildCallable(cit2, firstDate, cm2.server);
-//			Future<Float> fut = cm2.threadPool.submit(test);
-			
-//			float f = cm.server.live(cit, firstDate);
-//			float g = cm2.server.live(cit2, firstDate);
-//			float g = fut.get();
-//			float g = belh.server.live(null, null);
-			System.out.println("Running client on " + InetAddress.getLocalHost().getHostName());
-//			System.out.println("Float " + f + " recieved from server on:\n" +cm.server.getHostName());
-//			System.out.println("Float " + g + " recieved from server on:\n" + cm2.server.getHostName());
-		} catch (RemoteException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (UnknownHostException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-//		catch (InterruptedException e) {
+//	public static void main(String[] args) {
+//		
+//		//CoalMine cm = new CoalMine("cf405-19.cs.wwu.edu");
+//
+//		registerMySqlDriver();
+//		
+//		
+//		
+//		try {
+//			
+//			Connection conn = DriverManager.getConnection(dbHost, dbUser, dbPass);
+//			
+//			CoalMine cm = new CoalMine("cf405-13", DateExtractor.readKnownYears(conn));
+//			CoalMine cm2 = new CoalMine("cf405-16", DateExtractor.readKnownYears(conn));
+//			Citizen cit = new Citizen();
+//			Citizen cit2 = new Citizen();
+//			
+//			List<FoundDate> firstDate = (new FoundDateList(conn)).getFoundDates();
+//			
+////			Callable<Float> test = MineCartFactory.buildCallable(cit2, firstDate, cm2.server);
+////			Future<Float> fut = cm2.threadPool.submit(test);
+//			
+////			float f = cm.server.live(cit, firstDate);
+////			float g = cm2.server.live(cit2, firstDate);
+////			float g = fut.get();
+////			float g = belh.server.live(null, null);
+//			System.out.println("Running client on " + InetAddress.getLocalHost().getHostName());
+////			System.out.println("Float " + f + " recieved from server on:\n" +cm.server.getHostName());
+////			System.out.println("Float " + g + " recieved from server on:\n" + cm2.server.getHostName());
+//		} catch (RemoteException e) {
 //			// TODO Auto-generated catch block
 //			e.printStackTrace();
-//		} catch (ExecutionException e) {
+//		} catch (UnknownHostException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		} catch (SQLException e) {
 //			// TODO Auto-generated catch block
 //			e.printStackTrace();
 //		}
-	}
-	//XXX
-    private static void registerMySqlDriver()
-    {
-    	/*
-    	 * 	Steps to register MySQL JDBC under Ubuntu:
-    	 * 		1. sudo apt-get install libmysql-java
-    	 * 		2. Ensure that /usr/share/java/mysql.jar exists.
-    	 * 		3. Register external .jar with your IDE.
-    	 * 			In Eclipse:
-    	 * 			Project --> Properties --> Java Build Path
-    	 * 				--> Add External JARs...
-    	 */
-    	try
-    	{
-    		// Register the MySQL JDBC driver.
-    		
-    		Class.forName("com.mysql.jdbc.Driver");
-    	}
-    	catch (ClassNotFoundException e)
-    	{
-    		// The MySQL Java connector does not appear to be installed.
-    		// There's not much we can do about that !
-    		
-    		System.err.println("Failed to register the JDBC driver.");
-    		e.printStackTrace();
-    	}
-    }
+////		catch (InterruptedException e) {
+////			// TODO Auto-generated catch block
+////			e.printStackTrace();
+////		} catch (ExecutionException e) {
+////			// TODO Auto-generated catch block
+////			e.printStackTrace();
+////		}
+//	}
+//	//XXX
+//    private static void registerMySqlDriver()
+//    {
+//    	/*
+//    	 * 	Steps to register MySQL JDBC under Ubuntu:
+//    	 * 		1. sudo apt-get install libmysql-java
+//    	 * 		2. Ensure that /usr/share/java/mysql.jar exists.
+//    	 * 		3. Register external .jar with your IDE.
+//    	 * 			In Eclipse:
+//    	 * 			Project --> Properties --> Java Build Path
+//    	 * 				--> Add External JARs...
+//    	 */
+//    	try
+//    	{
+//    		// Register the MySQL JDBC driver.
+//    		
+//    		Class.forName("com.mysql.jdbc.Driver");
+//    	}
+//    	catch (ClassNotFoundException e)
+//    	{
+//    		// The MySQL Java connector does not appear to be installed.
+//    		// There's not much we can do about that !
+//    		
+//    		System.err.println("Failed to register the JDBC driver.");
+//    		e.printStackTrace();
+//    	}
+//    }
 	
 	
 }
