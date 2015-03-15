@@ -69,7 +69,7 @@ public class CoalMine {
 			if (!mc.isDone()) {
 				return false;
 			}
-			System.out.println("Citizen " + mc.cit.IDNo + " is done.");
+			//System.out.println("Citizen " + mc.cit.IDNo + " is done.");
 		}
 		return true;
 	}

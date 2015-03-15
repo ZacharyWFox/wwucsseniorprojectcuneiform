@@ -9,7 +9,7 @@ public class SumerianNWSubstringComparator {
 	static SimilarityMatrix simMat;
 	// A flag that prevents compares from accessing similarity matrix if it is null.
 	static boolean hasMatrix = false;
-    static boolean debug = true; // If true, print debug messages in this class
+    static boolean debug = false; // If true, print debug messages in this class
     // foundStart is an offset of the tablet text. fix this if we can.
     // 
     public static void compare(String known, String[] allFoundGraphemes, 
