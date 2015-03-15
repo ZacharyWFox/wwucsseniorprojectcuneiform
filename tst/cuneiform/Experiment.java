@@ -240,7 +240,11 @@ public class Experiment {
 					if (curFitness == 0 && firstZeroIndex < 0){
 						firstZeroIndex = i;
 					}
-					
+					if (curFitness < 0){
+						System.out.println("Current fitness in Experiment is:" + curFitness);
+						System.out.println("This is at " + i + "in the sorted population");
+						System.exit(-1);
+					}
 					
 					if (probA < curFitness && AIndex < 0){
 						AIndex = i;

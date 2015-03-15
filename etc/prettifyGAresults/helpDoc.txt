@@ -1,0 +1,7 @@
+These files are for presenting the end result of the Genetic algorithm
+all pretty like. status_stripper.py is a python script that takes the
+filepath specified (e.g. "python status_stripper.py dir/status.txt") and
+strips out the words in status.txt. It also gives it a header. It 
+outputs a file called stripped.txt. this file is now ready for
+graph_status.r. That is an R code file that pulls from stripped.txt
+and graphs them all against eachother in a nice and pretty way.
