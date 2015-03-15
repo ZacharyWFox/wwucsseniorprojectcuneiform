@@ -277,12 +277,30 @@ public class Experiment {
 					if (firstZeroIndex > -1){
 						int var = (int) Math.floor(Math.random() * (Population.size() - firstZeroIndex));
 						AIndex = firstZeroIndex + var;
+					} else {
+						// Make sure we're not getting out of range indeces, seriously.
+						for (int i = 0; AIndex < 0 || AIndex >= Population.size(); ++i) {
+							if ( i > 10) {
+								AIndex = 0;
+								break;
+							}
+							AIndex = (int) Math.floor(Math.random() * Population.size());
+						}
 					}
 				}
 				if (BIndex == -1){
 					if (firstZeroIndex > -1){
 						int var = (int) Math.floor(Math.random() * (Population.size() - firstZeroIndex));
 						BIndex = firstZeroIndex + var;
+					} else {
+						// Make sure we're not getting out of range indeces, seriously.
+						for (int i = 0; BIndex < 0 || BIndex >= Population.size(); ++i) {
+							if (i > 10){
+								BIndex = 0;
+								break;
+							}
+							BIndex = (int) Math.floor(Math.random() * Population.size());
+						}
 					}
 				}
 				if (Debug){
@@ -292,10 +310,8 @@ public class Experiment {
 						System.out.println("prob for A: " + probARemember + " prob for B: " + probBRemember);
 					}
 				}
-
+				
 				newPop.add(Crossover(Population.get(AIndex), Population.get(BIndex)));
-				
-				
 			}
 			
 			
