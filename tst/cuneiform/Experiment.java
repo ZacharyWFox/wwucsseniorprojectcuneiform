@@ -216,14 +216,16 @@ public class Experiment {
 			for (int i = 0; i < Population.size(); i++){
 				totalFitness += Population.get(i).getFitness();
 			}
-			
+			int probARemember;
+			int probBRemember;
 			while (newPop.size() < populationMax){
 				//breed my citizens! mwahahaha <--- pervert.
 				//Note: we also allow hermaphrodites
 				
 				int probA = (int) Math.floor((Math.random() * totalFitness));
 				int probB = (int) Math.floor((Math.random() * totalFitness));
-				
+				probARemember = probA;
+				probBRemember = probB;
 				int AIndex = -1;
 				int BIndex = -1;
 				int firstZeroIndex = -1;
@@ -276,6 +278,10 @@ public class Experiment {
 				}
 				if (Debug){
 					System.out.println("Aindex: " + AIndex + " BIndex: " + BIndex );
+					if (AIndex <= 0 || BIndex <= 0){
+						System.out.println("firstZeroIndex: " + firstZeroIndex + " Totalfitness:" + totalFitness );
+						System.out.println("prob for A: " + probARemember + " prob for B: " + probBRemember);
+					}
 				}
 				newPop.add(Crossover(Population.get(AIndex), Population.get(BIndex)));
 				
