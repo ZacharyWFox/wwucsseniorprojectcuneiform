@@ -377,7 +377,7 @@ public class Experiment {
 	public Citizen Mutate(Citizen A){
 
 		//Modify citizen's similarity matrix. 
-		//limit number of cells to mutate to max 1%
+		//limit number of cells to mutate to max 1% of all cells
 		//limit numbers in the similarity matrix to <= 127 and >= -127, since it's stored in bytes (largest num represent is 127)
 		Citizen mutant = allCitizens.getCitizen(newCitNo); 
 		mutant.personalMatrix = A.personalMatrix.clone();
@@ -387,9 +387,9 @@ public class Experiment {
 			//System.out.println("Will be randomizing with max mutate index as: " + (A.personalMatrix.colLength() -1) );
 		}
 		
-		int Xmax = A.personalMatrix.rowLength() - 1;
-		int Ymax = A.personalMatrix.colLength() - 1;
-		int loopMax = (int) (Math.floor(populationMax * .01));
+		int Xmax = A.personalMatrix.rowLength();
+		int Ymax = A.personalMatrix.colLength();
+		int loopMax = (int) (Math.floor((A.personalMatrix.colLength()* A.personalMatrix.rowLength()) * .01));
 		
 		for (int i = 0; i < loopMax; i++){
 			

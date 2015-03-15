@@ -165,18 +165,25 @@ public class SimilarityMatrix implements Cloneable, Serializable {
 			byte[] curRow = dynamicMatrix.get(i);
 			
 			for (int x = 0; x < curRow.length; x++) {
-				byte val = (byte) Math.floor(Math.random() * 127);
-				  
-				if ( x != i && Math.random() > .5){
-					val = (byte) -val;
-				}
-				curRow[x] = val;
 				
-				if (minVal[i] > val){
-					minVal[i] = val;
+				
+				if (x != i){
+					byte val = (byte) Math.floor(Math.random() * 127);
+					  
+					if (Math.random() > .5){
+						val = (byte) -val;
+					}
+					curRow[x] = val;
+					
+					if (minVal[i] > val){
+						minVal[i] = val;
+					}
+					if (minVal[x] > val){
+						minVal[x] = val;
+					}
 				}
-				if (minVal[x] > val){
-					minVal[x] = val;
+				else{
+					curRow[x] = 127;
 				}
 				
 			}
