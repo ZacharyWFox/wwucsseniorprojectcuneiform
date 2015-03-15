@@ -229,8 +229,8 @@ public class Experiment {
 				//breed my citizens! mwahahaha <--- pervert.
 				//Note: we also allow hermaphrodites
 				
-				int probA = (int) Math.floor((Math.random() * totalFitness));
-				int probB = (int) Math.floor((Math.random() * totalFitness));
+				int probA = (int) Math.floor((Math.random() * (totalFitness+1)));
+				int probB = (int) Math.floor((Math.random() * (totalFitness+1)));
 
 				probARemember = probA;
 				probBRemember = probB;
@@ -275,13 +275,13 @@ public class Experiment {
 				//without assigning a value they're zero fitnesses
 				if (AIndex == -1){
 					if (firstZeroIndex > -1){
-						int var = (int) Math.floor(Math.random() * (Population.size() - 1 - firstZeroIndex));
+						int var = (int) Math.floor(Math.random() * (Population.size() - firstZeroIndex));
 						AIndex = firstZeroIndex + var;
 					}
 				}
 				if (BIndex == -1){
 					if (firstZeroIndex > -1){
-						int var = (int) Math.floor(Math.random() * (Population.size() -1 - firstZeroIndex));
+						int var = (int) Math.floor(Math.random() * (Population.size() - firstZeroIndex));
 						BIndex = firstZeroIndex + var;
 					}
 				}
