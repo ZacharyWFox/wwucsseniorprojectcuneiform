@@ -1,5 +1,6 @@
 package client;
 
+import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.List;
@@ -38,14 +39,14 @@ public class LoadBalancer {
 	};
 	List<CoalMine> theMines;
 	public List<MockCoalMine> fakeMines;
-	public LoadBalancer(List<KnownDate> allKnownDates) throws RemoteException{
+	public LoadBalancer(List<KnownDate> allKnownDates) throws RemoteException, NotBoundException{
 		this.theMines = new ArrayList<CoalMine>(hostNames.length);
 		//this.fakeMines = new ArrayList<MockCoalMine>(hostNames.length);
 		
 		generateMines(hostNames, allKnownDates);
 	}
 	
-	private void generateMines(String[] hosts, List<KnownDate> allKnownDates) throws RemoteException{
+	private void generateMines(String[] hosts, List<KnownDate> allKnownDates) throws RemoteException, NotBoundException{
 		for (String name : hosts) {
 			this.theMines.add(new CoalMine(name, allKnownDates));
 			//this.fakeMines.add(new MockCoalMine(name));
@@ -57,8 +58,9 @@ public class LoadBalancer {
 	 * @param cit the citizen who will work their life away for us.
 	 * @param attestations list of attestations bruh
 	 * @return true if successful, false if all mines are full (that's pretty bad)
+	 * @throws NotBoundException 
 	 */
-	public boolean sendToMine(Citizen cit, List<FoundDate> attestations) {
+	public boolean sendToMine(Citizen cit, List<FoundDate> attestations) throws NotBoundException {
 		//randomize starting index means less likely to hit full one right off the bat
 		int size = theMines.size();
 		int startIndex = (int) Math.floor(Math.random() * size);

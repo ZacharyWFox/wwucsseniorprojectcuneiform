@@ -12,6 +12,7 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -106,7 +107,7 @@ public class Experiment {
 		}
 		try {
 			loadBalancer = new LoadBalancer(allKnownDates);
-		} catch (RemoteException e) {
+		} catch (RemoteException | NotBoundException e) {
 			System.out.println("Couldn't start load Balancer. Taking arrow to face.");
 			e.printStackTrace();
 			System.exit(-1);
@@ -169,7 +170,13 @@ public class Experiment {
 			
 			
 			
-			Live(Population);
+			try {
+				Live(Population);
+			} catch (NotBoundException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+				System.exit(-1);
+			}
 			if (quitNow){
 				break;
 			}
@@ -224,8 +231,10 @@ public class Experiment {
 				
 				int probA = (int) Math.floor((Math.random() * totalFitness));
 				int probB = (int) Math.floor((Math.random() * totalFitness));
+
 				probARemember = probA;
 				probBRemember = probB;
+
 				int AIndex = -1;
 				int BIndex = -1;
 				int firstZeroIndex = -1;
@@ -283,6 +292,7 @@ public class Experiment {
 						System.out.println("prob for A: " + probARemember + " prob for B: " + probBRemember);
 					}
 				}
+
 				newPop.add(Crossover(Population.get(AIndex), Population.get(BIndex)));
 				
 				
@@ -453,7 +463,7 @@ public class Experiment {
 		return child;
 	}
 
-	public void Live(ArrayList<Citizen> curGen){
+	public void Live(ArrayList<Citizen> curGen) throws NotBoundException{
 		BufferedReader cin = new BufferedReader( new InputStreamReader(System.in));
 		List<FoundDate> nthDateIKnow;
 		try {

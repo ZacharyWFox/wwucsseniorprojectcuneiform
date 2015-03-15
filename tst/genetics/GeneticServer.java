@@ -84,7 +84,6 @@ public class GeneticServer implements Server {
 		incrementCitizen();
 		
 		System.out.println("Life of citizen " + cit.IDNo + " has started.");
-		//TODO: add timestamp at beginning and end and print it to a file.
 		long timeStart = System.currentTimeMillis();
 		
 		//return 3.14159F;
@@ -97,7 +96,6 @@ public class GeneticServer implements Server {
 		int leftover;
 		
 		//divide work
-		// TODO: test
 		for (int i = 0; i < threadsPerCitizen; ++i) {
 			min = i * divider;
 			max = min + divider;
@@ -106,23 +104,15 @@ public class GeneticServer implements Server {
 				max -= leftover;
 			try {
 				threadDivisions.add(attestations.subList(min, max));
-//				System.out.printf("Gave thread %d elements %d - %d.\n", i, min, max);
 			} catch (Exception e) {
 				System.out.println("Sublist failed.");
 			}
 		}
 		
-		// Separate
-		//Start threads
-		//
-
-		
 		List<Future<List<GuessPair>>> results = new ArrayList<Future<List<GuessPair>>>(this.threadsPerCitizen);
 		// Start the work
 		long threadSt = System.currentTimeMillis();
 		for (List<FoundDate> f : threadDivisions){
-			//List<KnownDate> known = toKnownDateList(f);
-			
 			results.add(threads.submit(new CallableDateExtractor(null, allKnownDates, f, cit.personalMatrix)));
 		}
 		
