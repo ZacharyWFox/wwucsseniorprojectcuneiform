@@ -231,6 +231,9 @@ public class Experiment {
 				int probA = (int) Math.floor((Math.random() * totalFitness));
 				int probB = (int) Math.floor((Math.random() * totalFitness));
 				
+				
+				
+				
 				int AIndex = -1;
 				int BIndex = -1;
 				int firstZeroIndex = -1;
@@ -283,6 +286,8 @@ public class Experiment {
 				}
 				if (Debug){
 					System.out.println("Aindex: " + AIndex + " BIndex: " + BIndex );
+					
+					
 				}
 				newPop.add(Crossover(Population.get(AIndex), Population.get(BIndex)));
 				
