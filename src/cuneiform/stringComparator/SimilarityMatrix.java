@@ -166,11 +166,9 @@ public class SimilarityMatrix implements Cloneable, Serializable {
 			
 			for (int x = 0; x < curRow.length; x++) {
 				
-				
-				if (x != i){
 					byte val = (byte) Math.floor(Math.random() * 127);
 					  
-					if (Math.random() > .5){
+					if (x != i && Math.random() > .5){
 						val = (byte) -val;
 					}
 					curRow[x] = val;
@@ -181,10 +179,7 @@ public class SimilarityMatrix implements Cloneable, Serializable {
 					if (minVal[x] > val){
 						minVal[x] = val;
 					}
-				}
-				else{
-					curRow[x] = 127;
-				}
+
 				
 			}
 		}
