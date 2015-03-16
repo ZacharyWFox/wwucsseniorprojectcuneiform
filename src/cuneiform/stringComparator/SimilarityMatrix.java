@@ -161,28 +161,62 @@ public class SimilarityMatrix implements Cloneable, Serializable {
 
 	
 	public void randomizeMatrix(){
-		for (int i = 0; i < dynamicMatrix.size(); i++) {
-			byte[] curRow = dynamicMatrix.get(i);
-			
-			for (int x = 0; x < curRow.length; x++) {
+		
+		
+		if (Math.random() < .5){
+			for (int i = 0; i < dynamicMatrix.size(); i++) {
+				byte[] curRow = dynamicMatrix.get(i);
 				
-					byte val = (byte) Math.floor(Math.random() * 127);
-					  
-					if (x != i && Math.random() > .5){
-						val = (byte) -val;
-					}
-					curRow[x] = val;
+				
+				for (int x = 0; x < curRow.length; x++) {
 					
-					if (minVal[i] > val){
-						minVal[i] = val;
-					}
-					if (minVal[x] > val){
-						minVal[x] = val;
-					}
-
-				
+						byte val = (byte) Math.floor(Math.random() * 127);
+						  
+						if (x != i && Math.random() > .5){
+							val = (byte) -val;
+						}
+						curRow[x] = val;
+						
+						if (minVal[i] > val){
+							minVal[i] = val;
+						}
+						if (minVal[x] > val){
+							minVal[x] = val;
+						}
+	
+					
+				}
 			}
 		}
+		else{
+			for (int i = 0; i < dynamicMatrix.size(); i++) {
+				byte[] curRow = dynamicMatrix.get(i);
+				
+				
+				for (int x = 0; x < curRow.length; x++) {
+						if (x == i){
+							curRow[x] = 127;
+							continue;
+						}
+						byte val = (byte) Math.floor(Math.random() * 127);
+						  
+						if (x != i && Math.random() > .5){
+							val = (byte) -val;
+						}
+						curRow[x] = val;
+						
+						if (minVal[i] > val){
+							minVal[i] = val;
+						}
+						if (minVal[x] > val){
+							minVal[x] = val;
+						}
+	
+					
+				}
+			}
+		}
+		
 	}
 	
 	public boolean setCell(int x, int y, byte val) {
