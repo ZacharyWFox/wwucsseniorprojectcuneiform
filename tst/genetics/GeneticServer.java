@@ -171,8 +171,10 @@ public class GeneticServer implements Server {
 		for(GuessPair g : guesses) {
 			if(g.isMatch()) {
 				correct += 2 * (g.getConfidence().confidence/100);
-				System.out.println("Found match! Confidence of " + g.getConfidence().confidence);
-				System.out.println("Correct = " + correct + " calculation: " + (g.getConfidence().confidence/100));
+				System.out.println("Found match! Confidence of " + g.getConfidence().confidence 
+						+ " for alignment of " + g.getGuessDate() + " against "+ g.getCorrectDate());
+				System.out.println("Correct = " + correct + " calculation: " 
+						+ (g.getConfidence().confidence/100));
 			}
 			totalConf += g.getConfidence().confidence;
 			

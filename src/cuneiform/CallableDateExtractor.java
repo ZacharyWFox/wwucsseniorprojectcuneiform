@@ -25,24 +25,9 @@ public class CallableDateExtractor implements Callable<List<GuessPair>>{
 		// TODO Auto-generated method stub
 		
 		List<GuessPair> guesses = new ArrayList<GuessPair>(250);
-		FoundDate attestation; //TODO: get from factory
-		FoundDate curFound;
-		GuessPair guess;
-		
-//		@SuppressWarnings("unchecked")
-//		List<KnownDate> clone = (List<KnownDate>)((ArrayList<KnownDate>)this.extranctinator.knownYears).clone();
 		
 		guesses = this.extranctinator.alignYears(this.sample, this.simMat);
 //		guesses = this.extranctinator.alignYearsTest();//XXX
-		//TODO: LOOP
-//		while((attestation = DateFactory.get()) != null) {
-//		
-//		attestation = null; //TODO: get from factory
-//		found = this.extranctinator.alignDateString(unknownGraphemes);
-//		guess = new GuessPair(attestation.getKnownDate(), found);
-//		
-//		guesses.add(guess);
-//		}
 		
 		return guesses;
 	}

@@ -170,7 +170,7 @@ public class SumerianNWSubstringComparator {
                 }
                 // Penalize bad confidences
                 if (conf[0] > 100.0) {
-                	conf[0] = 100 - conf[0];
+                	conf[0] = 100 - (conf[0] - 100);
                 	if(conf[0] < 0) {
                 		conf[0] = 0.0F;
                 	}
