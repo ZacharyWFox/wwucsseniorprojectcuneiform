@@ -19,6 +19,9 @@ public class SimilarityMatrix implements Cloneable, Serializable {
 	 */
 	private static final long serialVersionUID = -5501164272923209758L;
 	private static final String alphabetFilePath = "data/signs.txt"; //relative to wwucsseniorprojectcuneiform
+	//TODO move
+	public static byte maxValue = 10;
+	public static byte minValue = 0;
 	// Lower triangular adjacency matrix
 	private ArrayList<byte[]> dynamicMatrix;
 	private byte[] minVal;
@@ -159,7 +162,6 @@ public class SimilarityMatrix implements Cloneable, Serializable {
 		return getCell(indexA, indexB);		
 	}
 
-	
 	public void randomizeMatrix(){
 		
 		
@@ -170,11 +172,13 @@ public class SimilarityMatrix implements Cloneable, Serializable {
 				
 				for (int x = 0; x < curRow.length; x++) {
 					
-						byte val = (byte) Math.floor(Math.random() * 127);
-						  
-						if (x != i && Math.random() > .5){
-							val = (byte) -val;
-						}
+						byte val = (byte) Math.floor(Math.random() * Math.abs(SimilarityMatrix.maxValue - SimilarityMatrix.minValue));
+						
+						val += SimilarityMatrix.minValue;
+						
+//						if (x != i && Math.random() > .5){
+//							val = (byte) -val;
+//						}
 						curRow[x] = val;
 						
 						if (minVal[i] > val){
@@ -195,14 +199,17 @@ public class SimilarityMatrix implements Cloneable, Serializable {
 				
 				for (int x = 0; x < curRow.length; x++) {
 						if (x == i){
-							curRow[x] = 127;
+							curRow[x] = (byte) SimilarityMatrix.maxValue;
 							continue;
 						}
-						byte val = (byte) Math.floor(Math.random() * 127);
-						  
-						if (x != i && Math.random() > .5){
-							val = (byte) -val;
-						}
+						byte val = (byte) Math.floor(Math.random() * 
+								Math.abs(SimilarityMatrix.maxValue - SimilarityMatrix.minValue));
+						
+						val += SimilarityMatrix.minValue;
+//						  
+//						if (x != i && Math.random() > .5){
+//							val = (byte) -val;
+//						}
 						curRow[x] = val;
 						
 						if (minVal[i] > val){

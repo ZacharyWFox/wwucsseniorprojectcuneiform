@@ -27,6 +27,8 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.Date;
 
+import cuneiform.stringComparator.SimilarityMatrix;
+
 import client.CoalMine;
 import client.LoadBalancer;
 
@@ -395,10 +397,11 @@ public class Experiment {
 			
 			int x = (int) (Math.floor(Xmax * Math.random()));
 			int y = (int) (Math.floor(Ymax * Math.random()));
-			byte newVal = (byte) (Math.floor(127 * Math.random()));
-			if (Math.random() > .5){
-				newVal = (byte) -newVal;
-			}
+			byte newVal = (byte) (Math.floor((SimilarityMatrix.maxValue - SimilarityMatrix.minValue) * Math.random()));
+			newVal += SimilarityMatrix.minValue;
+//			if (Math.random() > .5){
+//				newVal = (byte) -newVal;
+//			}
 			if (Debug){
 				//System.out.println("x is " + x);
 				//System.out.println("y is: " + y);
