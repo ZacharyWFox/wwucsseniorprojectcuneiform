@@ -82,7 +82,7 @@ public class FoundDateList {
 			
 			// Create known date using canonical year
 			KnownDate newKnownDate = new KnownDate(
-					yearRef.id,
+					yearRef.canonical_year_id,
 					text);
 			
 			Confidence newConfidence = new Confidence(
