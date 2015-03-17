@@ -32,8 +32,8 @@ public class CallableDateExtractor implements Callable<List<GuessPair>>{
 //		@SuppressWarnings("unchecked")
 //		List<KnownDate> clone = (List<KnownDate>)((ArrayList<KnownDate>)this.extranctinator.knownYears).clone();
 		
-//		guesses = this.extranctinator.alignYears(this.sample, this.simMat);
-		guesses = this.extranctinator.alignYearsTest();//XXX
+		guesses = this.extranctinator.alignYears(this.sample, this.simMat);
+//		guesses = this.extranctinator.alignYearsTest();//XXX
 		//TODO: LOOP
 //		while((attestation = DateFactory.get()) != null) {
 //		

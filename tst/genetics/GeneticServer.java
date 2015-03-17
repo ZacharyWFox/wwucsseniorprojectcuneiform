@@ -104,6 +104,7 @@ public class GeneticServer implements Server {
 				max -= leftover;
 			try {
 				threadDivisions.add(attestations.subList(min, max));
+				System.out.println("Divided sbulist. Min = " + min + " max = " + max);
 			} catch (Exception e) {
 				System.out.println("Sublist failed.");
 			}
@@ -114,13 +115,16 @@ public class GeneticServer implements Server {
 		long threadSt = System.currentTimeMillis();
 		for (List<FoundDate> f : threadDivisions){
 			results.add(threads.submit(new CallableDateExtractor(null, allKnownDates, f, cit.personalMatrix)));
+			System.out.println("submitted " + f.size() + " attestations to thread.");
 		}
 		
 		//Join
 		System.out.println("We have " + results.size() + " sets of results. combining togther.");
 		for (Future<List<GuessPair>> r : results) {
 			try {
+				float tmillis = System.currentTimeMillis();
 				List<GuessPair> sublist = r.get();
+				System.out.println("Waited for " + (System.currentTimeMillis() - tmillis));
 				guesses.addAll(sublist);
 				System.out.println("Got a thing. Guesses size = " + guesses.size() + ", added " + sublist.size());
 			} catch (InterruptedException e) {
