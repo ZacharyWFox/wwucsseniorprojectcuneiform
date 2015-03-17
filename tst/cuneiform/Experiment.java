@@ -494,8 +494,11 @@ public class Experiment {
 			}
 			
 			nthDateIKnow = (new FoundDateList(dbConn)).getFoundDates();
-			if (first)
+			if (first){
 				testAttests = nthDateIKnow;
+				first = false;
+			}
+				
 		} catch (SQLException e) {
 			try {
 				dbConn = DriverManager.getConnection(Parser.dbHost, Parser.dbUser, Parser.dbPass);
