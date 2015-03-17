@@ -174,7 +174,7 @@ public class SumerianNWSubstringComparator {
                 	if(conf[0] < 0) {
                 		conf[0] = 0.0F;
                 	}
-                	System.out.println("Greater than 100 confidence, penalizing. New conf = " + conf[0]);
+                	//System.out.println("Greater than 100 confidence, penalizing. New conf = " + conf[0]);
                 }
                 
             	dist[0] = Math.abs(worstVal - finalMatch);
