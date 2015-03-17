@@ -168,11 +168,13 @@ public class GeneticServer implements Server {
 		// Count the number correct
 		int correct = 0;
 		float totalConf = 0F;
+		int correctGuess = 0;
 		for(GuessPair g : guesses) {
-			if(g.isMatch()) {
+			if (g.getGuessDate().text.equals(g.getCorrectDate().text)){
+				correctGuess++;
 				correct += 2 * (g.getConfidence().confidence/100);
 				System.out.println("Found match! Confidence of " + g.getConfidence().confidence 
-						+ " for alignment of " + g.getGuessDate() + " against "+ g.getCorrectDate());
+						+ " for alignment of " + g.getGuessDate().text + " against "+ g.getCorrectDate().text);
 				System.out.println("Correct = " + correct + " calculation: " 
 						+ (g.getConfidence().confidence/100));
 			}
@@ -180,6 +182,7 @@ public class GeneticServer implements Server {
 			
 		}
 		System.out.println("Average confidence: " + totalConf/guesses.size() + " over " + guesses.size() + " guesses.");
+		System.out.println("Correct guesses: " + correctGuess);
 		//Return the ratio of correctness
 		return correct;
 	}

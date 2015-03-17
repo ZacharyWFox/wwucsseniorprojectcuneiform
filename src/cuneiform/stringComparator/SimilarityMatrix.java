@@ -20,8 +20,8 @@ public class SimilarityMatrix implements Cloneable, Serializable {
 	private static final long serialVersionUID = -5501164272923209758L;
 	private static final String alphabetFilePath = "data/signs.txt"; //relative to wwucsseniorprojectcuneiform
 	//TODO move
-	public static byte maxValue = 10;
-	public static byte minValue = 0;
+	public static byte maxValue = 127;
+	public static byte minValue = -127;
 	// Lower triangular adjacency matrix
 	private ArrayList<byte[]> dynamicMatrix;
 	private byte[] minVal;
@@ -224,6 +224,29 @@ public class SimilarityMatrix implements Cloneable, Serializable {
 			}
 		}
 		
+	}
+	
+	public void specialRandomize(){
+		for (int i = 0; i < dynamicMatrix.size(); i++) {
+			byte[] curRow = dynamicMatrix.get(i);
+			
+			
+			for (int x = 0; x < curRow.length; x++) {
+				if (i == x){
+					curRow[x] = 2;
+				}
+				else{
+					curRow[x] = -2;
+				}
+				
+				if (minVal[i] > -2){
+					minVal[i] = -2;
+				}
+				if (minVal[x] > -2){
+					minVal[x] = -2;
+				}
+			}
+		}
 	}
 	
 	public boolean setCell(int x, int y, byte val) {

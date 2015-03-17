@@ -199,12 +199,15 @@ public class DateExtractor {
         	
         	
             SumerianNWSubstringComparator.compare(known, found, i, conf, indx, dist, sim);
+
             if (conf[0] > confd.confidence) {
                 bestIndex = indx[0];
                 confd = new Confidence(dist[0], conf[0]);
                 guess = d;
+                
             }
         }
+       
 
         String output = "";
         for (int j = 0; j < bestIndex; j++) {

@@ -160,22 +160,22 @@ public class SumerianNWSubstringComparator {
                 // The division by zero and still get good-ish data //TODO: determine (1) what best == worst implies and 
                 // (2) if that means the worst match is just really good, or if the best match is really bad. 
                 
-//                System.out.printf("Best val %d |worst val %d |finalMatch %d\n", bestValue, worstVal, finalMatch); 
+                //System.out.printf("Best val %d |worst val %d |finalMatch %d\n", bestValue, worstVal, finalMatch); 
                 
                 if(denom == 0) {
-                	conf[0] = 100.0 * ((SimilarityMatrix.maxValue - bestValue)/SimilarityMatrix.maxValue);
+                	conf[0] = 100.0; // * ((SimilarityMatrix.maxValue - bestValue)/SimilarityMatrix.maxValue);
                 	System.out.println("Somehow, denominator is 0. Reporting confidence of " + conf[0]);
                 } else {
                 	conf[0] = (100.0 * Math.abs(worstVal - finalMatch) / denom) ;
                 }
                 // Penalize bad confidences
                 if (conf[0] > 100.0) {
-                	conf[0] = 100 - (conf[0] - 100);
-                	if(conf[0] < 0) {
-                		conf[0] = 0.0F;
+                	conf[0] = 100; // - (conf[0] - 100);
+//                	if(conf[0] < 0) {
+//                		conf[0] = 0.0F;
                 	}
-                	//System.out.println("Greater than 100 confidence, penalizing. New conf = " + conf[0]);
-                }
+//                	//System.out.println("Greater than 100 confidence, penalizing. New conf = " + conf[0]);
+//                }
                 
             	dist[0] = Math.abs(worstVal - finalMatch);
                 indx[0] = allFoundGraphemes.length; //TODO: FIX
