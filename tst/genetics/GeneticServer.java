@@ -165,12 +165,14 @@ public class GeneticServer implements Server {
 			if(g.isMatch()) {
 				correct += 2 * (g.getConfidence().confidence/100);
 				System.out.println("Found match! Confidence of " + g.getConfidence().confidence);
+				System.out.println("Correct = " + correct + " calculation: " + (g.getConfidence().confidence/100));
 			}
 			totalConf += g.getConfidence().confidence;
+			
 		}
-		System.out.println("Average confidence: " + totalConf/guesses.size());
+		System.out.println("Average confidence: " + totalConf/guesses.size() + " over " + guesses.size() + " guesses.");
 		//Return the ratio of correctness
-		return Math.abs(correct);
+		return correct;
 	}
 	
 	private List<KnownDate> toKnownDateList(List<FoundDate> found) {
