@@ -483,8 +483,7 @@ public class Experiment {
 	}
 
 	
-	private List<FoundDate> testAttests;
-	boolean first = true;
+
 	public void Live(ArrayList<Citizen> curGen) throws NotBoundException{
 		BufferedReader cin = new BufferedReader( new InputStreamReader(System.in));
 		List<FoundDate> nthDateIKnow;
@@ -494,10 +493,7 @@ public class Experiment {
 			}
 			
 			nthDateIKnow = (new FoundDateList(dbConn)).getFoundDates();
-			if (first){
-				testAttests = nthDateIKnow;
-				first = false;
-			}
+			
 				
 		} catch (SQLException e) {
 			try {
@@ -516,8 +512,7 @@ public class Experiment {
 		System.out.println("The dwarves are digging too deep and too greedily: start of Generation " + this.GenerationNo);
 		for (Citizen curCit : curGen){
 			//System.out.println("Sent citizen " + curCit.IDNo + " to the mines.");
-//			boolean ret = loadBalancer.sendToMine(curCit, nthDateIKnow);
-			boolean ret = loadBalancer.sendToMine(curCit, testAttests); //XXX
+			boolean ret = loadBalancer.sendToMine(curCit, nthDateIKnow); //XXX
 	
 			if (!ret){
 				//something went wrong
