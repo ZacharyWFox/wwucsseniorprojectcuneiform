@@ -122,9 +122,9 @@ public class DateExtractor {
         }
     }
     
-    public FoundDate alignDateString(String[] graphemes, SimilarityMatrix sim) {
+    public FoundDate alignDateString(String[] graphemes, SimilarityMatrix sim, boolean compare) {
     	long st = System.currentTimeMillis();
-    	FoundDate year = getConfidence(graphemes, 0, this.knownYears, sim);
+    	FoundDate year = getConfidence(graphemes, 0, this.knownYears, sim, compare);
     	//System.out.printf("Alignment took %d milliseconds\n", System.currentTimeMillis() - st);
     	return year;
     }
@@ -142,6 +142,11 @@ public class DateExtractor {
     }
     
     public List<GuessPair> alignYears(List<FoundDate> toAlign, SimilarityMatrix sim){
+    	return alignYears(toAlign, sim, false);
+    }
+    	
+    	
+    public List<GuessPair> alignYears(List<FoundDate> toAlign, SimilarityMatrix sim, boolean compare){	
     	List<GuessPair> allFound = new ArrayList<GuessPair>(this.knownYears.size());
     	FoundDate found;
     	String[] graphemes;
@@ -149,7 +154,7 @@ public class DateExtractor {
     	for( FoundDate f : toAlign) {
     		//long time = System.currentTimeMillis();
     		graphemes = f.foundDate.split("-| ");
-    		found = alignDateString(graphemes, sim);
+    		found = alignDateString(graphemes, sim, compare);
     		guess = new GuessPair(f.date, found);
     		//System.out.println("Alignment took " + (System.currentTimeMillis() - time) + " seconds.");
     		allFound.add(guess);
@@ -184,21 +189,34 @@ public class DateExtractor {
         return new FoundDate(guess, output, confd);
     }
     
-    private FoundDate getConfidence(String[] graphemes, int i, List<KnownDate> dates, SimilarityMatrix sim) {
+    private FoundDate getConfidence(String[] graphemes, int i, List<KnownDate> dates, SimilarityMatrix sim, boolean compare) {
         KnownDate guess = null;
         Confidence confd = new Confidence(Integer.MAX_VALUE, -1);
         int bestIndex = 0;
         double[] conf = new double[1];
         int[]    indx = new int[1];
         int[]    dist = new int[1];
+        double[] conf2 = new double[1];
+        int[]    indx2 = new int[1];
+        int[]    dist2 = new int[1];
         String[] found = this.separateDeterminants(graphemes);
-        
+        double levConf = 0;
         
         for (KnownDate d : dates) {
         	String known = this.separateDeterminants(d.text);
         	
         	
             SumerianNWSubstringComparator.compare(known, found, i, conf, indx, dist, sim);
+            
+            
+            if (compare){
+            	//do levenshtein
+            	SumerianLevenstheinSubstringComparator.compare(known, found, i, conf2, indx2, dist2);
+            	//get max confidence
+            	if (conf2[0] > levConf) {
+                    levConf = conf2[0];
+                }
+            }
 
             if (conf[0] > confd.confidence) {
                 bestIndex = indx[0];
@@ -208,6 +226,10 @@ public class DateExtractor {
             }
         }
        
+        if (compare){
+        	//display levenshtein vs. NW confidence
+        	System.out.println("lev:" + levConf + " NW:" + confd.confidence + " diff:" + (confd.confidence - levConf));
+        }
 
         String output = "";
         for (int j = 0; j < bestIndex; j++) {
