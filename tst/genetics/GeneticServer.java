@@ -117,9 +117,12 @@ public class GeneticServer implements Server {
 		}
 		
 		//Join
+		System.out.println("We have " + results.size() + " sets of results. combining togther.");
 		for (Future<List<GuessPair>> r : results) {
 			try {
-				guesses.addAll(r.get());
+				List<GuessPair> sublist = r.get();
+				guesses.addAll(sublist);
+				System.out.println("Got a thing. Guesses size = " + guesses.size() + ", added " + sublist.size());
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
