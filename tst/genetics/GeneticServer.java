@@ -78,8 +78,17 @@ public class GeneticServer implements Server {
 		}	
 	}
 	
+	
+	
+	
 	@Override
 	public float live(Citizen cit, List<FoundDate> attestations)
+			throws RemoteException {
+			return live(cit, attestations, false);
+	}
+		
+		
+	public float live(Citizen cit, List<FoundDate> attestations, boolean compare)
 			throws RemoteException {
 		incrementCitizen();
 		
@@ -114,7 +123,7 @@ public class GeneticServer implements Server {
 		// Start the work
 		long threadSt = System.currentTimeMillis();
 		for (List<FoundDate> f : threadDivisions){
-			results.add(threads.submit(new CallableDateExtractor(null, allKnownDates, f, cit.personalMatrix)));
+			results.add(threads.submit(new CallableDateExtractor(null, allKnownDates, f, cit.personalMatrix, compare)));
 			System.out.println("submitted " + f.size() + " attestations to thread.");
 		}
 		
@@ -173,10 +182,10 @@ public class GeneticServer implements Server {
 			if (g.getGuessDate().text.equals(g.getCorrectDate().text)){
 				correctGuess++;
 				correct += 2 * (g.getConfidence().confidence/100);
-				System.out.println("Found match! Confidence of " + g.getConfidence().confidence 
-						+ " for alignment of " + g.getGuessDate().text + " against "+ g.getCorrectDate().text);
-				System.out.println("Correct = " + correct + " calculation: " 
-						+ (g.getConfidence().confidence/100));
+//				System.out.println("Found match! Confidence of " + g.getConfidence().confidence 
+//						+ " for alignment of " + g.getGuessDate().text + " against "+ g.getCorrectDate().text);
+//				System.out.println("Correct = " + correct + " calculation: " 
+//						+ (g.getConfidence().confidence/100));
 			}
 			totalConf += g.getConfidence().confidence;
 			

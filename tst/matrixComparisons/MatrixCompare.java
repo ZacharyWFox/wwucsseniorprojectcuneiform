@@ -68,7 +68,7 @@ public class MatrixCompare {
 		SimilarityMatrix simMat = new SimilarityMatrix();
 		//simMat.specialRandomize();
 		try {
-			simMat.readMatrix("data/matrixTest.txt");
+			simMat.readMatrix("data/CurGen/Cit0.txt");
 
 		} catch (Exception e1) {
 			// TODO Auto-generated catch block
@@ -89,7 +89,7 @@ public class MatrixCompare {
 		GeneticServer server =  new GeneticServer(1, 2);
 		server.setAllKnownDates(allKnownDates);
 		try {
-			server.live(cit, foundDateList.getFoundDates());
+			server.live(cit, foundDateList.getFoundDates(), true);
 		} catch (RemoteException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

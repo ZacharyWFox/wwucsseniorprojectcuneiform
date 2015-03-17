@@ -2,7 +2,7 @@ package cuneiform.stringComparator;
 
 public class SumerianLevenstheinSubstringComparator {
 
-	private static boolean Debug = true;
+	private static boolean Debug = false;
 	
     protected final static int minimum(int a, int b, int c) {
         int t1 = (a < b) ? (a) : (b);
