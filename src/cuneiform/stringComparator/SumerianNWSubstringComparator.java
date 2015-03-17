@@ -100,6 +100,119 @@ public class SumerianNWSubstringComparator {
             }
     }
     
+    public static void compareNoCutoff(String known, String[] allFoundGraphemes, 
+            final int foundStart, double[] conf, int[] indx, int[] dist, SimilarityMatrix sim) {
+
+                // Split string into graphemes
+                String[] knownGraphemes = known.split("- |-| ");
+                if (debug){
+                	System.out.println("known graphemes: " + Arrays.toString(knownGraphemes));
+                }
+                String[] foundGraphemes = Arrays.copyOfRange(allFoundGraphemes, foundStart, allFoundGraphemes.length);
+                if (debug){
+                	System.out.println("found graphemes: " + Arrays.toString(foundGraphemes));
+                }
+                int xAlignLen = knownGraphemes.length + 1;
+                int yAlignLen = foundGraphemes.length + 1;
+                int[][] alignment = new int[xAlignLen][yAlignLen];
+                
+                // Initialize edges for alignment
+                for (int i = 0; i < xAlignLen; i++) {
+                    alignment[i][0] = 1 * -i;
+                }
+                for (int j = 0; j < yAlignLen; j++) {
+                    alignment[0][j] = 1 * -j;
+                }
+
+                // Compute alignment matrix
+                for (int i = 1; i < xAlignLen; i++) {
+                    for(int j = 1; j < yAlignLen; j++) {
+                        int match  = alignment[i - 1][j - 1] + similarity(knownGraphemes[i-1], foundGraphemes[j-1], sim);
+                        int delete = alignment[i - 1][j] + linGap();
+                        int insert = alignment[i][j - 1] + linGap();
+                        alignment[i][j] = max(match, delete, insert);
+                        
+                        
+                    }
+                }
+                int finalMatch = alignment[xAlignLen -1][yAlignLen -1];
+                
+                
+
+                int bestValue = 0;
+                for (int i = 0; i < knownGraphemes.length; i++){
+                	bestValue += similarity(knownGraphemes[i], knownGraphemes[i], sim);
+                }
+
+                int worstVal = 0;
+                for (int i = 0; i < knownGraphemes.length; i++){
+                	worstVal += sim.getMin(knownGraphemes[i]);
+                }
+                for (int i = 0; i < foundGraphemes.length - knownGraphemes.length; i++){
+                	worstVal += linGap();
+                }
+            	
+            	//if finalMatch is the same as bestValue, we get 1. as finalMatch gets closer
+                //to the worst possible value, the top gets closer and closer to 0, making the confidence
+                //go to 0
+                int denom = Math.abs(worstVal - bestValue);
+                
+                indx[0] = allFoundGraphemes.length;
+                // NOTE: to future groups:  distance is not necessarily relevant here, 
+                // it would require calculating edit distance as well as NW alignments
+            	dist[0] = Math.abs(worstVal - finalMatch);
+                
+                
+                if(denom == 0) {
+                	conf[0] = 100.0; // * ((SimilarityMatrix.maxValue - bestValue)/SimilarityMatrix.maxValue);
+                	System.out.println("Somehow, denominator is 0. Reporting confidence of " + conf[0]);
+                } else {
+                	conf[0] = (100.0 * Math.abs(worstVal - finalMatch) / denom) ;
+                }
+                // Penalize bad confidences
+                if (conf[0] > 100.0) {
+                	conf[0] = 100; // - (conf[0] - 100);
+//                	if(conf[0] < 0) {
+//                		conf[0] = 0.0F;
+                	}
+//                	//System.out.println("Greater than 100 confidence, penalizing. New conf = " + conf[0]);
+//                }
+                
+                
+            	
+                
+                if (debug) {
+                	String Alignment = "[ [ _ ";
+                	for (int i = 0; i < foundGraphemes.length; i++){
+                		Alignment += foundGraphemes[i] + " ";
+                	}
+                	Alignment += "]\n";
+                	for (int i = 0; i < xAlignLen; i++) {
+                		if (i == 0){
+                			Alignment +="_ [ ";
+                		}
+                		else{
+                			Alignment += knownGraphemes[i-1] + " [ ";
+                		}
+                		
+                        for(int j = 0; j < yAlignLen; j++) {
+                        	Alignment += alignment[i][j] + " ";
+                        }
+                        Alignment += "]\n";
+                	}
+                	Alignment += "]";
+                	System.out.println("Alignment matrix:\n" + Alignment);
+                	
+                	
+    	            String[] optAligns = constructAlignment(alignment, knownGraphemes, foundGraphemes, sim);
+    	            
+    	            System.out.printf("aligned\n%s and %s as\n%s\n%s\n%s\nindels: %s\n", 
+    	            		joinAlignment(knownGraphemes), joinAlignment(foundGraphemes), 
+    	            		optAligns[0], optAligns[1], optAligns[2], optAligns[3]);
+                }
+        }
+    
+    
     public static void compare(String known, String[] allFoundGraphemes, 
             final int foundStart, double[] conf, int[] indx, int[] dist, SimilarityMatrix sim) {
 
@@ -162,6 +275,19 @@ public class SumerianNWSubstringComparator {
                 
                 //System.out.printf("Best val %d |worst val %d |finalMatch %d\n", bestValue, worstVal, finalMatch); 
                 
+                int bestIndex = 0;
+            	for (int i = 0; i < allFoundGraphemes.length; ++i) {
+            		if (alignment[knownGraphemes.length][i] <= bestValue) {
+                        bestIndex = i;
+                        bestValue = alignment[knownGraphemes.length][i];
+                    }
+            	}
+                indx[0] = bestIndex;
+                // NOTE: to future groups:  distance is not necessarily relevant here, 
+                // it would require calculating edit distance as well as NW alignments
+            	dist[0] = Math.abs(worstVal - finalMatch);
+                
+                
                 if(denom == 0) {
                 	conf[0] = 100.0; // * ((SimilarityMatrix.maxValue - bestValue)/SimilarityMatrix.maxValue);
                 	System.out.println("Somehow, denominator is 0. Reporting confidence of " + conf[0]);
@@ -177,8 +303,8 @@ public class SumerianNWSubstringComparator {
 //                	//System.out.println("Greater than 100 confidence, penalizing. New conf = " + conf[0]);
 //                }
                 
-            	dist[0] = Math.abs(worstVal - finalMatch);
-                indx[0] = allFoundGraphemes.length; //TODO: FIX
+                
+            	
                 
                 if (debug) {
                 	String Alignment = "[ [ _ ";
