@@ -83,7 +83,7 @@ public class GeneticServer implements Server {
 			throws RemoteException {
 		incrementCitizen();
 		
-		System.out.println("Life of citizen " + cit.IDNo + " has started.");
+		System.out.println("Life of citizen " + cit.IDNo + " has started. Aligning " + attestations.size() + " attestations");
 		long timeStart = System.currentTimeMillis();
 		
 		//return 3.14159F;
