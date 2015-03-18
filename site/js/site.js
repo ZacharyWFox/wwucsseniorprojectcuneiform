@@ -123,6 +123,41 @@ function graphDates(search) {
     });
 }
 
+// Hacky fix to show new dates too
+function graphNewDates(search) {
+    var d = 'search=' + search;
+    $.ajax({
+        dataType: 'json',
+        url: 'REST/new_dates.php',
+        data: d,
+        success: function(data) {
+            var dataArray = [['Abbreviation', 'Count']];
+            for (var i = 0; i < data.length; ++i) {
+                dataArray.push([data[i].abbreviation, parseInt(data[i].count)]);
+            }
+
+            var chartData = google.visualization.arrayToDataTable(dataArray);
+            var options = {
+                'title': 'Date Distribution (Needlemann Wunsch)',
+                'width': 1000,
+                'height': 700,
+                'hAxis': {slantedText: true, slantedTextAngle: 80}
+            };
+
+            var chart = new google.visualization.ColumnChart(document.getElementById('date-distribution'));
+            chart.draw(chartData, options);
+        },
+        error: function(data) {
+            alert('An error has occurred:\n' +
+                  'URL:    ' + 'REST/dates.php\n' +
+                  'DATA:   ' + d + '\n' +
+                  'FUNCT:  ' + 'graphDates\n' +
+                  'STATUS: ' + data.statusText + "\n" +
+                  'ERROR:  ' + data.responseText);
+        }
+    });
+}
+
 function graphNames(search) {
     var d = 'search=' + search;
     $.ajax({
@@ -168,6 +203,39 @@ function graphAttestation(search) {
             var chartData = google.visualization.arrayToDataTable(data);
             var options = {
                 title: 'Names vs Dates (' + search + ')',
+                width: 1000,
+                height: 700,
+                lineWidth: 0,
+                pointSize: 7,
+                hAxis: {title: 'Date'},
+                vAxis: {title: 'Name Occurances'},
+                legend: 'right'
+            };
+            var chart = new google.visualization.LineChart(document.getElementById('attestation-graph'));
+            chart.draw(chartData, options);
+        },
+        error: function(data) {
+            alert('An error has occurred:\n' +
+                  'URL:    ' + 'REST/names_dates.php\n' +
+                  'DATA:   ' + d + '\n' +
+                  'FUNCT:  ' + 'graphDates\n' +
+                  'STATUS: ' + data.statusText + "\n" +
+                  'ERROR:  ' + data.responseText);
+        }
+    });
+}
+
+// Hacky fix to show new attestations too!
+function graphNewAttestation(search) {
+    var d = 'search=' + search;
+    $.ajax({
+        dataType: 'json',
+        url: 'REST/new_names_dates.php',
+        data: d,
+        success: function(data) {
+            var chartData = google.visualization.arrayToDataTable(data);
+            var options = {
+                title: 'Names vs Dates (' + search + ') Needlemann-Wunsch',
                 width: 1000,
                 height: 700,
                 lineWidth: 0,

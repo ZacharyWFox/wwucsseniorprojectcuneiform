@@ -134,7 +134,20 @@ if (isset($_GET['page']) && ctype_digit($_GET['page']) && $_GET['page'] > 0) {
                                     <li><a href="#date-distribution" data-toggle="tab">Date Distribution</a></li>
                                     <li><a href="#name-distribution" data-toggle="tab">Name Distribution</a></li>
                                     <li><a href="#attestation-graph" data-toggle="tab">Attestation Graph</a></li>
+
+
+                                    <!-- hacky algo selector -->
+                                    <li role="presentation" class="dropdown">
+                                        <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-expanded="false">
+                                            Date Matching Algorithm <span class="caret"></span>
+                                        </a>
+                                        <ul class="dropdown-menu" role="menu">
+                                            <li><a href="#" onclick="change2lev()">Levenshtein</a></li>
+                                            <li><a href="#" onclick="change2nw()">Needlemann-Wunsch</a></li>
+                                        </ul>
+                                    </li>
                                 </ul>
+
                                 <div id="tabs-content" class="tab-content">
                                     <div class="tab-pane fade in active" id="tablet-result"><!-- Begin tablet results -->
                                         <?php
@@ -150,6 +163,15 @@ if (isset($_GET['page']) && ctype_digit($_GET['page']) && $_GET['page'] > 0) {
                                     <div class="tab-pane fade" id="attestation-graph"><!-- Begin attestation graph -->
                                         <!-- Contents drawn by js function graphAttestation -->
                                     </div><!-- End attestation graph -->
+
+                                    <div class="tab-pane fade" id="new-date-distribution"><!-- Begin date distribution -->
+                                        <!-- Contents drawn by js function graphNewDates -->
+                                    </div><!-- End date distribution -->
+
+                                    <div class="tab-pane fade" id="new-attestation-graph"><!-- Begin attestation graph -->
+                                        <!-- Contents drawn by js function graphNewAttestation -->
+                                    </div><!-- End attestation graph -->
+
                                 </div><!-- end tabs-content -->
                             </div>
                         </div><!-- End search results -->
@@ -162,7 +184,19 @@ if (isset($_GET['page']) && ctype_digit($_GET['page']) && $_GET['page'] > 0) {
         <!--Placed at the end of the document so the pages load faster -->
         <script src="js/bootstrap.min.js"></script>
         <script src="js/site.js"></script>
+
+        <!-- SOME REAL HACKY %$@# IN HERE! -->
         <script type="text/javascript">
+            function change2lev() {
+                graphDates(document.getElementById("search").value);
+                graphAttestation(document.getElementById("search").value);
+            }
+            
+            function change2nw() {
+                graphNewDates(document.getElementById("search").value);
+                graphNewAttestation(document.getElementById("search").value);
+            }
+
             if (document.getElementById("search").value.length !== 0) {
                 graphDates(document.getElementById("search").value);
                 graphNames(document.getElementById("search").value);
