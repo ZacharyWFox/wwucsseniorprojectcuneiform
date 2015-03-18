@@ -206,7 +206,7 @@ public class DateExtractor {
         	String known = this.separateDeterminants(d.text);
         	
         	
-            SumerianNWSubstringComparator.compare(known, found, i, conf, indx, dist, sim);
+            SumerianNWSubstringComparator.compareNoCutoff(known, found, i, conf, indx, dist, sim);
             
             
             if (compare){
