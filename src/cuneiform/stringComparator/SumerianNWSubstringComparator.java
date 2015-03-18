@@ -100,7 +100,7 @@ public class SumerianNWSubstringComparator {
             }
     }
     
-    public static void compareNoCutoff(String known, String[] allFoundGraphemes, 
+    public static void compare(String known, String[] allFoundGraphemes, 
             final int foundStart, double[] conf, int[] indx, int[] dist, SimilarityMatrix sim) {
 
                 // Split string into graphemes
@@ -213,7 +213,7 @@ public class SumerianNWSubstringComparator {
         }
     
     
-    public static void compare(String known, String[] allFoundGraphemes, 
+    public static void compareWCutoff(String known, String[] allFoundGraphemes, 
             final int foundStart, double[] conf, int[] indx, int[] dist, SimilarityMatrix sim) {
 
                 // Split string into graphemes
