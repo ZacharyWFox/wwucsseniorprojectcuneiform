@@ -7,7 +7,10 @@ import java.util.List;
 import cuneiform.Citizen;
 import cuneiform.FoundDate;
 import cuneiform.KnownDate;
-
+/**
+ * Remote interface for RMI purposes
+ * @author ZacharyWFox
+ */
 public interface Server extends Remote {
 	float live(Citizen cit, List<FoundDate> attestations) throws RemoteException;
 	void setAllKnownDates(List<KnownDate> dates) throws RemoteException;
