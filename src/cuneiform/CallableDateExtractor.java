@@ -8,6 +8,10 @@ import java.util.concurrent.Callable;
 import cuneiform.stringComparator.Confidence;
 import cuneiform.stringComparator.SimilarityMatrix;
 
+/**
+ * A wrapper for the DateExtractor to make it a callable. This is used server side.
+ * @author ZacharyWFox
+ */
 public class CallableDateExtractor implements Callable<List<GuessPair>>{
 	
 	DateExtractor extranctinator;
