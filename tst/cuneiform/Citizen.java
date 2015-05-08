@@ -8,13 +8,16 @@ import java.util.concurrent.Future;
 import cuneiform.FutureState;
 import cuneiform.stringComparator.SimilarityMatrix;
 
-
-
-
+/**
+ * This is where the Similarity Matrix (The thing we're mutating) lives. 
+ * Also tracks fitness of given similarity matrix
+ * @author ZacharyWFox
+ * @author DThurow
+ */
 public class Citizen implements Comparable<Citizen>, Serializable{
 
 	/**
-	 * 
+	 * For serialization purposes
 	 */
 	private static final long serialVersionUID = 2504986002193445538L;
 	public SimilarityMatrix personalMatrix;
@@ -31,16 +34,12 @@ public class Citizen implements Comparable<Citizen>, Serializable{
 		
 		personalMatrix = new SimilarityMatrix();
 		IDNo = id;
-		//XXX For testing purposes XXX
-		//fitness = (float) Math.floor(Math.random() * 100);
 	}
 	
 	public Citizen(int id, SimilarityMatrix matrix){
 		
 		personalMatrix = matrix;
 		IDNo = id;
-		//XXX For testing purposes XXX
-		//fitness = (float) Math.floor(Math.random() * 100);
 	}
 	
 	/***
@@ -67,42 +66,7 @@ public class Citizen implements Comparable<Citizen>, Serializable{
 		resetFitness();
 		this.personalMatrix = null;
 	}
-//	public boolean evaluateFitness() {
-//		switch (getFutureState()){
-//		case ALIVE :
-//			try {
-//				while(!futureFitness.isDone()){
-//					Thread.sleep(3000);
-//				}
-//					
-//				this.fitness = this.futureFitness.get();
-//			} catch (InterruptedException | ExecutionException e) {
-//				e.printStackTrace();
-//				return false;
-//			}
-//			break;
-//		case DEAD:
-//			if(fitness >= 0) {
-//				return true;
-//			} else {
-//				try {
-//					this.fitness = this.futureFitness.get();
-//				} catch (InterruptedException | ExecutionException e) {
-//					e.printStackTrace();
-//					return false;
-//				}
-//			}
-//			break;
-//		case UNBORN:
-//			return false;
-//		case CANCELLED:
-//			return false;
-//		default:
-//			return false;
-//		}
-//		return true;
-//	}
-	
+
 	public boolean isFitnessReady() {
 		if (this.getFutureState() == FutureState.DEAD) {
 			return true;
@@ -110,21 +74,9 @@ public class Citizen implements Comparable<Citizen>, Serializable{
 			return false;
 		}
 	}
-//	public void setFitnessFuture(Future<Float> oddFuture) {
-//		this.futureFitness = oddFuture;
-//		getFutureState();
-//	}
 	
 	public FutureState getFutureState() {
-//		if (this.futureFitness == null) {
-//			this.futureState = FutureState.UNBORN;
-//		} else if (this.futureFitness.isCancelled()){
-//			this.futureState = FutureState.CANCELLED;
-//		} else if (this.futureFitness.isDone()) {
-//			this.futureState = FutureState.DEAD;
-//		} else {
-//			this.futureState = FutureState.ALIVE;
-//		}
+
 		return this.futureState;
 	}
 
@@ -140,22 +92,6 @@ public class Citizen implements Comparable<Citizen>, Serializable{
 		
 	}
 	
-//	@Override
-//	//TODO: XXX
-//	public void run() {
-//		//then figure out fitness
-//		this.futureState=FutureState.ALIVE;
-//		System.out.println("Citizen No: " + IDNo + " is running.");
-//		
-//		//Submit live
-//		if (this.serverSet && this.server != null) {
-//			this.server.live(this, ));
-//		}
-//		
-//		this.server = null;
-//		//EvaluateFitness();
-//	}
-	
 	 /***
 	  * Get the fitness. PLEASE USE isFitnessReady first, as The value may be invalid (negative) for calculations.
 	  * @return The fitness of this citizen. If the fitness has not been evaluated, then the result will be negative.
@@ -163,23 +99,4 @@ public class Citizen implements Comparable<Citizen>, Serializable{
 	public float getFitness() {
 		return this.fitness;
 	}
-	//XXX
-//	public synchronized boolean isServerSet() {
-//		return (this.server != null && this.serverSet);
-//	}
-//	
-//	public synchronized void setServer(Server niles) {
-//		this.server = niles;
-//	}
-	
-	public float getFitnessTest() {
-		//XXX For testing purposes
-		if (this.fitness > 0)
-			return this.fitness;
-		else
-			return this.fitness = (float) Math.floor(Math.random() * 100);
-	}
-	
-	
-	
 }
