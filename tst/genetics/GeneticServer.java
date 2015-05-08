@@ -27,6 +27,16 @@ import cuneiform.CallableDateExtractor;
 import cuneiform.KnownDate;
 import cuneiform.stringComparator.SimilarityMatrix;
 
+/**
+ * A work server instance, this is where the computation is being run. 
+ * Runs a bunch of Citizens and DateExtractors in parallel, calculates fitness, 
+ * and returns result. Run one on each node being utilized. 
+ * Main is invoked usually with script etc/startNode.py
+ * @author ZacharyWFox
+ * @author tcfritchman
+ * @author DThurow
+ * check blame for specific authorship
+ */
 public class GeneticServer implements Server {
 	String name = "Default";
 	String hostName;
@@ -87,7 +97,7 @@ public class GeneticServer implements Server {
 			return live(cit, attestations, false);
 	}
 		
-		
+	// Where the work is done.	
 	public float live(Citizen cit, List<FoundDate> attestations, boolean compare)
 			throws RemoteException {
 		incrementCitizen();
@@ -95,7 +105,6 @@ public class GeneticServer implements Server {
 		System.out.println("Life of citizen " + cit.IDNo + " has started. Aligning " + attestations.size() + " attestations");
 		long timeStart = System.currentTimeMillis();
 		
-		//return 3.14159F;
 		int divider = (int)Math.ceil(attestations.size()/threadsPerCitizen);
 		List<List<FoundDate>> threadDivisions = new ArrayList<List<FoundDate>>(threadsPerCitizen);
 		List<GuessPair> guesses = new ArrayList<GuessPair>(attestations.size());
@@ -150,11 +159,9 @@ public class GeneticServer implements Server {
 		try {
 			fitness = evaluateFitness(guesses);
 		} catch (Exception e) {
-			// Let the crap flow uphill
+			// Let the exceptions go up the stack
 			throw new RemoteException(e.getMessage(), e);
 		}
-		// Done!
-		//TODO: needs synchronized access somehow
 		
 		System.out.println("Life of citizen " + cit.IDNo + " has ended. Fitness: " + fitness);
 		decrementCitizen();
