@@ -121,14 +121,18 @@ public class DateExtractor {
             }
         }
     }
-    
+    /**
+     * @author ZacharyWFox
+     */
     public FoundDate alignDateString(String[] graphemes, SimilarityMatrix sim, boolean compare) {
     	long st = System.currentTimeMillis();
     	FoundDate year = getConfidence(graphemes, 0, this.knownYears, sim, compare);
     	//System.out.printf("Alignment took %d milliseconds\n", System.currentTimeMillis() - st);
     	return year;
     }
-    
+    /**
+     * @author ZacharyWFox
+     */
     public List<GuessPair> alignYearsTest() {
     	List<GuessPair> allGuesses = new ArrayList<GuessPair>(this.knownYears.size());
     	FoundDate found;
@@ -140,12 +144,16 @@ public class DateExtractor {
     	}
     	return allGuesses;
     }
-    
+    /**
+     * @author ZacharyWFox
+     */
     public List<GuessPair> alignYears(List<FoundDate> toAlign, SimilarityMatrix sim){
     	return alignYears(toAlign, sim, false);
     }
     	
-    	
+    /**
+     * @author ZacharyWFox
+     */
     public List<GuessPair> alignYears(List<FoundDate> toAlign, SimilarityMatrix sim, boolean compare){	
     	List<GuessPair> allFound = new ArrayList<GuessPair>(this.knownYears.size());
     	FoundDate found;
