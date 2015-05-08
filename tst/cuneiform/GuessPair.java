@@ -2,6 +2,11 @@ package cuneiform;
 
 import cuneiform.stringComparator.Confidence;
 
+/**
+ * Holds a correct attestation and a guess made by a Date Extractor. 
+ * Used for fitness calculations. 
+ * @author ZacharyWFox
+ */
 public class GuessPair {
 	KnownDate correct;
 	FoundDate guess;
