@@ -5,7 +5,11 @@ import interfaces.Server;
 import java.util.List;
 import cuneiform.Citizen;
 import cuneiform.FoundDate;
-
+/**
+ * A runnable class that manages a citizen that has been sent to the work server. 
+ * Sends it off and sets a flag when the server returns.
+ * @author ZacharyWFox
+ */
 public class MineCart implements Runnable{
 	float fitness = -1;
 	Citizen cit; 
@@ -38,8 +42,6 @@ public class MineCart implements Runnable{
 	
 	
 	public float getFitness(){
-		
-		cit.setFitness(this.fitness);//XXX?
 		return this.fitness;
 	}
 	
@@ -52,7 +54,7 @@ public class MineCart implements Runnable{
 			System.out.println(e.getMessage());
 			e.printStackTrace();
 		}
-		this.done = true; // bleeeegh
+		this.done = true;
 	}
 	
 	@Override
